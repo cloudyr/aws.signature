@@ -17,4 +17,3 @@ install_github("leeper/aws.signature")
 ```
 
 To install the latest version from CRAN, simply use `install.packages("aws.signature")`.
-```
