@@ -17,3 +17,6 @@ install_github("leeper/aws.signature")
 ```
 
 To install the latest version from CRAN, simply use `install.packages("aws.signature")`.
+
+---
+[![cloudyr project logo](http://i.imgur.com/JHS98Y7.png)](https://github.com/cloudyr)
