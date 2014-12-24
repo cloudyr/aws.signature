@@ -8,5 +8,5 @@ Maintainer: Thomas J. Leeper <thosjleeper@gmail.com>
 Description: Generates request signatures for Amazon Web Services (AWS) APIs.
 License: GPL (>= 2)
 Imports: digest, utils
-URL: https://github.com/leeper/aws.signature
-BugReports: https://github.com/leeper/aws.signature/issues
+URL: https://github.com/cloudyr/aws.signature
+BugReports: https://github.com/cloudyr/aws.signature/issues
