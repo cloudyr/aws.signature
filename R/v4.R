@@ -1,7 +1,7 @@
 canonical_request <- 
 function(verb,
          canonical_uri = "",
-         query_string = "",
+         query_args = list(),
          canonical_headers,
          request_body = ""
          ) {
@@ -13,6 +13,14 @@ function(verb,
     # trim leading, trailing, and all non-quoted duplicated spaces
     # gsub("^\\s+|\\s+$", "", x)
     signed_headers <- paste(names(canonical_headers), sep = "", collapse = ";")
+    
+    if(length(query_args)) {
+        query_args <- unlist(query_args[order(names(query_args))])
+        query_string <- paste0(URLencode(names(query_args)), "=", 
+                               URLencode(query_args), "&", collapse = "")
+    } else {
+        query_string <- ""
+    }
     out <- paste(verb, 
                  canonical_uri,
                  query_string,
@@ -68,7 +76,7 @@ function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
          service,
          verb,
          action,
-         query_string = "",
+         query_args = list(),
          canonical_headers, # named list
          request_body,
          key,
@@ -94,7 +102,7 @@ function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
     # Canonical Request
     R <- canonical_request(verb = verb,
                            canonical_uri = action,
-                           query_string = query_string,
+                           query_args = query_args,
                            canonical_headers = canonical_headers,
                            request_body = request_body)
     

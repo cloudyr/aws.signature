@@ -4,7 +4,7 @@
 \description{AWS Signature Version 4 for use in query or header authorization}
 \usage{
 signature_v4_auth(datetime, region, service, verb,
-                  action, query_string = "",
+                  action, query_args = list(),
                   canonical_headers, request_body,
                   key, secret, query = FALSE, algorithm = "SHA256")
 }
@@ -14,7 +14,7 @@ signature_v4_auth(datetime, region, service, verb,
     \item{service}{A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).}
     \item{verb}{A character string containing the HTTP verb being used in the request.}
     \item{action}{A character string containing the API endpoint used in the request.}
-    \item{query_string}{A character string containing the query string (if any) used in the API request.}
+    \item{query_args}{A named list of character strings containing the query string values (if any) used in the API request, passed to \code{\link{canonical_request}}.}
     \item{canonical_headers}{A named list of character strings containing the headers used in the request.}
     \item{request_body}{The body of the HTTP request.}
     \item{key}{An AWS Access Key ID. If missing, it is retrieved using \code{Sys.getenv("AWS_ACCESS_KEY_ID")}}

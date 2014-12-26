@@ -3,13 +3,13 @@
 \title{Construct a Canonical Request}
 \description{Construct a Canonical Request from request elements}
 \usage{
-canonical_request(verb, canonical_uri = "", query_string = "",
+canonical_request(verb, canonical_uri = "", query_args = list(),
                   canonical_headers, request_body = "")
 }
 \arguments{
     \item{verb}{A character string containing the HTTP verb being used in the request.}
     \item{canonical_uri}{A character string containing the \dQuote{canonical URI}, meaning the contents of the API request URI excluding the host and the query parameters.}
-    \item{query_string}{A character string containing the query string (if any) used in the API request.}
+    \item{query_args}{A named list of character strings containing the query string values (if any) used in the API request.}
     \item{canonical_headers}{A named list of character strings containing the headers used in the request.}
     \item{request_body}{The body of the HTTP request.}
 }
@@ -42,7 +42,7 @@ hdrs <- list(`Content-Type` = "application/x-www-form-urlencoded; charset=utf-8"
              `x-amz-date` = "20110909T233600Z")
 r <- canonical_request(verb = "POST",
                        canonical_uri = "/",
-                       query_string = "",
+                       query_args = list(),
                        canonical_headers = hdrs,
                        request_body = "Action=ListUsers&Version=2010-05-08")
 
