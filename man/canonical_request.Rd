@@ -4,14 +4,13 @@
 \description{Construct a Canonical Request from request elements}
 \usage{
 canonical_request(verb, canonical_uri = "", query_string = "",
-                  canonical_headers, signed_headers, request_body)
+                  canonical_headers, request_body = "")
 }
 \arguments{
     \item{verb}{A character string containing the HTTP verb being used in the request.}
     \item{canonical_uri}{A character string containing the \dQuote{canonical URI}, meaning the contents of the API request URI excluding the host and the query parameters.}
     \item{query_string}{A character string containing the query string (if any) used in the API request.}
     \item{canonical_headers}{A named list of character strings containing the headers used in the request.}
-    \item{signed_headers}{A character vector containing the names of the headers used in the signature process.}
     \item{request_body}{The body of the HTTP request.}
 }
 \details{This function creates a \dQuote{Canonical Request}, which is part of the Signature Version 4.}
@@ -27,4 +26,26 @@ canonical_request(verb, canonical_uri = "", query_string = "",
 }
 \examples{
 # From AWS documentation
+# http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
+fromDocs <- "POST
+/
+
+content-type:application/x-www-form-urlencoded; charset=utf-8
+host:iam.amazonaws.com
+x-amz-date:20110909T233600Z
+
+content-type;host;x-amz-date
+b6359072c78d70ebee1e81adcbab4f01bf2c23245fa365ef83fe8f1f955085e2"
+
+hdrs <- list(`Content-Type` = "application/x-www-form-urlencoded; charset=utf-8",
+             Host = "iam.amazonaws.com",
+             `x-amz-date` = "20110909T233600Z")
+r <- canonical_request(verb = "POST",
+                       canonical_uri = "/",
+                       query_string = "",
+                       canonical_headers = hdrs,
+                       request_body = "Action=ListUsers&Version=2010-05-08")
+
+identical(fromDocs, r$canonical)
+                       
 }

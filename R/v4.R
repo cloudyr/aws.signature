@@ -3,17 +3,27 @@ function(verb,
          canonical_uri = "",
          query_string = "",
          canonical_headers,
-         signed_headers,
-         request_body
+         request_body = ""
          ) {
+    body_hash <- tolower(digest(request_body, algo = "sha256", serialize = FALSE))
+    
+    names(canonical_headers) <- tolower(names(canonical_headers))
+    canonical_headers <- canonical_headers[order(names(canonical_headers))]
+    header_string <- paste0(names(canonical_headers), ":", canonical_headers, "\n", collapse = "")
+    # trim leading, trailing, and all non-quoted duplicated spaces
+    # gsub("^\\s+|\\s+$", "", x)
+    signed_headers <- paste(names(canonical_headers), sep = "", collapse = ";")
     out <- paste(verb, 
-                 paste0("/", canonical_uri),
+                 canonical_uri,
                  query_string,
-                 canonical_headers,
+                 header_string,
                  signed_headers,
-                 tolower(digest(request_body, algo = "sha256", serialize = FALSE)),
+                 body_hash,
                  sep = "\n")
-    return(digest(out, algo = "sha256", serialize = FALSE))
+    return(list(headers = signed_headers, 
+                body = body_hash,
+                canonical = out,
+                hash = digest(out, algo = "sha256", serialize = FALSE)))
 }
 
 string_to_sign <- 
@@ -35,11 +45,11 @@ function(algorithm = "AWS4-HMAC-SHA256",
 signature_v4 <- 
 function(secret,
          date,
-         region,
+         region = "us-east-1",
          service,
          string_to_sign){
     if(missing(secret)){
-        date <- Sys.getenv("AWS_SECRET_ACCESS_KEY")
+        secret <- Sys.getenv("AWS_SECRET_ACCESS_KEY")
     }
     if(missing(date)){
         date <- format(Sys.time(), "%Y%m%d")
@@ -53,7 +63,7 @@ function(secret,
 }
 
 signature_v4_auth <- 
-function(datetime,
+function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
          region,
          service,
          verb,
@@ -64,7 +74,7 @@ function(datetime,
          key,
          secret,
          query = FALSE,
-         algorithm = "SHA256"){
+         algorithm = "AWS4-HMAC-SHA256"){
     if(missing(key)){
         key <- Sys.getenv("AWS_ACCESS_KEY_ID")
     }
@@ -82,16 +92,10 @@ function(datetime,
     } 
     
     # Canonical Request
-    H <- paste(tolower(names(canonical_headers)), , sep = ":")
-    H <- H[order(names(H))]
-    # trim leading, trailing, and all non-quoted duplicated spaces
-    # gsub("^\\s+|\\s+$", "", x)
-    H_signed <- paste(names(H), sep = "", collapse = ";")
     R <- canonical_request(verb = verb,
                            canonical_uri = action,
                            query_string = query_string,
-                           canonical_headers = H,
-                           signed_headers = H_signed,
+                           canonical_headers = canonical_headers,
                            request_body = request_body)
     
     # String To Sign
@@ -99,7 +103,7 @@ function(datetime,
                         datetime = datetime,
                         region = region,
                         service = service,
-                        request_hash = R)
+                        request_hash = R$hash)
     
     # Signature
     V4 <- signature_v4(secret = secret,
@@ -109,18 +113,19 @@ function(datetime,
                        string_to_sign = S)
     
     # return list
+    credential <- paste(key, date, region, service, "aws4_request", sep="/")
+    sigheader <- paste(algorithm,
+                       paste(paste0("Credential=", credential),
+                             paste0("SignedHeaders=", R$headers),
+                             paste0("Signature=", V4),
+                             sep = ", "))
     structure(list(Algorithm = algorithm,
-                   Credential = paste(key, date, region, service, "aws4_request", sep="/"),
+                   Credential = credential,
                    Date = date,
-                   SignedHeaders = H_signed,
-                   Signature = V4), class = "aws_signature_v4")
-    
+                   SignedHeaders = R$headers,
+                   BodyHash = R$body,
+                   StringToSign = S,
+                   Signature = V4,
+                   SignatureHeader = sigheader), class = "aws_signature_v4")
 }
 
-print.aws_signature_v4 <- function(x, ...){
-    paste(paste0("AWS4-HMAC-", x$Algorithm),
-          paste(paste0("Credential=", x$Credential),
-                paste0("SignedHeaders=", x$SignedHeaders),
-                paste0("Signature=", x$Signature),
-                sep = ", "))
-}

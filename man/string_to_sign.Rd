@@ -8,7 +8,7 @@ string_to_sign(algorithm = "AWS4-HMAC-SHA256",
 }
 \arguments{
     \item{algorithm}{A character string containing the hashing algorithm used in signing process. Should only be \dQuote{AWS4-HMAC-SHA256}.}
-    \item{datetime}{A character string containing a UTC date in the form of \dQuote{YYMMDDTHHMMSSZ}.}
+    \item{datetime}{A character string containing a UTC date in the form of \dQuote{YYYYMMDDTHHMMSSZ}.}
     \item{region}{A character string containing the AWS region for the request.}
     \item{service}{A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).}
     \item{request_hash}{A character string containing the hash of the canonical request, perhaps as returned by \code{\link{canonical_request}}.}

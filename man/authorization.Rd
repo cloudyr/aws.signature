@@ -9,7 +9,7 @@ signature_v4_auth(datetime, region, service, verb,
                   key, secret, query = FALSE, algorithm = "SHA256")
 }
 \arguments{
-    \item{datetime}{A character string containing a datetime in the form of \dQuote{YYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
+    \item{datetime}{A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
     \item{region}{A character string containing the AWS region for the request.}
     \item{service}{A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).}
     \item{verb}{A character string containing the HTTP verb being used in the request.}
@@ -29,7 +29,10 @@ signature_v4_auth(datetime, region, service, verb,
     \item{Credential}{A character string containing an identifying credential \dQuote{scoped} to the region, date, and service of the request.}
     \item{Date}{A character string containing a YYYYMMDD-formatted date.}
     \item{SignedHeaders}{A character string containing a semicolon-separated listing of request headers used in the signature.}
+    \item{BodyHash}{A character string containing a SHA256 hash of the request body.}
+    \item{StringToSign}{A character string containing the string to sign for the request.}
     \item{Signature}{A character string containing a request signature hash.}
+    \item{SignatureHeader}{A character string containing a complete Authorization header value.}
     
 These values can either be used as query parameters in a REST-style API request, or as request headers. If authentication is supplied via query string parameters, the query string should include the following:
 
