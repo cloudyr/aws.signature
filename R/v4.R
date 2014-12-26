@@ -16,8 +16,8 @@ function(verb,
     
     if(length(query_args)) {
         query_args <- unlist(query_args[order(names(query_args))])
-        query_string <- paste0(URLencode(names(query_args)), "=", 
-                               URLencode(query_args), "&", collapse = "")
+        a <- paste0(URLencode(names(query_args)), "=", URLencode(query_args))
+        query_string <- paste(a, sep = "&", collapse = "")
     } else {
         query_string <- ""
     }
@@ -132,6 +132,7 @@ function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
                    Date = date,
                    SignedHeaders = R$headers,
                    BodyHash = R$body,
+                   CanonicalRequest = R$canonical,
                    StringToSign = S,
                    Signature = V4,
                    SignatureHeader = sigheader), class = "aws_signature_v4")
