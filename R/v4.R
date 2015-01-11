@@ -5,19 +5,18 @@ function(verb,
          canonical_headers,
          request_body = ""
          ) {
-    body_hash <- tolower(digest(request_body, algo = "sha256", serialize = FALSE))
-    
+    body_hash <- tolower(digest(request_body, algo = "sha256", serialize = FALSE))    
     names(canonical_headers) <- tolower(names(canonical_headers))
     canonical_headers <- canonical_headers[order(names(canonical_headers))]
     header_string <- paste0(names(canonical_headers), ":", canonical_headers, "\n", collapse = "")
     # trim leading, trailing, and all non-quoted duplicated spaces
     # gsub("^\\s+|\\s+$", "", x)
     signed_headers <- paste(names(canonical_headers), sep = "", collapse = ";")
-    
     if(length(query_args)) {
         query_args <- unlist(query_args[order(names(query_args))])
-        a <- paste0(URLencode(names(query_args)), "=", URLencode(query_args))
-        query_string <- paste(a, sep = "&", collapse = "")
+        a <- paste0(sapply(names(query_args), URLencode, reserved = TRUE), "=", 
+                    sapply(query_args, URLencode, reserved = TRUE))
+        query_string <- paste(a, sep = "", collapse = "&")
     } else {
         query_string <- ""
     }
