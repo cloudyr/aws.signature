@@ -1,4 +1,4 @@
-importFrom(utils, URLencode)
+#importFrom(utils, URLencode)
 importFrom(digest, digest, hmac)
 export(canonical_request)
 export(string_to_sign)
