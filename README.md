@@ -4,7 +4,7 @@
 
 ## Installation ##
 
-[![Build Status](https://travis-ci.org/cloudyr/aws.signature.png?branch=master)](https://travis-ci.org/cloudyr/aws.signature)
+[![Build Status](https://travis-ci.org/cloudyr/aws.signature.png?branch=master)](https://travis-ci.org/cloudyr/aws.signature) [![codecov.io](http://codecov.io/github/cloudyr/aws.signature/coverage.svg?branch=master)](http://codecov.io/github/cloudyr/aws.signature?branch=master)
 
 There is little reason to install this package directly (without also installing a client package for a particular AWS API), but to install the latest development version from GitHub, run the following:
 
