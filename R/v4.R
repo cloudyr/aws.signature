@@ -5,7 +5,11 @@ function(verb,
          canonical_headers,
          request_body = ""
          ) {
-    body_hash <- tolower(digest(request_body, algo = "sha256", serialize = FALSE))    
+    if(file.exists(request_body)) {
+        body_hash <- tolower(digest(request_body, file = TRUE, algo = "sha256", serialize = FALSE))
+    } else {
+        body_hash <- tolower(digest(request_body, algo = "sha256", serialize = FALSE))
+    }
     names(canonical_headers) <- tolower(names(canonical_headers))
     canonical_headers <- canonical_headers[order(names(canonical_headers))]
     header_string <- paste0(names(canonical_headers), ":", canonical_headers, "\n", collapse = "")

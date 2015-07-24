@@ -11,7 +11,7 @@ canonical_request(verb, canonical_uri = "", query_args = list(),
     \item{canonical_uri}{A character string containing the \dQuote{canonical URI}, meaning the contents of the API request URI excluding the host and the query parameters.}
     \item{query_args}{A named list of character strings containing the query string values (if any) used in the API request.}
     \item{canonical_headers}{A named list of character strings containing the headers used in the request.}
-    \item{request_body}{The body of the HTTP request.}
+    \item{request_body}{The body of the HTTP request, or a filename. If a filename, hashing is performed on the file without reading it into memory.}
 }
 \details{This function creates a \dQuote{Canonical Request}, which is part of the Signature Version 4.}
 \value{A list containing}
