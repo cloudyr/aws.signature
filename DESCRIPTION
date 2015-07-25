@@ -2,11 +2,12 @@ Package: aws.signature
 Type: Package
 Title: Amazon Web Services Request Signatures
 Version: 0.1.1
-Date: 2015-07-24
+Date: 2015-07-25
 Author: Thomas J. Leeper
 Maintainer: Thomas J. Leeper <thosjleeper@gmail.com>
 Description: Generates request signatures for Amazon Web Services (AWS) APIs.
 License: GPL (>= 2)
-Imports: digest, utils
+Imports: digest
+Suggets: testthat
 URL: https://github.com/cloudyr/aws.signature
 BugReports: https://github.com/cloudyr/aws.signature/issues

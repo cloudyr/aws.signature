@@ -3,10 +3,10 @@
 \title{Signature Version 4}
 \description{AWS Signature Version 4 for use in query or header authorization}
 \usage{
-signature_v4_auth(datetime, region, service, verb,
-                  action, query_args = list(),
-                  canonical_headers, request_body,
-                  key, secret, query = FALSE, algorithm = "SHA256")
+signature_v4_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%SZ", tz = "UTC"), 
+                  region, service, verb, action, query_args = list(),
+                  canonical_headers, request_body, key, secret, 
+                  query = FALSE, algorithm = "AWS4-HMAC-SHA256")
 }
 \arguments{
     \item{datetime}{A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}

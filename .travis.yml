@@ -1,7 +1,13 @@
 language: r
 sudo: required
 r_github_packages:
-  - cloudyr/aws.signature
-  - jimhester/covr
+- cloudyr/aws.signature
+- jimhester/covr
+- eddelbuettel/drat
 after_success:
-  - Rscript -e 'library(covr);codecov()'
+- Rscript -e 'library(covr);codecov()'
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
+  drat.sh
+env:
+  global:
+  - secure: jw8SjbwUlKz/zPczyqcvnm0r9jbUvNb4hplUn3bxlD2SniNkitqODk2/jmlfunrpmHJRS4GDx6X6omYTNwvNsyE51dK6XJE8nZuaeCPvGLl3xxgRL6dis2JGwy2itRm0C/P6UEAUSmuTbtR15N1JC7Y7ot0IRpfRZc0tOkuS8L0=
