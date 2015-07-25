@@ -14,9 +14,7 @@ addToDrat(){
   git fetch upstream
   git checkout master
 
-  Rscript -e "dir()"
-  Rscript -e "dir('../')"
-  Rscript -e "drat::insertPackage('$PKG_TARBALL', \
+  Rscript -e "drat::insertPackage('../$PKG_TARBALL', \
     repodir = './drat', \
     commit='Travis package update: build $TRAVIS_BUILD_NUMBER')"
   git push
