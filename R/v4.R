@@ -5,7 +5,7 @@ function(verb,
          canonical_headers,
          request_body = ""
          ) {
-    if(file.exists(request_body)) {
+    if(is.character(request_body) && file.exists(request_body)) {
         body_hash <- tolower(digest(request_body, file = TRUE, algo = "sha256", serialize = FALSE))
     } else {
         body_hash <- tolower(digest(request_body, algo = "sha256", serialize = FALSE))

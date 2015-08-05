@@ -1,4 +1,12 @@
-# CHANGES TO aws.signature 0.1 #
+# CHANGES TO aws.signature 0.1.2 #
+
+* Fix bug in request body hashing for non-character request bodies (#3).
+
+# CHANGES TO aws.signature 0.1.1 #
+
+* Allow request body has to be generated from file without loading into memory.
+
+# CHANGES TO aws.signature 0.1.0 #
 
 * Include patched version of `utils::URLencode` that correctly encodes URLs per RFC 3986.
 * Initial release.
