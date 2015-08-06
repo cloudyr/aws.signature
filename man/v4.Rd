@@ -3,7 +3,10 @@
 \title{Signature Version 4}
 \description{Generates AWS Signature Version 4}
 \usage{
-signature_v4(secret, date, region = "us-east-1", service, string_to_sign)
+signature_v4(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL), 
+             date = format(Sys.time(), "%Y%m%d"), 
+             region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"), 
+             service, string_to_sign)
 }
 \arguments{
     \item{secret}{An AWS Secret Access Key. If missing, it is retrieved using \code{Sys.getenv("AWS_SECRET_ACCESS_KEY")}}

@@ -4,8 +4,11 @@
 \description{AWS Signature Version 4 for use in query or header authorization}
 \usage{
 signature_v4_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%SZ", tz = "UTC"), 
-                  region, service, verb, action, query_args = list(),
-                  canonical_headers, request_body, key, secret, 
+                  region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"), 
+                  service, verb, action, query_args = list(),
+                  canonical_headers, request_body, 
+                  key = Sys.getenv("AWS_ACCESS_KEY_ID", NULL), 
+                  secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL), 
                   query = FALSE, algorithm = "AWS4-HMAC-SHA256")
 }
 \arguments{

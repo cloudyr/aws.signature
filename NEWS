@@ -1,3 +1,8 @@
+# CHANGES TO aws.signature 0.1.3 #
+
+* 
+* Expose and set default key, secret, and region values in `signature_v4_auth`.
+
 # CHANGES TO aws.signature 0.1.2 #
 
 * Fix bug in request body hashing for non-character request bodies (#3).

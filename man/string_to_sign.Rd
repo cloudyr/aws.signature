@@ -4,7 +4,8 @@
 \description{Construct a String to Sign from request elements}
 \usage{
 string_to_sign(algorithm = "AWS4-HMAC-SHA256",
-               datetime, region, service, request_hash)
+               datetime, region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"), 
+               service, request_hash)
 }
 \arguments{
     \item{algorithm}{A character string containing the hashing algorithm used in signing process. Should only be \dQuote{AWS4-HMAC-SHA256}.}

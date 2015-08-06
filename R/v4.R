@@ -40,7 +40,7 @@ function(verb,
 string_to_sign <- 
 function(algorithm = "AWS4-HMAC-SHA256",
          datetime, # format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC")
-         region,
+         region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"),
          service,
          request_hash
          ) {
@@ -54,16 +54,13 @@ function(algorithm = "AWS4-HMAC-SHA256",
 }
 
 signature_v4 <- 
-function(secret,
-         date,
-         region = "us-east-1",
+function(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL),
+         date = format(Sys.time(), "%Y%m%d"),
+         region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"),
          service,
          string_to_sign){
-    if(missing(secret)){
-        secret <- Sys.getenv("AWS_SECRET_ACCESS_KEY")
-    }
-    if(missing(date)){
-        date <- format(Sys.time(), "%Y%m%d")
+    if(is.null(secret)){
+        stop("Missing AWS Secret Access Key")
     }
     kDate <- hmac(paste0("AWS4", secret), date, "sha256", raw = TRUE)
     kRegion <- hmac(kDate, region, "sha256", raw = TRUE)
@@ -75,27 +72,23 @@ function(secret,
 
 signature_v4_auth <- 
 function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
-         region,
+         region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"),
          service,
          verb,
          action,
          query_args = list(),
          canonical_headers, # named list
          request_body,
-         key,
-         secret,
+         key = Sys.getenv("AWS_ACCESS_KEY_ID", NULL),
+         secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL),
          query = FALSE,
          algorithm = "AWS4-HMAC-SHA256"){
-    if(missing(key)){
-        key <- Sys.getenv("AWS_ACCESS_KEY_ID")
-    }
-    if(key == "")
+    if(is.null(key)){
         stop("Missing AWS Access Key ID")
-    if(missing(secret)){
-        secret <- Sys.getenv("AWS_SECRET_ACCESS_KEY")
     }
-    if(secret == "")
+    if(is.null(secret)){
         stop("Missing AWS Secret Access Key")
+    }
     date <- substring(datetime,1,8)
     
     if(query){
