@@ -19,7 +19,7 @@ function(verb,
     if(length(query_args)) {
         query_args <- unlist(query_args[order(names(query_args))])
         a <- paste0(sapply(names(query_args), URLencode, reserved = TRUE), "=", 
-                    sapply(query_args, URLencode, reserved = TRUE))
+                    sapply(as.character(query_args), URLencode, reserved = TRUE))
         query_string <- paste(a, sep = "", collapse = "&")
     } else {
         query_string <- ""
