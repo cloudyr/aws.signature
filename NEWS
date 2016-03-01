@@ -1,3 +1,7 @@
+# CHANGES TO aws.signature 0.2.1 #
+
+* `canonical_request()` now sets C collate order to properly order query argument and header names across platforms.
+
 # CHANGES TO aws.signature 0.1.4 #
 
 * Coerce query string arguments to character before passing to `URLencode()`. (#5)

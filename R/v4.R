@@ -10,6 +10,12 @@ function(verb,
     } else {
         body_hash <- tolower(digest(request_body, algo = "sha256", serialize = FALSE))
     }
+    
+    # set sort locale
+    lc <- Sys.getlocale(category = "LC_COLLATE")
+    Sys.setlocale(category = "LC_COLLATE", locale = "C")
+    on.exit(Sys.setlocale(category = "LC_COLLATE", locale = lc))
+    
     names(canonical_headers) <- tolower(names(canonical_headers))
     canonical_headers <- canonical_headers[order(names(canonical_headers))]
     header_string <- paste0(names(canonical_headers), ":", canonical_headers, "\n", collapse = "")
