@@ -74,3 +74,46 @@ test_that("AWS test suite via signature_v4_auth", {
     #                 label = "Full authorization string matches")
     
 })
+
+test_that("AWS test suite via signature_v2_auth", {
+true_string <- "GET
+elasticmapreduce.amazonaws.com
+/
+AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2011-10-03T15%3A19%3A30&Version=2009-03-31"
+    true_sig <- "i91nKc4PWAt0JJIdXwz9HxZCJDdiy6cf/Mj6vPxyYIs="
+
+    q1 <- 
+    list(Action = "DescribeJobFlows",
+         Version = "2009-03-31",
+         AWSAccessKeyId = "AKIAIOSFODNN7EXAMPLE",
+         SignatureVersion = "2",
+         SignatureMethod = "HmacSHA256",
+         Timestamp = "2011-10-03T15:19:30")
+
+    sig1 <- 
+    signature_v2_auth(datetime = "2011-10-03T15:19:30",
+                      service = "elasticmapreduce.amazonaws.com",
+                      verb = "GET",
+                      path = "/",
+                      query_args = q1,
+                      key = q1$AWSAccessKeyId,
+                      secret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
+    expect_true(identical(true_string, sig1$CanonicalRequest), label = "v2 CanonicalRequest correct")
+    expect_true(identical(true_sig, sig1$Signature), label = "v2 Signature correct")
+
+    q2 <- 
+    list(Action = "DescribeJobFlows",
+         Version = "2009-03-31",
+         Timestamp = "2011-10-03T15:19:30")
+    sig2 <- 
+    signature_v2_auth(datetime = "2011-10-03T15:19:30",
+                      service = "elasticmapreduce.amazonaws.com",
+                      verb = "GET",
+                      path = "/",
+                      query_args = q2,
+                      key = "AKIAIOSFODNN7EXAMPLE",
+                      secret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
+    expect_true(identical(true_string, sig2$CanonicalRequest), label = "v2 CanonicalRequest correct, setting defaults")
+    expect_true(identical(true_sig, sig2$Signature), label = "v2 Signature correct, setting defaults")
+})
+

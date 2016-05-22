@@ -64,6 +64,6 @@ This is the value printed by default for all objects of class \dQuote{aws_signat
 }
 %\keyword{}
 \seealso{
-\code{\link{signature_v4}}
+\code{\link{signature_v4_auth}}
 }
 %\examples{}

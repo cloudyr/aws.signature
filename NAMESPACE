@@ -1,6 +1,8 @@
 #importFrom(utils, URLencode)
 importFrom(digest, digest, hmac)
+importFrom(base64enc, base64encode)
 export(canonical_request)
 export(string_to_sign)
 export(signature_v4)
 export(signature_v4_auth)
+export(signature_v2_auth)
