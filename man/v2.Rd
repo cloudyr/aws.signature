@@ -28,10 +28,15 @@ signature_v2_auth(datetime = format(Sys.time(),"\%Y\%M\%dT\%H\%M\%S", tz = "UTC"
 # examples from:
 # http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html
 
-true_string <- "GET
-elasticmapreduce.amazonaws.com
-/
-AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2011-10-03T15\%3A19\%3A30&Version=2009-03-31"
+true_string <- paste0("GET\n",
+"elasticmapreduce.amazonaws.com\n",
+"/\n",
+"AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE",
+"&Action=DescribeJobFlows",
+"&SignatureMethod=HmacSHA256",
+"&SignatureVersion=2",
+"&Timestamp=2011-10-03T15\%3A19\%3A30",
+"&Version=2009-03-31", collapse = "")
 true_sig <- "i91nKc4PWAt0JJIdXwz9HxZCJDdiy6cf/Mj6vPxyYIs="
 
 q1 <- 
