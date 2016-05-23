@@ -46,7 +46,7 @@ function(verb,
 string_to_sign <- 
 function(algorithm = "AWS4-HMAC-SHA256",
          datetime, # format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC")
-         region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"),
+         region = getOption(Sys.getenv("AWS_DEFAULT_REGION"), "us-east-1"),
          service,
          request_hash
          ) {
@@ -60,9 +60,9 @@ function(algorithm = "AWS4-HMAC-SHA256",
 }
 
 signature_v4 <- 
-function(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL),
+function(secret = getOption(Sys.getenv("AWS_SECRET_ACCESS_KEY"), NULL),
          date = format(Sys.time(), "%Y%m%d"),
-         region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"),
+         region = getOption(Sys.getenv("AWS_DEFAULT_REGION"), "us-east-1"),
          service,
          string_to_sign){
     if(is.null(secret)){
@@ -78,15 +78,15 @@ function(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL),
 
 signature_v4_auth <- 
 function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
-         region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"),
+         region = getOption(Sys.getenv("AWS_DEFAULT_REGION"), "us-east-1"),
          service,
          verb,
          action,
          query_args = list(),
          canonical_headers, # named list
          request_body,
-         key = Sys.getenv("AWS_ACCESS_KEY_ID", NULL),
-         secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL),
+         key = getOption(Sys.getenv("AWS_ACCESS_KEY_ID"), NULL),
+         secret = getOption(Sys.getenv("AWS_SECRET_ACCESS_KEY"), NULL),
          query = FALSE,
          algorithm = "AWS4-HMAC-SHA256"){
     if(is.null(key)){

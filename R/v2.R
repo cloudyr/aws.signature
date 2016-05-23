@@ -1,8 +1,8 @@
 signature_v2_auth <- 
 function(datetime = format(Sys.time(),"%Y%M%dT%H%M%S", tz = "UTC"),
          verb, service, path, query_args = list(),
-         key = Sys.getenv("AWS_ACCESS_KEY_ID", NULL),
-         secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL)) {
+         key = getOption(Sys.getenv("AWS_ACCESS_KEY_ID"), NULL),
+         secret = getOption(Sys.getenv("AWS_SECRET_ACCESS_KEY"), NULL)) {
     if(is.null(key)){
         stop("Missing AWS Access Key ID")
     }
@@ -10,7 +10,7 @@ function(datetime = format(Sys.time(),"%Y%M%dT%H%M%S", tz = "UTC"),
         stop("Missing AWS Secret Access Key")
     }
     
-        # set sort locale
+    # set sort locale
     lc <- Sys.getlocale(category = "LC_COLLATE")
     Sys.setlocale(category = "LC_COLLATE", locale = "C")
     on.exit(Sys.setlocale(category = "LC_COLLATE", locale = lc))

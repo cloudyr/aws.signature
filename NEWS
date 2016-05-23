@@ -1,3 +1,7 @@
+# CHANGES TO aws.signature 0.2.3 #
+
+* Fixed the handling of default arguments from environment variables.
+
 # CHANGES TO aws.signature 0.2.2 #
 
 * Added support for (legacy) AWS Signature Version 2.
