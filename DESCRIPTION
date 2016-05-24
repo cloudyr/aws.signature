@@ -1,8 +1,8 @@
 Package: aws.signature
 Type: Package
 Title: Amazon Web Services Request Signatures
-Version: 0.2.3
-Date: 2016-05-23
+Version: 0.2.4
+Date: 2016-05-24
 Author: Thomas J. Leeper
 Maintainer: Thomas J. Leeper <thosjleeper@gmail.com>
 Description: Generates request signatures for Amazon Web Services (AWS) APIs.
