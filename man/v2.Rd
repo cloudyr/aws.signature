@@ -23,7 +23,7 @@ signature_v2_auth(datetime = format(Sys.time(),"\%Y\%M\%dT\%H\%M\%S", tz = "UTC"
 \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}
 }
 %\keyword{}
-\seealso{\code{\link{signature_v4_auth}}}
+\seealso{\code{\link{signature_v4_auth}}, \code{\link{use_credentials}}}
 \examples{
 # examples from:
 # http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html

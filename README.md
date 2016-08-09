@@ -14,6 +14,16 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = "mykey",
 
 These can alternatively be set on the command line or via an `Renviron.site` or `.Renviron` file ([see here for instructions](http://cran.r-project.org/web/packages/httr/vignettes/api-packages.html)).
 
+If you work with multiple AWS accounts, another option that is consistent with other Amazon SDKs is to create [a centralized `~/.aws/credentials` file](https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs), containing credentials for multiple accounts. You can then use credentials from this file on-the-fly by simply doing:
+
+```R
+# use your 'default' account credentials
+use_credentials()
+
+# use an alternative credentials profile
+use_credentials(profile = "bob")
+```
+
 ## Installation ##
 
 [![CRAN](http://www.r-pkg.org/badges/version/aws.signature)](http://cran.r-project.org/package=aws.signature)
@@ -30,7 +40,7 @@ install.packages("aws.signature", repos = c(getOption("repos"), "http://cloudyr.
 Or, to pull a potentially unstable version directly from GitHub:
 
 ```R
-if(!require("ghit")){
+if (!require("ghit")) {
     install.packages("ghit")
 }
 ghit::install_github("cloudyr/aws.signature")

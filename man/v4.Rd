@@ -25,7 +25,9 @@ signature_v4(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL),
 \href{http://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html}{Amazon S3 API Reference: Authenticating Requests (AWS Signature Version 4)}
 }
 %\keyword{}
-\seealso{\code{\link{signature_v2_auth}}}
+\seealso{
+\code{\link{signature_v2_auth}}, \code{\link{use_credentials}}
+}
 \examples{
 # From AWS documentation
 # http://docs.aws.amazon.com/general/latest/gr/signature-v4-test-suite.html
