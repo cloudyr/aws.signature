@@ -1,9 +1,7 @@
 language: r
-sudo: required
-r_github_packages:
-- cloudyr/aws.signature
-- jimhester/covr
-- eddelbuettel/drat
+r_packages:
+- covr
+- drat
 after_success:
 - Rscript -e 'library(covr);codecov()'
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
