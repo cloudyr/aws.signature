@@ -5,8 +5,8 @@
 \usage{
 signature_v2_auth(datetime = format(Sys.time(),"\%Y\%M\%dT\%H\%M\%S", tz = "UTC"),
                   verb, service, path, query_args = list(),
-                  key = Sys.getenv("AWS_ACCESS_KEY_ID", NULL),
-                  secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL))
+                  key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+                  secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"))
 }
 \arguments{
     \item{datetime}{A character string containing a date in the form of \dQuote{YYYY-MM-DDTH:M:S}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}

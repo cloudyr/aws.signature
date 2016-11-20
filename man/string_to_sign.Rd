@@ -4,7 +4,7 @@
 \description{Construct a String to Sign from request elements}
 \usage{
 string_to_sign(algorithm = "AWS4-HMAC-SHA256", datetime, 
-               region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"), 
+               region = Sys.getenv("AWS_DEFAULT_REGION"), 
                service, request_hash)
 }
 \arguments{

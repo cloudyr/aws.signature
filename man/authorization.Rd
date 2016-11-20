@@ -4,16 +4,17 @@
 \description{AWS Signature Version 4 for use in query or header authorization}
 \usage{
 signature_v4_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%SZ", tz = "UTC"), 
-                  region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"), 
+                  region = Sys.getenv("AWS_DEFAULT_REGION"), 
                   service, verb, action, query_args = list(),
                   canonical_headers, request_body, 
-                  key = Sys.getenv("AWS_ACCESS_KEY_ID", NULL), 
-                  secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL), 
+                  key = Sys.getenv("AWS_ACCESS_KEY_ID"), 
+                  secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"), 
+                  session_token = Sys.getenv("AWS_SESSION_TOKEN"),
                   query = FALSE, algorithm = "AWS4-HMAC-SHA256")
 }
 \arguments{
     \item{datetime}{A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
-    \item{region}{A character string containing the AWS region for the request.}
+    \item{region}{A character string containing the AWS region for the request. If missing, \dQuote{us-east-1} is assumed.}
     \item{service}{A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).}
     \item{verb}{A character string containing the HTTP verb being used in the request.}
     \item{action}{A character string containing the API endpoint used in the request.}
@@ -22,6 +23,7 @@ signature_v4_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%SZ", tz = "UT
     \item{request_body}{The body of the HTTP request.}
     \item{key}{An AWS Access Key ID. If missing, it is retrieved using \code{Sys.getenv("AWS_ACCESS_KEY_ID")}}
     \item{secret}{An AWS Secret Access Key. If missing, it is retrieved using \code{Sys.getenv("AWS_SECRET_ACCESS_KEY")}}
+    \item{session_token}{Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}.}
     \item{query}{A logical. Currently ignored.}
     \item{algorithm}{A character string containing the hashing algorithm used in the request. Should only be \dQuote{SHA256}.}
 }

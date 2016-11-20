@@ -1,12 +1,12 @@
 signature_v2_auth <- 
 function(datetime = format(Sys.time(),"%Y%M%dT%H%M%S", tz = "UTC"),
          verb, service, path, query_args = list(),
-         key = Sys.getenv("AWS_ACCESS_KEY_ID", NULL),
-         secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL)) {
-    if(is.null(key)){
+         key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+         secret = Sys.getenv("AWS_SECRET_ACCESS_KEY")) {
+    if(is.null(key) || key == ""){
         stop("Missing AWS Access Key ID")
     }
-    if(is.null(secret)){
+    if(is.null(secret) || secret == ""){
         stop("Missing AWS Secret Access Key")
     }
     

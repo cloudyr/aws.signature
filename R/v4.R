@@ -46,10 +46,13 @@ function(verb,
 string_to_sign <- 
 function(algorithm = "AWS4-HMAC-SHA256",
          datetime, # format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC")
-         region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"),
+         region = Sys.getenv("AWS_DEFAULT_REGION"),
          service,
          request_hash
          ) {
+    if (is.null(region) || region == "") {
+        stop("'region' is missing or env var 'AWS_DEFAULT_REGION' is empty")
+    }
     paste(algorithm,
           datetime,
           paste(substring(datetime,1,8),
@@ -60,9 +63,9 @@ function(algorithm = "AWS4-HMAC-SHA256",
 }
 
 signature_v4 <- 
-function(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL),
+function(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
          date = format(Sys.time(), "%Y%m%d"),
-         region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"),
+         region = Sys.getenv("AWS_DEFAULT_REGION"),
          service,
          string_to_sign){
     if(is.null(secret)){
@@ -78,22 +81,26 @@ function(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL),
 
 signature_v4_auth <- 
 function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
-         region = Sys.getenv("AWS_DEFAULT_REGION", "us-east-1"),
+         region = Sys.getenv("AWS_DEFAULT_REGION"),
          service,
          verb,
          action,
          query_args = list(),
          canonical_headers, # named list
          request_body,
-         key = Sys.getenv("AWS_ACCESS_KEY_ID", NULL),
-         secret = Sys.getenv("AWS_SECRET_ACCESS_KEY", NULL),
+         key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+         secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
+         session_token = Sys.getenv("AWS_SESSION_TOKEN"),
          query = FALSE,
          algorithm = "AWS4-HMAC-SHA256"){
-    if(is.null(key)){
+    if(is.null(key) || key == ""){
         stop("Missing AWS Access Key ID")
     }
-    if(is.null(secret)){
+    if(is.null(secret) || secret == ""){
         stop("Missing AWS Secret Access Key")
+    }
+    if(is.null(region) || region == ""){
+        region <- "us-east-1"
     }
     date <- substring(datetime,1,8)
     
@@ -102,6 +109,13 @@ function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
     } 
     
     # Canonical Request
+    if (!is.null(session_token) && session_token != "") {
+        if (!missing(canonical_headers)) {
+            canonical_headers <- c(canonical_headers, list("X-Amz-Security-Token" = session_token))
+        } else {
+            canonical_headers <- list("X-Amz-Security-Token" = session_token)
+        }
+    }
     R <- canonical_request(verb = verb,
                            canonical_uri = action,
                            query_args = query_args,
