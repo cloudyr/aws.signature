@@ -24,6 +24,8 @@ use_credentials()
 use_credentials(profile = "bob")
 ```
 
+Temporary session tokens can also be stored in environment variable `AWS_SESSION_TOKEN` (and will be stored there by the `use_credentials()` function).
+
 ## Installation ##
 
 [![CRAN](http://www.r-pkg.org/badges/version/aws.signature)](http://cran.r-project.org/package=aws.signature)
