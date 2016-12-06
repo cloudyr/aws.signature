@@ -12,7 +12,7 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = "mykey",
            "AWS_DEFAULT_REGION" = "us-east-1")
 ```
 
-These can alternatively be set on the command line or via an `Renviron.site` or `.Renviron` file ([see here for instructions](http://cran.r-project.org/web/packages/httr/vignettes/api-packages.html)).
+These can alternatively be set on the command line or via an `Renviron.site` or `.Renviron` file ([see here for instructions](https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html)).
 
 If you work with multiple AWS accounts, another option that is consistent with other Amazon SDKs is to create [a centralized `~/.aws/credentials` file](https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs), containing credentials for multiple accounts. You can then use credentials from this file on-the-fly by simply doing:
 
@@ -28,7 +28,7 @@ Temporary session tokens can also be stored in environment variable `AWS_SESSION
 
 ## Installation ##
 
-[![CRAN](http://www.r-pkg.org/badges/version/aws.signature)](http://cran.r-project.org/package=aws.signature)
+[![CRAN](http://www.r-pkg.org/badges/version/aws.signature)](https://cran.r-project.org/package=aws.signature)
 [![Build Status](https://travis-ci.org/cloudyr/aws.signature.png?branch=master)](https://travis-ci.org/cloudyr/aws.signature) 
 [![codecov.io](http://codecov.io/github/cloudyr/aws.signature/coverage.svg?branch=master)](http://codecov.io/github/cloudyr/aws.signature?branch=master)
 
