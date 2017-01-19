@@ -1,3 +1,7 @@
+# CHANGES TO aws.signature 0.2.7
+
+* `read_credentials()` now looks for the credentials file in a more reasonable location on Windows (#12/#13, h/t user:kadrach)
+
 # CHANGES TO aws.signature 0.2.6
 
 * Added support for signing requests (using V4 signatures) with temporary security tokens.

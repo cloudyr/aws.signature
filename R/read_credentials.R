@@ -1,13 +1,10 @@
 default_credentials_file <- function() {
-  if (.Platform$OS.type == 'windows') {
-    home = Sys.getenv('USERPROFILE')
-  } else {
-    home = '~'
-  }
-
-  return(suppressWarnings(normalizePath(file.path(
-    home, '.aws', 'credentials'
-  ))))
+    if (.Platform[["OS.type"]] == "windows") {
+        home <- Sys.getenv("USERPROFILE")
+    } else {
+        home <- "~"
+    }
+    suppressWarnings(normalizePath(file.path(home, '.aws', 'credentials')))
 }
 
 read_credentials <- function(file = default_credentials_file()) {
