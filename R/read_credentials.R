@@ -1,4 +1,16 @@
-read_credentials <- function(file = "~/.aws/credentials") {
+default_credentials_file <- function() {
+  if (.Platform$OS.type == 'windows') {
+    home = Sys.getenv('USERPROFILE')
+  } else {
+    home = '~'
+  }
+
+  return(suppressWarnings(normalizePath(file.path(
+    home, '.aws', 'credentials'
+  ))))
+}
+
+read_credentials <- function(file = default_credentials_file()) {
     file <- path.expand(file)
     if (!file.exists(file)) {
         stop(paste0("File ", shQuote(file), " does not exist."))
@@ -9,14 +21,14 @@ read_credentials <- function(file = "~/.aws/credentials") {
 
 parse_credentials <- function(char) {
     s <- c(gregexpr("\\[", char)[[1]], nchar(char))
-    
+
     make_named_vec <- function(x) {
         elem <- strsplit(x, " = ")
         out <- lapply(elem, `[`, 2)
         names(out) <- toupper(sapply(elem, `[`, 1))
         out
     }
-    
+
     creds <- list()
     for (i in seq_along(s)[-1]) {
         tmp <- strsplit(substr(char, s[i-1], s[i]-1), "[\n\r]+")[[1]]
@@ -26,7 +38,7 @@ parse_credentials <- function(char) {
     structure(creds, class = "aws_credentials")
 }
 
-use_credentials <- function(profile = "default", file = "~/.aws/credentials") {
+use_credentials <- function(profile = "default", file = default_credentials_file()) {
     if (inherits(file, "aws_credentials")) {
         x <- file
     } else {
