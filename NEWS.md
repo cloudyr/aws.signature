@@ -1,6 +1,7 @@
 # CHANGES TO aws.signature 0.2.7
 
 * `read_credentials()` now looks for the credentials file in a more reasonable location on Windows (#12/#13, h/t user:kadrach)
+* roxygenized the documentation (and reorganized the source files slightly). (#9)
 
 # CHANGES TO aws.signature 0.2.6
 
