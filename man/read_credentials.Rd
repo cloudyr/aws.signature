@@ -4,9 +4,9 @@
 \title{Use Credentials from .aws/credentials File}
 \description{Use a profile from a \samp{.aws/credentials} file}
 \usage{
-use_credentials(profile = "default", file = "~/.aws/credentials")
+use_credentials(profile = "default", file = default_credentials_file())
 
-read_credentials(file = "~/.aws/credentials")
+read_credentials(file = default_credentials_file())
 }
 \arguments{
     \item{profile}{A character string specifing which profile to use from the file. By default, the \dQuote{default} profile is used.}
