@@ -3,11 +3,14 @@
 \name{read_credentials}
 \alias{read_credentials}
 \alias{use_credentials}
+\alias{default_credentials_file}
 \title{Use Credentials from .aws/credentials File}
 \usage{
 read_credentials(file = default_credentials_file())
 
 use_credentials(profile = "default", file = default_credentials_file())
+
+default_credentials_file()
 }
 \arguments{
 \item{file}{A character string containing a path to a \samp{.aws/credentials} file. By default, the standard/centralized file is used. For \code{use_credentials}, this can also be an object of class \dQuote{aws_credentials} (as returned by \code{use_credentials}).}
@@ -31,13 +34,12 @@ use_credentials()
 read_credentials()
 }
 }
-\author{
-Thomas J. Leeper <thosjleeper@gmail.com>
-}
 \references{
 \href{https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs}{Amazon blog post describing the format}
 }
 \seealso{
-\code{\link{signature_v2_auth}}, \code{\link{use_credentials}}
+\code{\link{signature_v2_auth}}
 }
-
+\author{
+Thomas J. Leeper <thosjleeper@gmail.com>
+}

@@ -4,20 +4,21 @@
 \alias{signature_v4}
 \title{Signature Version 4}
 \usage{
-signature_v4(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
-  date = format(Sys.time(), "\%Y\%m\%d"),
-  region = Sys.getenv("AWS_DEFAULT_REGION"), service, string_to_sign)
+signature_v4(secret = NULL, date = format(Sys.time(), "\%Y\%m\%d"),
+  region = NULL, service, string_to_sign, verbose = FALSE)
 }
 \arguments{
-\item{secret}{An AWS Secret Access Key. If missing, it is retrieved using \code{Sys.getenv("AWS_SECRET_ACCESS_KEY")}.}
+\item{secret}{An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
 \item{date}{A character string containing a date in the form of \dQuote{YYMMDD}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
 
-\item{region}{A character string containing the AWS region for the request. By default, the \dQuote{us-east-1} region.}
+\item{region}{A character string containing the AWS region for the request. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}} or \dQuote{us-east-1} is used.}
 
 \item{service}{A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).}
 
 \item{string_to_sign}{A character string containing the String To Sign, possibly returned by \code{\link{string_to_sign}}.}
+
+\item{verbose}{A logical indicating whether to be verbose.}
 }
 \description{
 Generates AWS Signature Version 4
@@ -55,9 +56,6 @@ signature_v4(secret = 'wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY',
              string_to_sign = StringToSign)
 identical(sig, "ced6826de92d2bdeed8f846f0bf508e8559e98e4b0199114b84c54174deb456c")
 }
-\author{
-Thomas J. Leeper <thosjleeper@gmail.com>
-}
 \references{
 \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
   
@@ -68,4 +66,6 @@ Thomas J. Leeper <thosjleeper@gmail.com>
 \seealso{
 \code{\link{signature_v2_auth}}, \code{\link{use_credentials}}
 }
-
+\author{
+Thomas J. Leeper <thosjleeper@gmail.com>
+}

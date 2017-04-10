@@ -4,8 +4,8 @@
 \alias{string_to_sign}
 \title{Construct a String To Sign}
 \usage{
-string_to_sign(algorithm = "AWS4-HMAC-SHA256", datetime,
-  region = Sys.getenv("AWS_DEFAULT_REGION"), service, request_hash)
+string_to_sign(algorithm = "AWS4-HMAC-SHA256", datetime, region, service,
+  request_hash)
 }
 \arguments{
 \item{algorithm}{A character string containing the hashing algorithm used in signing process. Should only be \dQuote{AWS4-HMAC-SHA256}.}
@@ -38,13 +38,12 @@ identical(sts, "AWS4-HMAC-SHA256
 3511de7e95d28ecd39e9513b642aee07e54f4941150d8df8bf94b328ef7e55e2")
 
 }
-\author{
-Thomas J. Leeper <thosjleeper@gmail.com>
-}
 \references{
 \href{http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html}{Create a String to Sign for Signature Version 4}
 }
 \seealso{
 \code{\link{signature_v4}}, \code{\link{signature_v4_auth}}
 }
-
+\author{
+Thomas J. Leeper <thosjleeper@gmail.com>
+}

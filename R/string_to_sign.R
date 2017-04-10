@@ -27,13 +27,10 @@
 string_to_sign <- 
 function(algorithm = "AWS4-HMAC-SHA256",
          datetime, # format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC")
-         region = Sys.getenv("AWS_DEFAULT_REGION"),
+         region,
          service,
          request_hash
          ) {
-    if (is.null(region) || region == "") {
-        stop("'region' is missing or env var 'AWS_DEFAULT_REGION' is empty")
-    }
     paste(algorithm,
           datetime,
           paste(substring(datetime,1,8),

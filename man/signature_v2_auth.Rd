@@ -5,9 +5,8 @@
 \title{Signature Version 2}
 \usage{
 signature_v2_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%S", tz =
-  "UTC"), verb, service, path, query_args = list(),
-  key = Sys.getenv("AWS_ACCESS_KEY_ID"),
-  secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"))
+  "UTC"), verb, service, path, query_args = list(), key = NULL,
+  secret = NULL, verbose = FALSE)
 }
 \arguments{
 \item{datetime}{A character string containing a date in the form of \dQuote{YYYY-MM-DDTH:M:S}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
@@ -20,9 +19,11 @@ signature_v2_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%S", tz =
 
 \item{query_args}{A list containing named query arguments.}
 
-\item{key}{An AWS Access Key ID. If missing, it is retrieved using \code{Sys.getenv("AWS_ACCESS_KEY_ID")}.}
+\item{key}{An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
-\item{secret}{An AWS Secret Access Key. If missing, it is retrieved using \code{Sys.getenv("AWS_SECRET_ACCESS_KEY")}.}
+\item{secret}{An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
+
+\item{verbose}{A logical indicating whether to be verbose.}
 }
 \value{
 A list
@@ -84,13 +85,12 @@ identical(true_string, sig2$CanonicalRequest)
 identical(true_sig, sig2$Signature)
 
 }
-\author{
-Thomas J. Leeper <thosjleeper@gmail.com>
-}
 \references{
 \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}
 }
 \seealso{
 \code{\link{signature_v4_auth}}, \code{\link{use_credentials}}
 }
-
+\author{
+Thomas J. Leeper <thosjleeper@gmail.com>
+}
