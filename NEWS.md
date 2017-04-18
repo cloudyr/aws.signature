@@ -1,3 +1,7 @@
+# CHANGES TO aws.signature 0.2.9
+
+* Modified `read_credentials()` to allow key-value pairs of any form: `KEY=VALUE`, `KEY = VALUE`, `KEY= VALUE`, `KEY =VALUE`. (#15, h/t David Severski)
+
 # CHANGES TO aws.signature 0.2.8
 
 * Corrected the default timestamp format in `signature_v2_auth()`.

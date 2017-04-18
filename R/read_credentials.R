@@ -64,7 +64,7 @@ parse_credentials <- function(char) {
     s <- c(gregexpr("\\[", char)[[1]], nchar(char))
 
     make_named_vec <- function(x) {
-        elem <- strsplit(x, " = ")
+        elem <- strsplit(x, "[ ]?=[ ]?")
         out <- lapply(elem, `[`, 2)
         names(out) <- toupper(sapply(elem, `[`, 1))
         out
@@ -78,4 +78,3 @@ parse_credentials <- function(char) {
     }
     structure(creds, class = "aws_credentials")
 }
-
