@@ -2,8 +2,8 @@
 % Please edit documentation in R/aws.signature-package.R
 \docType{package}
 \name{aws.signature-package}
-\alias{aws.signature}
 \alias{aws.signature-package}
+\alias{aws.signature}
 \title{Amazon Web Services Request Signatures}
 \description{
 Generates Amazon Web Services (AWS) request signatures for RESTful APIs.
@@ -17,11 +17,10 @@ Another function, \code{\link{signature_v2_auth}} implements the older, mostly d
 
 A function that may be of use to end users is \code{\link{use_credentials}}, which sets the environment variables used by this package based upon values specified in a \samp{.aws/credentials} file.
 }
-\author{
-Thomas J. Leeper <thosjleeper@gmail.com>
-}
 \seealso{
 \code{\link{signature_v4_auth}}, \code{\link{signature_v2_auth}}, \code{\link{use_credentials}}
 }
+\author{
+Thomas J. Leeper <thosjleeper@gmail.com>
+}
 \keyword{package}
-

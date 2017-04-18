@@ -74,9 +74,6 @@ AWS Signature Version 4 for use in query or header authorization
 \details{
 This function generates an AWS Signature Version 4 for authorizing API requests.
 }
-\author{
-Thomas J. Leeper <thosjleeper@gmail.com>
-}
 \references{
 \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
 
@@ -87,4 +84,6 @@ Thomas J. Leeper <thosjleeper@gmail.com>
 \seealso{
 \code{\link{signature_v4}}, \code{\link{signature_v2_auth}}
 }
-
+\author{
+Thomas J. Leeper <thosjleeper@gmail.com>
+}

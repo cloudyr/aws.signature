@@ -1,3 +1,7 @@
+# CHANGES TO aws.signature 0.2.8
+
+* Corrected the default timestamp format in `signature_v2_auth()`.
+
 # CHANGES TO aws.signature 0.2.7
 
 * `read_credentials()` now looks for the credentials file in a more reasonable location on Windows (#12/#13, h/t user:kadrach)

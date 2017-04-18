@@ -4,8 +4,8 @@
 \alias{signature_v2_auth}
 \title{Signature Version 2}
 \usage{
-signature_v2_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%S", tz =
-  "UTC"), verb, service, path, query_args = list(),
+signature_v2_auth(datetime = format(Sys.time(), "\%Y-\%M-\%dT\%H:\%M:\%S", tz
+  = "UTC"), verb, service, path, query_args = list(),
   key = Sys.getenv("AWS_ACCESS_KEY_ID"),
   secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"))
 }
@@ -84,13 +84,12 @@ identical(true_string, sig2$CanonicalRequest)
 identical(true_sig, sig2$Signature)
 
 }
-\author{
-Thomas J. Leeper <thosjleeper@gmail.com>
-}
 \references{
 \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}
 }
 \seealso{
 \code{\link{signature_v4_auth}}, \code{\link{use_credentials}}
 }
-
+\author{
+Thomas J. Leeper <thosjleeper@gmail.com>
+}

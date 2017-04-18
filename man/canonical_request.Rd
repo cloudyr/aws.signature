@@ -51,9 +51,6 @@ r <- canonical_request(verb = "POST",
 
 identical(fromDocs, r$canonical)
 }
-\author{
-Thomas J. Leeper <thosjleeper@gmail.com>
-}
 \references{
 \href{http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html}{Create a Canonical Request For Signature Version 4}
 }
@@ -62,4 +59,6 @@ Thomas J. Leeper <thosjleeper@gmail.com>
 
 \code{link{signature_v4_aut}}, \code{\link{string_to_sign}}
 }
-
+\author{
+Thomas J. Leeper <thosjleeper@gmail.com>
+}

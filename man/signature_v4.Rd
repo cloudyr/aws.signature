@@ -55,9 +55,6 @@ signature_v4(secret = 'wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY',
              string_to_sign = StringToSign)
 identical(sig, "ced6826de92d2bdeed8f846f0bf508e8559e98e4b0199114b84c54174deb456c")
 }
-\author{
-Thomas J. Leeper <thosjleeper@gmail.com>
-}
 \references{
 \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
   
@@ -68,4 +65,6 @@ Thomas J. Leeper <thosjleeper@gmail.com>
 \seealso{
 \code{\link{signature_v2_auth}}, \code{\link{use_credentials}}
 }
-
+\author{
+Thomas J. Leeper <thosjleeper@gmail.com>
+}
