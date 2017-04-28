@@ -1,8 +1,8 @@
 Package: aws.signature
 Type: Package
 Title: Amazon Web Services Request Signatures
-Version: 0.2.8
-Date: 2017-04-18
+Version: 0.2.9
+Date: 2017-04-28
 Authors@R: c(person("Thomas J.", "Leeper", role = c("aut", "cre"),
                     email = "thosjleeper@gmail.com"))
 Description: Generates request signatures for Amazon Web Services (AWS) APIs.

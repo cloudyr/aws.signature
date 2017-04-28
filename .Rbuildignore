@@ -1,3 +1,5 @@
 .travis.yml
 drat.sh
 CONTRIBUTING.md
+^revdep$
+^man-roxygen$
