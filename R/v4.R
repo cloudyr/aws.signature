@@ -1,10 +1,11 @@
 #' @title Signature Version 4
 #' @description Generates AWS Signature Version 4
-#' @param secret An AWS Secret Access Key. If missing, it is retrieved using \code{Sys.getenv("AWS_SECRET_ACCESS_KEY")}.
+#' @param secret An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
 #' @param date A character string containing a date in the form of \dQuote{YYMMDD}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.
-#' @param region A character string containing the AWS region for the request. By default, the \dQuote{us-east-1} region.
+#' @param region A character string containing the AWS region for the request. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}} or \dQuote{us-east-1} is used.
 #' @param service A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).
 #' @param string_to_sign A character string containing the String To Sign, possibly returned by \code{\link{string_to_sign}}.
+#' @param verbose A logical indicating whether to be verbose.
 #' @details This function generates an AWS Signature Version 4 for authorizing API requests.
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references
@@ -46,14 +47,16 @@
 #' @importFrom digest digest hmac
 #' @export
 signature_v4 <- 
-function(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
+function(secret = NULL,
          date = format(Sys.time(), "%Y%m%d"),
-         region = Sys.getenv("AWS_DEFAULT_REGION"),
+         region = NULL,
          service,
-         string_to_sign){
-    if(is.null(secret)){
-        stop("Missing AWS Secret Access Key")
-    }
+         string_to_sign,
+         verbose = FALSE){
+    credentials <- locate_credentials(secret = secret, region = region, verbose = verbose)
+    secret <- credentials[["secret"]]
+    region <- credentials[["region"]]
+    
     kDate <- hmac(paste0("AWS4", secret), date, "sha256", raw = TRUE)
     kRegion <- hmac(kDate, region, "sha256", raw = TRUE)
     kService <- hmac(kRegion, service, "sha256", raw = TRUE)
@@ -65,18 +68,19 @@ function(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
 #' @title Signature Version 4
 #' @description AWS Signature Version 4 for use in query or header authorization
 #' @param datetime A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.
-#' @param region A character string containing the AWS region for the request. If missing, \dQuote{us-east-1} is assumed.
+#' @param region A character string containing the AWS region for the request. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}} or \dQuote{us-east-1} is assumed.
 #' @param service A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).
 #' @param verb A character string containing the HTTP verb being used in the request.
 #' @param action A character string containing the API endpoint used in the request.
 #' @param query_args A named list of character strings containing the query string values (if any) used in the API request, passed to \code{\link{canonical_request}}.
 #' @param canonical_headers A named list of character strings containing the headers used in the request.
 #' @param request_body The body of the HTTP request.
-#' @param key An AWS Access Key ID. If missing, it is retrieved using \code{Sys.getenv("AWS_ACCESS_KEY_ID")}.
-#' @param secret An AWS Secret Access Key. If missing, it is retrieved using \code{Sys.getenv("AWS_SECRET_ACCESS_KEY")}.
-#' @param session_token Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}.
+#' @param key An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
+#' @param secret An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
+#' @param session_token Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
 #' @param query A logical. Currently ignored.
 #' @param algorithm A character string containing the hashing algorithm used in the request. Should only be \dQuote{SHA256}.
+#' @param verbose A logical indicating whether to be verbose.
 #' @details This function generates an AWS Signature Version 4 for authorizing API requests.
 #' @return A list of class \dQuote{aws_signature_v4}, containing the information needed to sign an AWS API request using either query string authentication or request header authentication. Specifically, the list contains:
 #' 
@@ -116,30 +120,28 @@ function(secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
 #' @export
 signature_v4_auth <- 
 function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
-         region = Sys.getenv("AWS_DEFAULT_REGION"),
+         region = NULL,
          service,
          verb,
          action,
          query_args = list(),
          canonical_headers, # named list
          request_body,
-         key = Sys.getenv("AWS_ACCESS_KEY_ID"),
-         secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
-         session_token = Sys.getenv("AWS_SESSION_TOKEN"),
+         key = NULL,
+         secret = NULL,
+         session_token = NULL,
          query = FALSE,
-         algorithm = "AWS4-HMAC-SHA256"){
-    if(is.null(key) || key == ""){
-        stop("Missing AWS Access Key ID")
-    }
-    if(is.null(secret) || secret == ""){
-        stop("Missing AWS Secret Access Key")
-    }
-    if(is.null(region) || region == ""){
-        region <- "us-east-1"
-    }
+         algorithm = "AWS4-HMAC-SHA256",
+         verbose = FALSE){
+    credentials <- locate_credentials(key = key, secret = secret, session_token = session_token, region = region, verbose = verbose)
+    key <- credentials[["key"]]
+    secret <- credentials[["secret"]]
+    session_token <- credentials[["session_token"]]
+    region <- credentials[["region"]]
+    
     date <- substring(datetime,1,8)
     
-    if(query){
+    if (isTRUE(query)) {
         # handle query-based authorizations, by including relevant parameters
     } 
     
@@ -169,7 +171,8 @@ function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
                        date = date,
                        region = region,
                        service = service,
-                       string_to_sign = S)
+                       string_to_sign = S,
+                       verbose = verbose)
     
     # return list
     credential <- paste(key, date, region, service, "aws4_request", sep="/")
@@ -188,4 +191,3 @@ function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
                    Signature = V4,
                    SignatureHeader = sigheader), class = "aws_signature_v4")
 }
-

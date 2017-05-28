@@ -116,4 +116,3 @@ AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=Hmac
     expect_true(identical(true_string, sig2$CanonicalRequest), label = "v2 CanonicalRequest correct, setting defaults")
     expect_true(identical(true_sig, sig2$Signature), label = "v2 Signature correct, setting defaults")
 })
-

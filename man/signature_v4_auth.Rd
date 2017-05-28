@@ -5,17 +5,15 @@
 \title{Signature Version 4}
 \usage{
 signature_v4_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%SZ", tz =
-  "UTC"), region = Sys.getenv("AWS_DEFAULT_REGION"), service, verb, action,
-  query_args = list(), canonical_headers, request_body,
-  key = Sys.getenv("AWS_ACCESS_KEY_ID"),
-  secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
-  session_token = Sys.getenv("AWS_SESSION_TOKEN"), query = FALSE,
-  algorithm = "AWS4-HMAC-SHA256")
+  "UTC"), region = NULL, service, verb, action, query_args = list(),
+  canonical_headers, request_body, key = NULL, secret = NULL,
+  session_token = NULL, query = FALSE, algorithm = "AWS4-HMAC-SHA256",
+  verbose = FALSE)
 }
 \arguments{
 \item{datetime}{A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
 
-\item{region}{A character string containing the AWS region for the request. If missing, \dQuote{us-east-1} is assumed.}
+\item{region}{A character string containing the AWS region for the request. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}} or \dQuote{us-east-1} is assumed.}
 
 \item{service}{A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).}
 
@@ -29,15 +27,17 @@ signature_v4_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%SZ", tz =
 
 \item{request_body}{The body of the HTTP request.}
 
-\item{key}{An AWS Access Key ID. If missing, it is retrieved using \code{Sys.getenv("AWS_ACCESS_KEY_ID")}.}
+\item{key}{An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
-\item{secret}{An AWS Secret Access Key. If missing, it is retrieved using \code{Sys.getenv("AWS_SECRET_ACCESS_KEY")}.}
+\item{secret}{An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
-\item{session_token}{Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}.}
+\item{session_token}{Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
 \item{query}{A logical. Currently ignored.}
 
 \item{algorithm}{A character string containing the hashing algorithm used in the request. Should only be \dQuote{SHA256}.}
+
+\item{verbose}{A logical indicating whether to be verbose.}
 }
 \value{
 A list of class \dQuote{aws_signature_v4}, containing the information needed to sign an AWS API request using either query string authentication or request header authentication. Specifically, the list contains:

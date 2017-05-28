@@ -1,3 +1,7 @@
+# CHANGES TO aws.signature 0.3.0
+
+* Added a `locate_credentials()` function to walk through a hierarchy of possible credential locations, beginning with user-supplied values, then environment variables, local then global credentials ".aws/credentials" files, and finally (if applicable) an EC2 role for the currently running instance. (#11)
+
 # CHANGES TO aws.signature 0.2.9
 
 * Modified `read_credentials()` to allow key-value pairs of any form: `KEY=VALUE`, `KEY = VALUE`, `KEY= VALUE`, `KEY =VALUE`. (#15, h/t David Severski)
