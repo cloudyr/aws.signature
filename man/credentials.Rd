@@ -5,7 +5,8 @@
 \title{Locate AWS Credentials}
 \usage{
 locate_credentials(key = NULL, secret = NULL, session_token = NULL,
-  region = NULL, file = NULL, profile = "default", verbose = FALSE)
+  region = NULL, file = NULL, profile = "default",
+  default_region = "us-east-1", verbose = FALSE)
 }
 \arguments{
 \item{key}{An AWS Access Key ID}
@@ -29,11 +30,11 @@ Locate AWS credentials from likely sources
 These functions locate values of AWS credentials (access key, secret access key, session token, and region) from likely sources. The order in which these are searched is as follows:
 \enumerate{
   \item values passed to the functions
-  \item the specified profile in a user-specified credentials file
-  \item the default profile in a user-specified credentials file
+  \item a specified profile in a local credentials dot file in the current working directory
+  \item the default profile in a local credentials dot file in the current working directory
+  \item a specified profile in a global credentials dot file in, typically in \file{~/.aws/credentials}. See \code{\link{use_credentials}} for details
+  \item the default profile in a global credentials dot file in, typically in \file{~/.aws/credentials}. See \code{\link{use_credentials}} for details
   \item environment variables (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_SESSION_TOKEN}, \env{AWS_DEFAULT_REGION})
-  \item the default profile in a local credentials dot file in the working directory
-  \item the default profile in a global credentials dot file in, typically in \file{~/.aws/credentials}. See \code{\link{use_credentials}} for details.
   \item an IAM role (on the running EC2 instance from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}
 }
 }

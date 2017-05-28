@@ -11,11 +11,11 @@
 #' @details These functions locate values of AWS credentials (access key, secret access key, session token, and region) from likely sources. The order in which these are searched is as follows:
 #' \enumerate{
 #'   \item values passed to the functions
-#'   \item the specified profile in a user-specified credentials file
-#'   \item the default profile in a user-specified credentials file
+#'   \item a specified profile in a local credentials dot file in the current working directory
+#'   \item the default profile in a local credentials dot file in the current working directory
+#'   \item a specified profile in a global credentials dot file in, typically in \file{~/.aws/credentials}. See \code{\link{use_credentials}} for details
+#'   \item the default profile in a global credentials dot file in, typically in \file{~/.aws/credentials}. See \code{\link{use_credentials}} for details
 #'   \item environment variables (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_SESSION_TOKEN}, \env{AWS_DEFAULT_REGION})
-#'   \item the default profile in a local credentials dot file in the working directory
-#'   \item the default profile in a global credentials dot file in, typically in \file{~/.aws/credentials}. See \code{\link{use_credentials}} for details.
 #'   \item an IAM role (on the running EC2 instance from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}
 #' }
 #' 
@@ -29,6 +29,7 @@ function(key = NULL,
          region = NULL, 
          file = NULL, 
          profile = "default", 
+         default_region = "us-east-1",
          verbose = FALSE) {
     if (is.null(key)) {
         key <- find_value("key", file = file, profile = profile, verbose = verbose, fail = FALSE)
@@ -41,6 +42,9 @@ function(key = NULL,
     }
     if (is.null(region)) {
         region <- find_value("region", file = file, profile = profile, verbose = verbose, fail = FALSE)
+        if (is.null(region) || region == "") {
+            region <- default_region
+        }
     }
     list(key = key, secret = secret, session_token = session_token, region = region)
 }
@@ -55,17 +59,20 @@ find_value <- function(value, file, profile, verbose = FALSE, fail = FALSE) {
                           "session_token" = "AWS Session Token",
                           "region" = "AWS Region")
     if (missing(value)) {
-        if (!missing(file)) {
-            if (!missing(profile)) {
-                credentials <- try(read_credentials(file)[[profile]], quiet = TRUE)
-            }
-            credentials <- try(read_credentials(file)[["default"]], quiet = TRUE)
-        }
         value <- Sys.getenv(env)
         if (is.null(value) || value == "") {
-            credentials <- try(read_credentials(".aws/credentials")[["default"]], quiet = TRUE)
+            if (!missing(profile)) {
+                profile2 <- "default"
+            } else {
+                profile2 <- profile
+            }
+            if (!missing(file)) {
+                credentials <- try(read_credentials(file)[[profile]], quiet = TRUE)
+            } else {
+                credentials <- try(read_credentials(file.path(".aws", "credentials"))[[profile]], quiet = TRUE)
+            }
             if (inherits(credentials, "try-error")) {
-                credentials <- try(read_credentials()[["default"]], quiet = TRUE)
+                credentials <- try(read_credentials()[[profile]], quiet = TRUE)
                 if (inherits(credentials, "try-error")) {
                     ec2role <- try(get_ec2_role(), quiet = TRUE)
                     if (inherits(ec2role, "try-error")) {
@@ -86,23 +93,23 @@ find_value <- function(value, file, profile, verbose = FALSE, fail = FALSE) {
                 } else {
                     value <- credentials[[env]]
                     if (isTRUE(verbose)) {
-                        message(sprintf("Using 'default' profile in global credentials file for %s", name))
+                        message(sprintf("Using '%s' profile in global credentials file for %s", profile2, name))
                     }
                 }
             } else {
                 value <- credentials[[env]]
                 if (isTRUE(verbose)) {
-                    message(sprintf("Using 'default' profile in local credentials file for %s", name))
+                    message(sprintf("Using '%s' profile in local credentials file for %s", profile2, name))
                 }
             }
         } else {
             if (isTRUE(verbose)) {
-                message(spritnf("Using environment variable %s for %s", env, name))
+                message(sprintf("Using environment variable '%s' for %s", env, name))
             }
         }
     } else {
         if (isTRUE(verbose)) {
-            message(sprintf("Using user-supplied %s", name))
+            message(sprintf("Using user-supplied value for %s", name))
         }
     }
     if ((is.null(value) || value == "")) {

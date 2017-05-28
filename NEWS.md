@@ -1,6 +1,6 @@
-# CHANGES TO aws.signature 0.2.8
+# CHANGES TO aws.signature 0.3.0
 
-* Added a `locate_credentials()` function to walk through a hierarchy of possible credential locations, beginning with user-supplied values, then environment variables, IAM roles, local or global credentials files, and finally (if applicable) an EC2 role for the currently running instance. (#11)
+* Added a `locate_credentials()` function to walk through a hierarchy of possible credential locations, beginning with user-supplied values, then environment variables, local then global credentials ".aws/credentials" files, and finally (if applicable) an EC2 role for the currently running instance. (#11)
 
 # CHANGES TO aws.signature 0.2.7
 

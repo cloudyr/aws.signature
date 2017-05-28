@@ -191,4 +191,3 @@ function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
                    Signature = V4,
                    SignatureHeader = sigheader), class = "aws_signature_v4")
 }
-
