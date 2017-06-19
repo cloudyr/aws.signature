@@ -1,3 +1,8 @@
+# CHANGES TO aws.signature 0.3.2
+
+* CRAN Release.
+* Added some minor tests.
+
 # CHANGES TO aws.signature 0.3.1
 
 * Changed the precedence of credential sources to: user-supplied values, EC2 instance metadata, environment variables, local credentials file, and global credentials file. (#11)

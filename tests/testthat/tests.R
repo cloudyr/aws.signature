@@ -116,3 +116,21 @@ AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=Hmac
     expect_true(identical(true_string, sig2$CanonicalRequest), label = "v2 CanonicalRequest correct, setting defaults")
     expect_true(identical(true_sig, sig2$Signature), label = "v2 Signature correct, setting defaults")
 })
+
+test_that("session_token returned in signature_v4()", {
+    s <- signature_v4_auth(datetime = "20110909T233600Z",
+                           region = "us-east-1",
+                           service = "host",
+                           verb = "GET",
+                           action = "/",
+                           query_args = list(foo = "Zoo", foo = "aha"),
+                           canonical_headers = list(host = "host.foo.com",
+                                                    date = "20110909T233600Z"),
+                           request_body = "",
+                           key = "AKIDEXAMPLE",
+                           secret = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY",
+                           session_token = "foobar",
+                           query = FALSE,
+                           algorithm = "AWS4-HMAC-SHA256")
+    expect_true(grepl("x-amz-security-token", s$SignedHeaders))
+})

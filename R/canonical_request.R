@@ -43,10 +43,10 @@ function(verb,
          canonical_headers,
          request_body = ""
          ) {
-    if(is.character(request_body) && file.exists(request_body)) {
-        body_hash <- tolower(digest(request_body, file = TRUE, algo = "sha256", serialize = FALSE))
+    if (is.character(request_body) && file.exists(request_body)) {
+        body_hash <- tolower(digest::digest(request_body, file = TRUE, algo = "sha256", serialize = FALSE))
     } else {
-        body_hash <- tolower(digest(request_body, algo = "sha256", serialize = FALSE))
+        body_hash <- tolower(digest::digest(request_body, algo = "sha256", serialize = FALSE))
     }
     
     # set sort locale
@@ -78,5 +78,5 @@ function(verb,
     return(list(headers = signed_headers, 
                 body = body_hash,
                 canonical = out,
-                hash = digest(out, algo = "sha256", serialize = FALSE)))
+                hash = digest::digest(out, algo = "sha256", serialize = FALSE)))
 }
