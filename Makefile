@@ -8,7 +8,7 @@ NAMESPACE: R/*
 README.html: README.md
 	pandoc -o README.html README.md
 
-../$(pkg)*.tar.gz: DESCRIPTION NAMESPACE README.md
+../$(pkg)*.tar.gz: DESCRIPTION NAMESPACE README.md R/* tests/*
 	cd ../ && R CMD build $(pkg)
 
 build: ../$(pkg)*.tar.gz
