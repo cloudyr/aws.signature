@@ -1,6 +1,7 @@
 .travis.yml
 CONTRIBUTING.md
 README.Rmd
+README.html
 Makefile
 drat.sh
 knitreadme.sh
