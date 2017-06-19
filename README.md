@@ -2,7 +2,7 @@
 
 **aws.signature** is a simple R package to create request signatures for Amazon Web Services (AWS) APIs. It supports both the current [Signature Version 4](http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) and the legacy [Signature Version 2](http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html). The former is used by most services. The high-level functions `signature_v4_auth()` and `signature_v2_auth()` translate request parameters into appropriate HTTP Authorization headers to pass to the APIs.
 
-To use the package, you will need an AWS account and to enter your credentials into R. Your keypair can be generated on the [IAM Management Console](https://aws.amazon.com/) under the heading *Access Keys*. Note that you only have access to your secret key once. After it is generated, you need to save it in a secure location. New keypairs can be generated at any time if yours has been lost, stolen, or forgotten. 
+To use the package, you will need an AWS account and to enter your credentials into R. Your keypair can be generated on the [IAM Management Console](https://aws.amazon.com/) under the heading *Access Keys*. Note that you only have access to your secret key once. After it is generated, you need to save it in a secure location. New keypairs can be generated at any time if yours has been lost, stolen, or forgotten. The [**aws.iam** package](https://github.com/cloudyr/aws.iam) profiles tools for working with IAM, including creating roles, users, groups, and credentials programmatically; it is not needed to *use* IAM credentials.
 
 By default, all **cloudyr** packages for AWS services allow the use of credentials specified in a number of ways, beginning with:
 
@@ -15,9 +15,9 @@ By default, all **cloudyr** packages for AWS services allow the use of credentia
                "AWS_DEFAULT_REGION" = "us-east-1",
                "AWS_SESSION_TOKEN" = "mytoken")
     ```
- 3. Profiles saved in a `/.aws/credentials` "dot file" in the current working directory. The `"default" profile is assumed if none is specified.
- 4. [A centralized `~/.aws/credentials` file](https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs), containing credentials for multiple accounts. The `"default" profile is assumed if none is specified.
- 5. If R is running an EC2 instance, the role profile credentials provided by [**aws.ec2metadata**](https://cran.r-project.org/package=aws.ec2metadata).
+ 3. If R is running an EC2 instance, the role profile credentials provided by [**aws.ec2metadata**](https://cran.r-project.org/package=aws.ec2metadata).
+ 4. Profiles saved in a `/.aws/credentials` "dot file" in the current working directory. The `"default" profile is assumed if none is specified.
+ 5. [A centralized `~/.aws/credentials` file](https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs), containing credentials for multiple accounts. The `"default" profile is assumed if none is specified.
 
 Profiles stored locally or in a centralized location (e.g., `~/.aws/credentials`) can also be invoked via:
 

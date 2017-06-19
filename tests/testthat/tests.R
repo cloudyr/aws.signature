@@ -43,7 +43,7 @@ e25f777ba161a0f1baf778a87faf057187cf5987f17953320e3ca399feb5f00d"
                       date = "20110909",
                       region = "us-east-1",
                       service = "host",
-                      string_to_sign = tosign)
+                      string_to_sign = tosign, verbose = TRUE)
     expect_identical(s, ex, label = "String to sign matches")
 })
 

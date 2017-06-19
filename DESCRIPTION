@@ -1,18 +1,18 @@
 Package: aws.signature
 Type: Package
 Title: Amazon Web Services Request Signatures
-Version: 0.3.0
-Date: 2017-05-28
+Version: 0.3.1
+Date: 2017-06-19
 Authors@R: c(person("Thomas J.", "Leeper", role = c("aut", "cre"),
                     email = "thosjleeper@gmail.com"))
-Description: Generates request signatures for Amazon Web Services (AWS) APIs.
+Description: Generates version 2 and version 4 request signatures for Amazon Web Services (AWS) <https://aws.amazon.com/> APIs.
 License: GPL (>= 2)
 Imports:
     digest,
-    base64enc,
-    aws.ec2metadata
+    base64enc
 Suggests:
-    testthat
+    testthat,
+    aws.ec2metadata
 URL: https://github.com/cloudyr/aws.signature
 BugReports: https://github.com/cloudyr/aws.signature/issues
 RoxygenNote: 6.0.1

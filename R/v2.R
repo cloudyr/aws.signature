@@ -100,8 +100,8 @@ function(datetime = format(Sys.time(),"%Y-%M-%dT%H:%M:%S", tz = "UTC"),
     query_string <- paste(a, sep = "", collapse = "&")
     
     canonical_request <- paste(verb, service, path, query_string, sep = "\n")
-    signature <- hmac(key = secret, object = canonical_request, 
-                      algo = "sha256", serialize = FALSE, raw = TRUE)
+    signature <- digest::hmac(key = secret, object = canonical_request, 
+                              algo = "sha256", serialize = FALSE, raw = TRUE)
     sig_encoded <- base64encode(signature)
     query_args$Signature <- sig_encoded
     

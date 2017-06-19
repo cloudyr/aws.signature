@@ -9,7 +9,7 @@
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references
 #'   \href{https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs}{Amazon blog post describing the format}
-#' @seealso \code{\link{signature_v2_auth}}
+#' @seealso \code{\link{signature_v2_auth}}, \code{\link{locate_credentials}}
 #' @examples
 #' \dontrun{
 #' # set environment variables from a profile

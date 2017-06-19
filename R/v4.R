@@ -57,11 +57,11 @@ function(secret = NULL,
     secret <- credentials[["secret"]]
     region <- credentials[["region"]]
     
-    kDate <- hmac(paste0("AWS4", secret), date, "sha256", raw = TRUE)
-    kRegion <- hmac(kDate, region, "sha256", raw = TRUE)
-    kService <- hmac(kRegion, service, "sha256", raw = TRUE)
-    kSigning <- hmac(kService, "aws4_request", "sha256", raw = TRUE)
-    signature <- hmac(kSigning, string_to_sign, "sha256")
+    kDate <- digest::hmac(paste0("AWS4", secret), date, "sha256", raw = TRUE)
+    kRegion <- digest::hmac(kDate, region, "sha256", raw = TRUE)
+    kService <- digest::hmac(kRegion, service, "sha256", raw = TRUE)
+    kSigning <- digest::hmac(kService, "aws4_request", "sha256", raw = TRUE)
+    signature <- digest::hmac(kSigning, string_to_sign, "sha256")
     return(signature)
 }
 
