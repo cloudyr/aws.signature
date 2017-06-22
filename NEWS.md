@@ -1,3 +1,8 @@
+# CHANGES TO aws.signature 0.3.3
+
+* Fixed a bug in `locate_credentials()` caused by trying to retrieve EC2 instance metadata from a non-EC2 machine on which the **aws.ec2metadata** package was installed.
+* Expanded test suite to cover more of `locate_credentials()` behavior.
+
 # CHANGES TO aws.signature 0.3.2
 
 * CRAN Release.

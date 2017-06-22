@@ -67,7 +67,12 @@ function(key = NULL,
             message("Using Environment Variable 'AWS_SECRET_ACCESS_KEY' for AWS Secret Access Key")
             message("Using Environment Variable 'AWS_SESSION_TOKEN' for AWS Session Token")
         }
-        if (is.null(env$region) || env$region == "") {
+        if (!is.null(region)) {
+            region <- region
+            if (isTRUE(verbose)) {
+                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+            }
+        } else if (is.null(env$region) || env$region == "") {
             env$region <- default_region
             if (isTRUE(verbose)) {
                 message(sprintf("Using default value for AWS Region ('%s')", region))
@@ -78,8 +83,8 @@ function(key = NULL,
         return(key)
     } else {
         # check for EC2 metadata
-        role <- get_ec2_role(verbose = verbose)
-        if (!is.null(role)) {
+        role <- try(get_ec2_role(verbose = verbose), silent = TRUE)
+        if (!inherits(role, "try-error")) {
             if (!is.null(role[["AWS_ACCESS_KEY_ID"]])) {
                 key <- role[["AWS_ACCESS_KEY_ID"]]
                 if (isTRUE(verbose)) {
@@ -103,6 +108,11 @@ function(key = NULL,
                 if (isTRUE(verbose)) {
                     message(sprintf("Using EC2 Instance Metadata for AWS Region ('%s')", region))
                 }
+            } else if (!is.null(region)) {
+                region <- region
+                if (isTRUE(verbose)) {
+                    message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+                }
             } else {
                 region <- default_region
                 if (isTRUE(verbose)) {
@@ -125,8 +135,9 @@ function(key = NULL,
                 }
             } else {
                 if (isTRUE(verbose)) {
-                    warning("No instance metadata, environment variables, or credentials file found!")
+                    message("No instance metadata, environment variables, or credentials file found!")
                 }
+                return(list(key = NULL, secret = NULL, session_token = NULL, region = NULL))
             }
             if (!is.null(cred[["AWS_ACCESS_KEY_ID"]])) {
                 key <- cred[["AWS_ACCESS_KEY_ID"]]
@@ -151,6 +162,11 @@ function(key = NULL,
                 if (isTRUE(verbose)) {
                     message(sprintf("Using EC2 Instance Metadata for AWS Region ('%s')", region))
                 }
+            } else if (!is.null(region)) {
+                region <- region
+                if (isTRUE(verbose)) {
+                    message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+                }
             } else {
                 region <- default_region
                 if (isTRUE(verbose)) {
@@ -163,8 +179,11 @@ function(key = NULL,
 }
 
 get_ec2_role <- function(role, verbose = getOption("verbose", FALSE)) {
-    if (!requireNamespace("aws.ec2metadata")) {
+    if (!requireNamespace("aws.ec2metadata", quietly = TRUE)) {
         return(NULL)
+    }
+    if (isTRUE(verbose)) {
+        message("Checking for credentials in EC2 Instance Metadata")
     }
     if (missing(role)) {
         role <- try(aws.ec2metadata::metadata$iam_role_names(), silent = TRUE)
