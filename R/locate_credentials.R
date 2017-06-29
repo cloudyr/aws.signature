@@ -39,14 +39,18 @@ function(key = NULL,
                 region = Sys.getenv("AWS_DEFAULT_REGION"))
     
     # check for user-supplied values
-    if (!is.null(key) || !is.null(secret)) {
-        if (isTRUE(verbose)) {
-            message("Using user-supplied value for AWS Access Key ID")
+    if ((!is.null(key) && key != "") || (!is.null(secret) && secret != "")) {
+        if (!is.null(key) && key != "") {
+            if (isTRUE(verbose)) {
+                message("Using user-supplied value for AWS Access Key ID")
+            }
         }
-        if (isTRUE(verbose)) {
-            message("Using user-supplied value for AWS Secret Access Key")
+        if (!is.null(secret) && secret != "") {
+            if (isTRUE(verbose)) {
+                message("Using user-supplied value for AWS Secret Access Key")
+            }
         }
-        if (!is.null(session_token)) {
+        if (!is.null(session_token) && session_token != "") {
             if (isTRUE(verbose)) {
                 message("Using user-supplied value for AWS Session Token")
             }
@@ -61,14 +65,45 @@ function(key = NULL,
                 message(sprintf("Using default value for AWS Region ('%s')", region))
             }
         }
-    } else if (!is.null(key) || !is.null(secret)) {
-        if (isTRUE(verbose)) {
-            message("Using Environment Variable 'AWS_ACCESS_KEY_ID' for AWS Access Key ID")
-            message("Using Environment Variable 'AWS_SECRET_ACCESS_KEY' for AWS Secret Access Key")
-            message("Using Environment Variable 'AWS_SESSION_TOKEN' for AWS Session Token")
+    } else if ((!is.null(env$key) && env$key != "") || (!is.null(env$secret) && env$secret != "")) {
+        if (!is.null(env$key) && env$key != "") {
+            if (isTRUE(verbose)) {
+                message("Using Environment Variable 'AWS_ACCESS_KEY_ID' for AWS Access Key ID")
+            }
+        } else {
+            if (!is.null(key) && key != "") {
+                env$key <- key
+                if (isTRUE(verbose)) {
+                    message("Using user-supplied value for AWS Access Key ID")
+                }
+            }
         }
-        if (!is.null(region)) {
-            region <- region
+        if (!is.null(env$secret) && env$secret != "") {
+            if (isTRUE(verbose)) {
+                message("Using Environment Variable 'AWS_SECRET_ACCESS_KEY' for AWS Secret Access Key")
+            }
+        } else {
+            if (!is.null(secret) && secret != "") {
+                env$secret <- secret
+                if (isTRUE(verbose)) {
+                    message("Using user-supplied value for AWS Secret Access Key")
+                }
+            }
+        }
+        if (!is.null(env$session_token) && env$session_token != "") {
+            if (isTRUE(verbose)) {
+                message("Using Environment Variable 'AWS_SESSION_TOKEN' for AWS Session Token")
+            }
+        } else {
+            if (!is.null(session_token) && session_token != "") {
+                env$session_token <- session_token
+                if (isTRUE(verbose)) {
+                    message("Using user-supplied value for AWS Session Token")
+                }
+            }
+        }
+        if (!is.null(region) && region != "") {
+            env$region <- region
             if (isTRUE(verbose)) {
                 message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
             }
@@ -78,37 +113,34 @@ function(key = NULL,
                 message(sprintf("Using default value for AWS Region ('%s')", region))
             }
         } else {
-            message("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region")
+            if (isTRUE(verbose)) {
+                message("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region")
+            }
         }
-        return(key)
+        return(env)
     } else {
         # check for EC2 metadata
         role <- try(get_ec2_role(verbose = verbose), silent = TRUE)
         if (!inherits(role, "try-error")) {
-            if (!is.null(role[["AWS_ACCESS_KEY_ID"]])) {
-                key <- role[["AWS_ACCESS_KEY_ID"]]
+            if (!is.null(role[["AccessKeyId"]])) {
+                key <- role[["AccessKeyId"]]
                 if (isTRUE(verbose)) {
                     message("Using EC2 Instance Metadata for AWS Access Key ID")
                 }
             }
-            if (!is.null(role[["AWS_SECRET_ACCESS_KEY"]])) {
-                secret <- role[["AWS_SECRET_ACCESS_KEY"]]
+            if (!is.null(role[["SecretAccessKey"]])) {
+                secret <- role[["SecretAccessKey"]]
                 if (isTRUE(verbose)) {
                     message("Using EC2 Instance Metadata for AWS Secret Access Key")
                 }
             }
-            if (!is.null(role[["AWS_SESSION_TOKEN"]])) {
-                session_token <- role[["AWS_SESSION_TOKEN"]]
+            if (!is.null(role[["Token"]])) {
+                session_token <- role[["Token"]]
                 if (isTRUE(verbose)) {
                     message("Using EC2 Instance Metadata for AWS Session Token")
                 }
             }
-            if (!is.null(role[["AWS_DEFAULT_REGION"]])) {
-                region <- role[["AWS_DEFAULT_REGION"]]
-                if (isTRUE(verbose)) {
-                    message(sprintf("Using EC2 Instance Metadata for AWS Region ('%s')", region))
-                }
-            } else if (!is.null(region)) {
+            if (!is.null(region)) {
                 region <- region
                 if (isTRUE(verbose)) {
                     message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
@@ -180,6 +212,9 @@ function(key = NULL,
 
 get_ec2_role <- function(role, verbose = getOption("verbose", FALSE)) {
     if (!requireNamespace("aws.ec2metadata", quietly = TRUE)) {
+        return(NULL)
+    }
+    if (!isTRUE(aws.ec2metadata::is_ec2())) {
         return(NULL)
     }
     if (isTRUE(verbose)) {

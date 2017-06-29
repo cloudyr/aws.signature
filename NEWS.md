@@ -1,3 +1,9 @@
+# CHANGES TO aws.signature 0.3.4
+
+* Fixed a bug related to extracting credentials from environment variables. (https://github.com/cloudyr/aws.s3/issues/142, https://github.com/cloudyr/aws.s3/issues/143)
+* Fixed a bug related to extracting credentials from EC2 instance metadata (https://github.com/cloudyr/aws.s3/issues/144, h/t Daniele Rapati, Will Bowditch)
+* Bumped aws.ec2metadata suggestion to 0.1.2.
+
 # CHANGES TO aws.signature 0.3.3
 
 * Fixed a bug in `locate_credentials()` caused by trying to retrieve EC2 instance metadata from a non-EC2 machine on which the **aws.ec2metadata** package was installed.

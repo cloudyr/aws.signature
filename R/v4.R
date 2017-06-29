@@ -52,13 +52,10 @@ function(secret = NULL,
          region = NULL,
          service,
          string_to_sign,
-         verbose = FALSE){
+         verbose = FALSE) {
     credentials <- locate_credentials(secret = secret, region = region, verbose = verbose)
-    secret <- credentials[["secret"]]
-    region <- credentials[["region"]]
-    
-    kDate <- digest::hmac(paste0("AWS4", secret), date, "sha256", raw = TRUE)
-    kRegion <- digest::hmac(kDate, region, "sha256", raw = TRUE)
+    kDate <- digest::hmac(paste0("AWS4", credentials[["secret"]]), date, "sha256", raw = TRUE)
+    kRegion <- digest::hmac(kDate, credentials[["region"]], "sha256", raw = TRUE)
     kService <- digest::hmac(kRegion, service, "sha256", raw = TRUE)
     kSigning <- digest::hmac(kService, "aws4_request", "sha256", raw = TRUE)
     signature <- digest::hmac(kSigning, string_to_sign, "sha256")
