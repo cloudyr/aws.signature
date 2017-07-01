@@ -65,16 +65,16 @@ function(secret = NULL,
 #' @title Signature Version 4
 #' @description AWS Signature Version 4 for use in query or header authorization
 #' @param datetime A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.
-#' @param region A character string containing the AWS region for the request. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}} or \dQuote{us-east-1} is assumed.
+#' @param region A character string containing the AWS region for the request. See \code{\link{locate_credentials}}.
 #' @param service A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).
 #' @param verb A character string containing the HTTP verb being used in the request.
 #' @param action A character string containing the API endpoint used in the request.
 #' @param query_args A named list of character strings containing the query string values (if any) used in the API request, passed to \code{\link{canonical_request}}.
 #' @param canonical_headers A named list of character strings containing the headers used in the request.
 #' @param request_body The body of the HTTP request.
-#' @param key An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
-#' @param secret An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
-#' @param session_token Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
+#' @param key An AWS Access Key ID. See \code{\link{locate_credentials}}.
+#' @param secret An AWS Secret Access Key. See \code{\link{locate_credentials}}.
+#' @param session_token Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}. See \code{\link{locate_credentials}}.
 #' @param query A logical. Currently ignored.
 #' @param algorithm A character string containing the hashing algorithm used in the request. Should only be \dQuote{SHA256}.
 #' @param verbose A logical indicating whether to be verbose.
@@ -89,6 +89,7 @@ function(secret = NULL,
 #'     \item{StringToSign}{A character string containing the string to sign for the request.}
 #'     \item{Signature}{A character string containing a request signature hash.}
 #'     \item{SignatureHeader}{A character string containing a complete Authorization header value.}
+#'     \item{Region}{A character string containing the region identified by \code{\link{locate_credentials}}.}
 #' 
 #' These values can either be used as query parameters in a REST-style API request, or as request headers. If authentication is supplied via query string parameters, the query string should include the following:
 #' 
@@ -186,5 +187,6 @@ function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
                    CanonicalRequest = R$canonical,
                    StringToSign = S,
                    Signature = V4,
-                   SignatureHeader = sigheader), class = "aws_signature_v4")
+                   SignatureHeader = sigheader,
+                   Region = region), class = "aws_signature_v4")
 }

@@ -9,7 +9,7 @@
 #' @param secret An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
 #' @param verbose A logical indicating whether to be verbose.
 #' @details This function generates an AWS Signature Version 2 for authorizing API requests. The function returns both an updated set of query string parameters, containing the required signature-related entries, as well as a \code{Signature} field containing the Signature string itself.
-#' @return A list
+#' @return A list.
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}
 #' @examples
@@ -92,7 +92,7 @@ function(datetime = format(Sys.time(),"%Y-%M-%dT%H:%M:%S", tz = "UTC"),
         query_args$SignatureMethod = "HmacSHA256"
     }
     if (!"AWSAccessKeyId" %in% names(query_args)) {
-        query_args$AWSAccessKeyId = key
+        query_args$AWSAccessKeyId = credentials$key
     }
     query_to_parse <- unlist(query_args[order(names(query_args))])
     a <- paste0(sapply(names(query_to_parse), URLencode, reserved = TRUE), "=", 
@@ -100,7 +100,7 @@ function(datetime = format(Sys.time(),"%Y-%M-%dT%H:%M:%S", tz = "UTC"),
     query_string <- paste(a, sep = "", collapse = "&")
     
     canonical_request <- paste(verb, service, path, query_string, sep = "\n")
-    signature <- digest::hmac(key = secret, object = canonical_request, 
+    signature <- digest::hmac(key = credentials$secret, object = canonical_request, 
                               algo = "sha256", serialize = FALSE, raw = TRUE)
     sig_encoded <- base64encode(signature)
     query_args$Signature <- sig_encoded
@@ -109,5 +109,6 @@ function(datetime = format(Sys.time(),"%Y-%M-%dT%H:%M:%S", tz = "UTC"),
     structure(list(CanonicalRequest = canonical_request,
                    StringToSign = canonical_request,
                    Query = query_args,
-                   Signature = sig_encoded), class = "aws_signature_v2")
+                   Signature = sig_encoded,
+                   Region = credentials$region), class = "aws_signature_v2")
 }

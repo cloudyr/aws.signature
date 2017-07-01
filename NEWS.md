@@ -1,3 +1,7 @@
+# CHANGES TO aws.signature 0.3.5
+
+* `signature_v4_auth()` and `signature_v2_auth()` now both return a `Region` value in their response list, as identified by `locate_credentials()`.
+
 # CHANGES TO aws.signature 0.3.4
 
 * Fixed a bug related to extracting credentials from environment variables. (https://github.com/cloudyr/aws.s3/issues/142, https://github.com/cloudyr/aws.s3/issues/143)

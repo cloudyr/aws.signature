@@ -26,7 +26,7 @@ signature_v2_auth(datetime = format(Sys.time(), "\%Y-\%M-\%dT\%H:\%M:\%S", tz
 \item{verbose}{A logical indicating whether to be verbose.}
 }
 \value{
-A list
+A list.
 }
 \description{
 Generates AWS Signature Version 2

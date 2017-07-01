@@ -13,7 +13,7 @@ signature_v4_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%SZ", tz =
 \arguments{
 \item{datetime}{A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
 
-\item{region}{A character string containing the AWS region for the request. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}} or \dQuote{us-east-1} is assumed.}
+\item{region}{A character string containing the AWS region for the request. See \code{\link{locate_credentials}}.}
 
 \item{service}{A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).}
 
@@ -27,11 +27,11 @@ signature_v4_auth(datetime = format(Sys.time(), "\%Y\%M\%dT\%H\%M\%SZ", tz =
 
 \item{request_body}{The body of the HTTP request.}
 
-\item{key}{An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
+\item{key}{An AWS Access Key ID. See \code{\link{locate_credentials}}.}
 
-\item{secret}{An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
+\item{secret}{An AWS Secret Access Key. See \code{\link{locate_credentials}}.}
 
-\item{session_token}{Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
+\item{session_token}{Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}. See \code{\link{locate_credentials}}.}
 
 \item{query}{A logical. Currently ignored.}
 
@@ -50,6 +50,7 @@ A list of class \dQuote{aws_signature_v4}, containing the information needed to 
     \item{StringToSign}{A character string containing the string to sign for the request.}
     \item{Signature}{A character string containing a request signature hash.}
     \item{SignatureHeader}{A character string containing a complete Authorization header value.}
+    \item{Region}{A character string containing the region identified by \code{\link{locate_credentials}}.}
 
 These values can either be used as query parameters in a REST-style API request, or as request headers. If authentication is supplied via query string parameters, the query string should include the following:
 
