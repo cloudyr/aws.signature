@@ -30,6 +30,7 @@ r_packages:
 - drat
 r_github_packages:
 - cloudyr/travisci
+- cloudyr/aws.ec2metadata
 after_success:
 - Rscript -e 'library(covr);codecov()'
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash

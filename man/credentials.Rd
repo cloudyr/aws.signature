@@ -31,14 +31,25 @@ Locate AWS credentials from likely sources
 \details{
 These functions locate values of AWS credentials (access key, secret access key, session token, and region) from likely sources. The order in which these are searched is as follows:
 \enumerate{
-  \item values passed to the function
-  \item environment variables (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_SESSION_TOKEN}, \env{AWS_DEFAULT_REGION})
+  \item user-supplied values passed to the function
+  \item environment variables (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_SESSION_TOKEN})
   \item an IAM instance role (on the running EC2 instance from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}
   \item a specified profile in a local credentials dot file in the current working directory
   \item the default profile in a local credentials dot file in the current working directory
   \item a specified profile in a global credentials dot file in, typically in \file{~/.aws/credentials}. See \code{\link{use_credentials}} for details
   \item the default profile in a global credentials dot file in, typically in \file{~/.aws/credentials}. See \code{\link{use_credentials}} for details
 }
+
+Because region is often handled slightly differently from credentials and is required for most requests (whereas some services allow anonymous requests without specifying credentials), the value of region is searched for in the same order as the above but lacking a value there fails safe with the following preference ranking of possible region values (regardless of location of other credentials):
+\enumerate{
+  \item a user-supplied value
+  \item (if a credentials file is being used) the value specified therein
+  \item the \env{AWS_DEFAULT_REGION} environment variable
+  \item (only on EC2 instances) a region declared in the instance metadata
+  \item the default value specified in \code{default_region} (i.e., \dQuote{us-east-1})
+}
+
+As such, user-supplied values of \code{region} always trump any other value.
 }
 \seealso{
 \code{\link{signature_v4}}, \code{\link{signature_v2_auth}}, \code{\link{use_credentials}}
