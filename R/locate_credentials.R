@@ -50,6 +50,9 @@ function(key = NULL,
                 region = Sys.getenv("AWS_DEFAULT_REGION"))
     
     # check for user-supplied values
+    if (isTRUE(verbose)) {
+        message("Checking for credentials in user-supplied values")
+    }
     if ((!is.null(key) && key != "") || (!is.null(secret) && secret != "")) {
         if (!is.null(key) && key != "") {
             if (isTRUE(verbose)) {
@@ -84,6 +87,9 @@ function(key = NULL,
         }
     } else if ((!is.null(env$key) && env$key != "") || (!is.null(env$secret) && env$secret != "")) {
         # otherwise use environment variables if no user-supplied values
+        if (isTRUE(verbose)) {
+            message("Checking for credentials in Environment Variables")
+        }
         if (!is.null(env$key) && env$key != "") {
             key <- env$key
             if (isTRUE(verbose)) {
@@ -124,7 +130,7 @@ function(key = NULL,
             }
         }
         # now find region, with fail safes
-        if (!is.null(region)) {
+        if (!is.null(region) && region != "") {
             region <- region
             if (isTRUE(verbose)) {
                 message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
@@ -189,6 +195,9 @@ function(key = NULL,
             }
         } else {
             # lastly, check for credentials file
+            if (isTRUE(verbose)) {
+                message("Searching for credentials file(s)")
+            }
             if (file.exists(file.path(".aws", "credentials"))) {
                 ## in working directory
                 cred <- read_credentials(file.path(".aws", "credentials"))[[profile]]
