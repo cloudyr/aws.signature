@@ -20,6 +20,8 @@
 #'   \item the default profile in a global credentials dot file in, typically in \file{~/.aws/credentials}. See \code{\link{use_credentials}} for details
 #' }
 #' 
+#' To use this (and any cloudyr package) on AWS EC2 instances, users will also need to install the \href{https://cran.r-project.org/package=aws.ec2metadata}{aws.ec2metadata} package, which allows \code{locate_credentials} to know it is running in an instance and check for relevant values. If this package is not installed, instance metadata is not checked.
+#' 
 #' Because region is often handled slightly differently from credentials and is required for most requests (whereas some services allow anonymous requests without specifying credentials), the value of region is searched for in the same order as the above but lacking a value there fails safe with the following preference ranking of possible region values (regardless of location of other credentials):
 #' \enumerate{
 #'   \item a user-supplied value

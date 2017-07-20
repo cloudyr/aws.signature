@@ -2,6 +2,7 @@
 
 * `locate_credentials()` now attempts to look in instance metadata for a region, when called from an EC2 instance. (see https://github.com/cloudyr/aws.s3/issues/151)
 * The set of fall backs for values of `region` have been standardized and documented for `locate_credentials()`.
+* Updated documentation to describe the need for **aws.ec2metadata** on EC2 instances.
 
 # CHANGES TO aws.signature 0.3.5
 
