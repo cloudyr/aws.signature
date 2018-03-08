@@ -9,3 +9,4 @@ knitreadme.sh
 ^man-roxygen$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.github/
