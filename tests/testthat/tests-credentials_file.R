@@ -28,7 +28,7 @@ test_that("locate_credentials() returns NULLs when environment variables missing
     expect_true(is.null(cred[["key"]]))
     expect_true(is.null(cred[["secret"]]))
     expect_true(is.null(cred[["session_token"]]))
-    expect_true(cred[["region"]] == "us-east-1")
+    expect_true(is.null(cred[["region"]]))
     do.call("Sys.setenv", as.list(e))
 })
 
