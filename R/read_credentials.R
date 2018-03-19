@@ -30,7 +30,7 @@ read_credentials <- function(file = default_credentials_file()) {
 
 #' @rdname read_credentials
 #' @export
-use_credentials <- function(profile = "default", file = default_credentials_file()) {
+use_credentials <- function(profile = Sys.getenv("AWS_PROFILE", "default"), file = default_credentials_file()) {
     if (inherits(file, "aws_credentials")) {
         x <- file
     } else {

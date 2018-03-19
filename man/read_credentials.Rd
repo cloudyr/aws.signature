@@ -8,7 +8,8 @@
 \usage{
 read_credentials(file = default_credentials_file())
 
-use_credentials(profile = "default", file = default_credentials_file())
+use_credentials(profile = Sys.getenv("AWS_PROFILE", "default"),
+  file = default_credentials_file())
 
 default_credentials_file()
 }

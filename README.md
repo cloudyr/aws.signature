@@ -29,6 +29,8 @@ use_credentials()
 use_credentials(profile = "bob")
 ```
 
+By default, when loaded the package checks for environment variables. If absent, it checks for a default credentials file and loads credentials from it.
+
 Temporary session tokens are stored in environment variable `AWS_SESSION_TOKEN` (and will be stored there by the `use_credentials()` function). The [aws.iam package](https://github.com/cloudyr/aws.iam/) provides an R interface to IAM roles and the generation of temporary session tokens via the security token service (STS).
 
 ## Installation
