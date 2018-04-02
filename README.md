@@ -48,10 +48,10 @@ install.packages("aws.signature", repos = c(cloudyr = "http://cloudyr.github.io/
 Or, to pull a potentially unstable version directly from GitHub:
 
 ```R
-if (!require("devtools")) {
-    install.packages("devtools")
+if (!require("remotes")) {
+    install.packages("remotes")
 }
-devtools::install_github("cloudyr/aws.signature")
+remotes::install_github("cloudyr/aws.signature")
 ```
 
 To install the latest version from CRAN, simply use `install.packages("aws.signature")`.
