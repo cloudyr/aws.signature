@@ -10,3 +10,4 @@ knitreadme.sh
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^.github/
+^.github$
