@@ -51,15 +51,18 @@ use_credentials <- function(profile = Sys.getenv("AWS_PROFILE", "default"), file
     invisible(x)
 }
 
+homePath <- function() {
+  if (.Platform[["OS.type"]] == "windows") {
+    return(Sys.getenv("USERPROFILE"))
+  } else {
+    return("~")
+  }
+}
+
 #' @rdname read_credentials
 #' @export
 default_credentials_file <- function() {
-    if (.Platform[["OS.type"]] == "windows") {
-        home <- Sys.getenv("USERPROFILE")
-    } else {
-        home <- "~"
-    }
-    suppressWarnings(normalizePath(file.path(home, '.aws', 'credentials')))
+    suppressWarnings(normalizePath(file.path(homePath(), '.aws', 'credentials')))
 }
 
 parse_credentials <- function(char) {
@@ -68,7 +71,7 @@ parse_credentials <- function(char) {
     make_named_vec <- function(x) {
         elem <- strsplit(x, "[ ]?=[ ]?")
         out <- lapply(elem, `[`, 2)
-        names(out) <- toupper(sapply(elem, `[`, 1))
+        names(out) <- trimws(toupper(sapply(elem, `[`, 1)))
         out
     }
 
