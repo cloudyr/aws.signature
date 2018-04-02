@@ -1,6 +1,10 @@
+# aws.signature 0.4.0
+
+* `read_credentials()` now trims excess whitespace from profile names. (#22, h/t Paul Ingles)
+
 # aws.signature 0.3.7
 
-* The package now checks for the presence of environment variables and, if absent, attempts to call `use_credentials()` (with defaults) to that behavior is more similar to other AWS client libraries. (https://github.com/cloudyr/aws.s3/pull/184, h/t Dan Tenenbaum)
+* On namespace load, the package now checks for the presence of environment variables and, if absent, attempts to call `use_credentials()` (with defaults) to that behavior is more similar to other AWS client libraries. (https://github.com/cloudyr/aws.s3/pull/184, h/t Dan Tenenbaum)
 * The `profile` argument of `use_credentials()` now defaults to `Sys.getenv("AWS_PROFILE", "default")` for consistency with other AWS client libraries.
 
 # aws.signature 0.3.6

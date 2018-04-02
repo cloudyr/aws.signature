@@ -68,7 +68,7 @@ parse_credentials <- function(char) {
     make_named_vec <- function(x) {
         elem <- strsplit(x, "[ ]?=[ ]?")
         out <- lapply(elem, `[`, 2)
-        names(out) <- toupper(sapply(elem, `[`, 1))
+        names(out) <- trimws(toupper(sapply(elem, `[`, 1)))
         out
     }
 
