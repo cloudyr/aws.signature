@@ -1,6 +1,7 @@
 # aws.signature 0.4.0
 
 * `read_credentials()` now trims excess whitespace from profile names. (#22, h/t Paul Ingles)
+* `locate_credentials()` returns `region = default_region` even when no other credentials are found.
 
 # aws.signature 0.3.7
 

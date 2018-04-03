@@ -58,7 +58,6 @@ function(key = NULL,
         }
     }
     
-    
     # check for user-supplied values
     if (isTRUE(verbose)) {
         message("Checking for credentials in user-supplied values")
@@ -81,6 +80,7 @@ function(key = NULL,
         }
         # now find region, with fail safes
         if (!is.null(region) && region != "") {
+            region <- region
             if (isTRUE(verbose)) {
                 message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
             }
@@ -184,6 +184,7 @@ function(key = NULL,
         }
         # now find region, with fail safes
         if (!is.null(region) && region != "") {
+            region <- region
             if (isTRUE(verbose)) {
                 message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
             }
@@ -229,8 +230,25 @@ function(key = NULL,
             if (isTRUE(verbose)) {
                 message("No instance metadata, environment variables, or credentials file found!")
             }
+            # now find region, with fail safes
+            if (!is.null(region) && region != "") {
+                region <- region
+                if (isTRUE(verbose)) {
+                    message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+                }
+            } else if (!is.null(env$region) && env$region != "") {
+                region <- env$region
+                if (isTRUE(verbose)) {
+                    message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
+                }
+            } else {
+                region <- default_region
+                if (isTRUE(verbose)) {
+                    message(sprintf("Using default value for AWS Region ('%s')", region))
+                }
+            }
             # return early with list of empty values!
-            return(list(key = NULL, secret = NULL, session_token = NULL, region = NULL))
+            return(list(key = NULL, secret = NULL, session_token = NULL, region = region))
         }
         if (!is.null(cred[["AWS_ACCESS_KEY_ID"]])) {
             key <- cred[["AWS_ACCESS_KEY_ID"]]
@@ -252,6 +270,7 @@ function(key = NULL,
         }
         # now find region, with fail safes
         if (!is.null(region) && region != "") {
+            region <- region
             if (isTRUE(verbose)) {
                 message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
             }
