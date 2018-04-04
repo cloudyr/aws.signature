@@ -25,6 +25,9 @@ test_that("read_credentials() fails when file is missing", {
 context("Tests use_credentials()")
 
 test_that("use_credentials() sets environment variables correctly", {
+    
+    skip_on_cran()
+    
     # save environment variables
     e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION"))
     
