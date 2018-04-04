@@ -19,10 +19,10 @@ r_packages:
 r_github_packages:
 - cloudyr/travisci
 after_success:
-- Rscript -e 'library(covr);codecov()'
+- R -e 'library(covr);codecov()'
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
   drat.sh
-- Rscript -e "travisci::restart_last_build('cloudyr/awspack')"
+- R -e "travisci::restart_last_build('cloudyr/awspack')"
 env:
   global:
     secure: Av6k/vdCivxc3K1Iyi/EXxqxZSAvcOJMu1dI0k2qsp9ZTCjbMerl8e5CM8muRBMgM6K/H4h8fMqd1rCY8Q7eI92AWEDqpWxmsoa7AR+f5YYkS5NzjRWrHt6x7SWd3uwNRitAopgi9q2eZHwt95LFGUMozwEZbAVRoYJtPjwpGWk=
