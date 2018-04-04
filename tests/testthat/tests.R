@@ -134,3 +134,12 @@ test_that("session_token returned in signature_v4()", {
                            algorithm = "AWS4-HMAC-SHA256")
     expect_true(grepl("x-amz-security-token", s$SignedHeaders))
 })
+
+
+context("Miscellaneous Functionality")
+
+test_that("get_ec2_role() works", {
+    if (!requireNamespace("aws.ec2metadata", quietly = TRUE)) {
+        expect_true(is.null(aws.signature:::get_ec2_role()), label = "get_ec2_role() returns NULL")
+    }
+})
