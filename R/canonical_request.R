@@ -56,9 +56,9 @@ function(verb,
     
     names(canonical_headers) <- tolower(names(canonical_headers))
     canonical_headers <- canonical_headers[order(names(canonical_headers))]
-    header_string <- paste0(names(canonical_headers), ":", canonical_headers, "\n", collapse = "")
     # trim leading, trailing, and all non-quoted duplicated spaces
-    # gsub("^\\s+|\\s+$", "", x)
+    trimmed_headers <- gsub("[[:space:]]{2,}", " ", trimws(canonical_headers))
+    header_string <- paste0(names(canonical_headers), ":", trimmed_headers, "\n", collapse = "")
     signed_headers <- paste(names(canonical_headers), sep = "", collapse = ";")
     if(length(query_args)) {
         query_args <- unlist(query_args[order(names(query_args))])

@@ -2,6 +2,7 @@
 
 * `read_credentials()` now trims excess whitespace from profile names. (#22, h/t Paul Ingles)
 * `locate_credentials()` returns `region = default_region` even when no other credentials are found.
+* `canonical_request()` now correctly trims whitespace.
 * The test suite was upbdated substantially, though not all tests run on CRAN.
 
 # aws.signature 0.3.7
