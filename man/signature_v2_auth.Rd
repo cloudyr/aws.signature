@@ -35,6 +35,7 @@ Generates AWS Signature Version 2
 This function generates an AWS Signature Version 2 for authorizing API requests. The function returns both an updated set of query string parameters, containing the required signature-related entries, as well as a \code{Signature} field containing the Signature string itself. Version 2 is mostly deprecated and in most cases users should rely on \code{\link{signature_v4_auth}} for Version 4 signatures instead.
 }
 \examples{
+\dontrun{
 # examples from:
 # http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html
 
@@ -83,7 +84,7 @@ signature_v2_auth(datetime = "2011-10-03T15:19:30",
                   secret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
 identical(true_string, sig2$CanonicalRequest)
 identical(true_sig, sig2$Signature)
-
+}
 }
 \references{
 \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}

@@ -13,6 +13,7 @@
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}
 #' @examples
+#' \dontrun{
 #' # examples from:
 #' # http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html
 #' 
@@ -61,7 +62,7 @@
 #'                   secret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
 #' identical(true_string, sig2$CanonicalRequest)
 #' identical(true_sig, sig2$Signature)
-#' 
+#' }
 #' @seealso \code{\link{signature_v4_auth}}, \code{\link{use_credentials}}
 #' @importFrom digest digest hmac
 #' @importFrom base64enc base64encode
