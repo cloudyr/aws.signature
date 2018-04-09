@@ -83,7 +83,7 @@ This function generates an AWS Signature Version 4 for authorizing API requests.
 \href{Add the Signing Information to the Request}{http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html}
 }
 \seealso{
-\code{\link{signature_v4}}, \code{\link{signature_v2_auth}}
+\code{\link{signature_v2_auth}}, \code{\link{locate_credentials}}
 }
 \author{
 Thomas J. Leeper <thosjleeper@gmail.com>

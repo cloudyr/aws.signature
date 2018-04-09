@@ -139,6 +139,7 @@ test_that("session_token returned in signature_v4()", {
 context("Miscellaneous Functionality")
 
 test_that("get_ec2_role() works", {
+    skip_on_cran()
     if (!requireNamespace("aws.ec2metadata", quietly = TRUE)) {
         expect_true(is.null(aws.signature:::get_ec2_role()), label = "get_ec2_role() returns NULL")
     }

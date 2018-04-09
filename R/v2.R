@@ -8,7 +8,7 @@
 #' @param key An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
 #' @param secret An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
 #' @param verbose A logical indicating whether to be verbose.
-#' @details This function generates an AWS Signature Version 2 for authorizing API requests. The function returns both an updated set of query string parameters, containing the required signature-related entries, as well as a \code{Signature} field containing the Signature string itself.
+#' @details This function generates an AWS Signature Version 2 for authorizing API requests. The function returns both an updated set of query string parameters, containing the required signature-related entries, as well as a \code{Signature} field containing the Signature string itself. Version 2 is mostly deprecated and in most cases users should rely on \code{\link{signature_v4_auth}} for Version 4 signatures instead.
 #' @return A list.
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}

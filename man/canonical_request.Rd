@@ -25,7 +25,7 @@ A list containing
 Construct a Canonical Request from request elements
 }
 \details{
-This function creates a \dQuote{Canonical Request}, which is part of the Signature Version 4.
+This function creates a \dQuote{Canonical Request}, which is part of the Signature Version 4. Users probably only need to use the \code{\link{signature_v4_auth}} function to generate signatures.
 }
 \examples{
 # From AWS documentation

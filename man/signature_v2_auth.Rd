@@ -32,7 +32,7 @@ A list.
 Generates AWS Signature Version 2
 }
 \details{
-This function generates an AWS Signature Version 2 for authorizing API requests. The function returns both an updated set of query string parameters, containing the required signature-related entries, as well as a \code{Signature} field containing the Signature string itself.
+This function generates an AWS Signature Version 2 for authorizing API requests. The function returns both an updated set of query string parameters, containing the required signature-related entries, as well as a \code{Signature} field containing the Signature string itself. Version 2 is mostly deprecated and in most cases users should rely on \code{\link{signature_v4_auth}} for Version 4 signatures instead.
 }
 \examples{
 # examples from:

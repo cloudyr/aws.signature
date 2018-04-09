@@ -22,7 +22,7 @@ string_to_sign(algorithm = "AWS4-HMAC-SHA256", datetime, region, service,
 Construct a String to Sign from request elements
 }
 \details{
-This function creates a \dQuote{String To Sign}, which is part of the Signature Version 4.
+This is a mostly internal function that creates a \dQuote{String To Sign}, which is part of the Signature Version 4. Users probably only need to use the \code{\link{signature_v4_auth}} function to generate signatures.
 }
 \examples{
 # From AWS documentation
