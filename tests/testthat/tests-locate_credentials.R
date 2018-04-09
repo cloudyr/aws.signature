@@ -3,6 +3,9 @@ context("Tests locate_credentials()")
 if (file.exists(".aws/credentials")) {
     
     test_that("locate_credentials() returns envvar values when environment variables and credentials file present", {
+        
+        skip_on_cran()
+        
         # save environment variables
         e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION"))
         
@@ -24,6 +27,9 @@ if (file.exists(".aws/credentials")) {
     })
     
     test_that("locate_credentials() returns non-default values if requested when environment variables and credentials file present", {
+        
+        skip_on_cran()
+        
         # save environment variables
         e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION"))
         
@@ -45,6 +51,9 @@ if (file.exists(".aws/credentials")) {
     })
     
     test_that("locate_credentials() returns credentials file values when environment variables missing and credentials file present", {
+        
+        skip_on_cran()
+        
         # save environment variables
         e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION"))
         
@@ -66,6 +75,9 @@ if (file.exists(".aws/credentials")) {
     })
     
     test_that("locate_credentials() returns non-default values if requested, when environment variables missing and credentials file absent", {
+        
+        skip_on_cran()
+        
         # move credentials file
         tmp <- tempfile()
         file.rename(".aws/credentials", tmp)
@@ -94,6 +106,9 @@ if (file.exists(".aws/credentials")) {
     })
     
     test_that("locate_credentials() returns NULLs when environment variables missing and credentials file absent", {
+        
+        skip_on_cran()
+        
         # move credentials file
         tmp <- tempfile()
         file.rename(".aws/credentials", tmp)
