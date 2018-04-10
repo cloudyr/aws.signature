@@ -10,9 +10,9 @@ test_that("default_credentials_file() works", {
 test_that("read_credentials() works", {
     skip_on_cran()
     expect_true(inherits(read_credentials(file = "credentials"), "aws_credentials"), label = "Read credentials correctly")
-    expect_true(cred[["Bob"]][["AWS_SECRET_ACCESS_KEY"]] == "Bob_secret_access_key", label = "final line value read correctly")
     alice <- read_credentials(file = "credentials")[["Alice"]]
     bob <- read_credentials(file = "credentials")[["Bob"]]
+    expect_true(bob[["AWS_SECRET_ACCESS_KEY"]] == "Bob_secret_access_key", label = "final line value read correctly")
     expect_false(identical(alice, bob), label = "Read distinct profiles correctly")
 })
 
