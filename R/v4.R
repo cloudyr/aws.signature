@@ -53,7 +53,7 @@
 #' @seealso \code{\link{signature_v2_auth}}, \code{\link{locate_credentials}}
 #' @export
 signature_v4_auth <- 
-function(datetime = format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC"),
+function(datetime = format(Sys.time(),"%Y%m%dT%H%M%SZ", tz = "UTC"),
          region = NULL,
          service,
          verb,
