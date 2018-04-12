@@ -1,3 +1,11 @@
+# aws.signature 0.4.2
+
+* Fixed a bug in the default `datetime` argument in several functions. (#28, h/t @yansonz)
+
+# aws.signature 0.4.1
+
+* Removed some tests from execution on CRAN.
+
 # aws.signature 0.4.0
 
 * `read_credentials()` now trims excess whitespace from profile names. (#22, h/t Paul Ingles)

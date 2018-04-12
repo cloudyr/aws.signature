@@ -9,7 +9,6 @@
 ^man-roxygen$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.github/
-^\.github$
+^\.github.?
 ^tests/testthat/\.aws$
 ^tests/testthat/\.aws/.+$

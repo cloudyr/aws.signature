@@ -26,7 +26,7 @@
 #' @export
 string_to_sign <- 
 function(algorithm = "AWS4-HMAC-SHA256",
-         datetime, # format(Sys.time(),"%Y%M%dT%H%M%SZ", tz = "UTC")
+         datetime, # format(Sys.time(),"%Y%m%dT%H%M%SZ", tz = "UTC")
          region,
          service,
          request_hash

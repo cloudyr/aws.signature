@@ -4,7 +4,7 @@
 \alias{signature_v2_auth}
 \title{Signature Version 2}
 \usage{
-signature_v2_auth(datetime = format(Sys.time(), "\%Y-\%M-\%dT\%H:\%M:\%S", tz
+signature_v2_auth(datetime = format(Sys.time(), "\%Y-\%m-\%dT\%H:\%M:\%S", tz
   = "UTC"), verb, service, path, query_args = list(), key = NULL,
   secret = NULL, verbose = FALSE)
 }

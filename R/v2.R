@@ -68,7 +68,7 @@
 #' @importFrom base64enc base64encode
 #' @export
 signature_v2_auth <- 
-function(datetime = format(Sys.time(),"%Y-%M-%dT%H:%M:%S", tz = "UTC"),
+function(datetime = format(Sys.time(),"%Y-%m-%dT%H:%M:%S", tz = "UTC"),
          verb, service, path, query_args = list(),
          key = NULL,
          secret = NULL,
