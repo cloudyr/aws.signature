@@ -74,7 +74,7 @@ parse_credentials <- function(char) {
 
     creds <- list()
     for (i in seq_along(s)[-1]) {
-        tmp <- strsplit(substr(char, s[i-1], s[i]-1), "[\n\r]+")[[1]]
+        tmp <- strsplit(substr(char, s[i-1], s[i]), "[\n\r]+")[[1]]
         creds[[i-1]] <- make_named_vec(tmp[-1])
         names(creds)[[i-1]] <- gsub("\\[", "", gsub("\\]", "", tmp[1]))
     }

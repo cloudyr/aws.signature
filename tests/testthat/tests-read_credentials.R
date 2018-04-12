@@ -12,12 +12,15 @@ test_that("read_credentials() works", {
     expect_true(inherits(read_credentials(file = "credentials"), "aws_credentials"), label = "Read credentials correctly")
     alice <- read_credentials(file = "credentials")[["Alice"]]
     bob <- read_credentials(file = "credentials")[["Bob"]]
+    expect_true(bob[["AWS_SECRET_ACCESS_KEY"]] == "Bob_secret_access_key", label = "final line value read correctly")
     expect_false(identical(alice, bob), label = "Read distinct profiles correctly")
 })
 
 test_that("read_credentials() works even absent EOL character", {
     skip_on_cran()
-    expect_true(inherits(read_credentials(file = "credentials-no-eol-char"), "aws_credentials"), label = "Read credentials correctly")
+    cred <- read_credentials(file = "credentials-no-eol-char")
+    expect_true(inherits(cred, "aws_credentials"), label = "Read credentials successfully")
+    expect_true(cred[["Bob"]][["AWS_SECRET_ACCESS_KEY"]] == "Bob_secret_access_key", label = "final line value read correctly")
 })
 
 test_that("read_credentials() fails when file is missing", {
