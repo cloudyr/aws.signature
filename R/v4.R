@@ -21,10 +21,19 @@
 #'     \item{Credential}{A character string containing an identifying credential \dQuote{scoped} to the region, date, and service of the request.}
 #'     \item{Date}{A character string containing a YYYYMMDD-formatted date.}
 #'     \item{SignedHeaders}{A character string containing a semicolon-separated listing of request headers used in the signature.}
+#'     \item{Body}{The value passed to \code{request_body}.}
 #'     \item{BodyHash}{A character string containing a SHA256 hash of the request body.}
+#'     \item{Verb}{The value passed to \code{verb}.}
+#'     \item{Query}{The value passed to \code{query_args}.}
+#'     \item{Service}{The value passed to \code{service}.}
+#'     \item{Action}{The value passed to \code{action}.}
+#'     \item{CanonicalRequest}{A character string containing the canonical request.}
 #'     \item{StringToSign}{A character string containing the string to sign for the request.}
 #'     \item{Signature}{A character string containing a request signature hash.}
 #'     \item{SignatureHeader}{A character string containing a complete Authorization header value.}
+#'     \item{AccessKeyId}{A character string containing the access key id identified by \code{\link{locate_credentials}}.}
+#'     \item{SecretAccessKey}{A character string containing the secret access key identified by \code{\link{locate_credentials}}.}
+#'     \item{SessionToken}{A character string containing the session token identified by \code{\link{locate_credentials}}.}
 #'     \item{Region}{A character string containing the region identified by \code{\link{locate_credentials}}.}
 #' 
 #' These values can either be used as query parameters in a REST-style API request, or as request headers. If authentication is supplied via query string parameters, the query string should include the following:
@@ -119,10 +128,19 @@ function(datetime = format(Sys.time(),"%Y%m%dT%H%M%SZ", tz = "UTC"),
                    Credential = credential,
                    Date = date,
                    SignedHeaders = R$headers,
+                   Body = request_body,
                    BodyHash = R$body,
+                   Verb = verb,
+                   Query = query_args,
+                   Service = service,
+                   Action = action,
                    CanonicalRequest = R$canonical,
                    StringToSign = S,
                    Signature = V4,
                    SignatureHeader = sigheader,
+                   AccessKeyId = key,
+                   SecretAccessKey = secret,
+                   SessionToken = session_token,
                    Region = region), class = "aws_signature_v4")
 }
+

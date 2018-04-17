@@ -109,7 +109,13 @@ function(datetime = format(Sys.time(),"%Y-%m-%dT%H:%M:%S", tz = "UTC"),
     # return list
     structure(list(CanonicalRequest = canonical_request,
                    StringToSign = canonical_request,
+                   Verb = verb,
                    Query = query_args,
+                   Service = service,
+                   Path = path,
                    Signature = sig_encoded,
-                   Region = credentials$region), class = "aws_signature_v2")
+                   AccessKeyId = credentials[["key"]],
+                   SecretAccessKey = credentials[["secret"]],
+                   SessionToken = credentials[["session_token"]],
+                   Region = credentials[["region"]]), class = "aws_signature_v2")
 }
