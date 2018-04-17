@@ -1,14 +1,14 @@
 Package: aws.signature
 Type: Package
 Title: Amazon Web Services Request Signatures
-Version: 0.4.2
-Date: 2018-04-11
+Version: 0.4.3
+Date: 2018-04-17
 Authors@R: c(person("Thomas J.", "Leeper",
                     role = c("aut", "cre"), 
                     email = "thosjleeper@gmail.com",
                     comment = c(ORCID = "0000-0003-4097-6326"))
             )
-Description: Generates version 2 and version 4 request signatures for Amazon Web Services ('AWS') <https://aws.amazon.com/> Application Programming Interfaces ('APIs') and provides a mechanism for retrieving credentials from environment variables, 'AWS' credentials files, and 'EC2' instance metadata. For use on 'EC2', users will need to install the suggested package 'aws.ec2metadata' <https://cran.r-project.org/package=aws.ec2metadata>.
+Description: Generates version 2 and version 4 request signatures for Amazon Web Services ('AWS') <https://aws.amazon.com/> Application Programming Interfaces ('APIs') and provides a mechanism for retrieving credentials from environment variables, 'AWS' credentials files, and 'EC2' instance metadata. For use on 'EC2' instances, users will need to install the suggested package 'aws.ec2metadata' <https://cran.r-project.org/package=aws.ec2metadata>.
 License: GPL (>= 2)
 Imports:
     digest,

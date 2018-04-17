@@ -1,3 +1,9 @@
+# aws.signature 0.4.3
+
+* Incorporated standard environment variables `AWS_SHARED_CREDENTIALS_FILE` and `AWS_PROFILE` into code as appropriate and tweaked `locate_credentials()` accordingly.
+* `signature_v4_auth()` and `signature_v2_auth()` now returns all inputs to facilitate using the return value in constructing an HTTP request.
+* Updated documentation.
+
 # aws.signature 0.4.2
 
 * Fixed a bug in the default `datetime` argument in several functions. (#28, h/t @yansonz)
