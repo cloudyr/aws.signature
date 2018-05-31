@@ -54,12 +54,16 @@ function(key = NULL,
                 region = Sys.getenv("AWS_DEFAULT_REGION"))
     
     ec2 <- FALSE
+    ecs <- FALSE
     if (requireNamespace("aws.ec2metadata", quietly = TRUE)) {
         if (aws.ec2metadata::is_ec2()) {
             ec2 <- TRUE
         }
+        if (aws.ec2metadata::is_ecs()) {
+            ecs <- TRUE
+        }
     }
-    
+
     # check for user-supplied values
     if (isTRUE(verbose)) {
         message("Checking for credentials in user-supplied values")
@@ -158,6 +162,37 @@ function(key = NULL,
                 message(sprintf("Using default value for AWS Region ('%s')", region))
             }
         }
+    } else if (isTRUE(ecs)) {
+        # lacking that, check for ECS metadata
+        # check for this ahead of EC2 metadata to maintain compatiability with AWS SDK
+        if (isTRUE(verbose)) {
+            message("Checking for credentials in ECS Instance Metadata")
+        }
+        role <- aws.ec2metadata::ecs_metadata()
+        if (!s.null(role)) {
+            if (!is.null(role[["AccessKeyId"]])) {
+                key <- role[["AccessKeyId"]]
+                if (isTRUE(verbose)) {
+                    message("Using ECS Instance Metadata for AWS Access Key ID")
+                }
+            }
+            if (!is.null(role[["SecretAccessKey"]])) {
+                secret <- role[["SecretAccessKey"]]
+                if (isTRUE(verbose)) {
+                    message("Using ECS Instance Metadata for AWS Secret Access Key")
+                }
+            }
+            if (!is.null(role[["Token"]])) {
+                session_token <- role[["Token"]]
+                if (isTRUE(verbose)) {
+                    message("Using ECS Instance Metadata for AWS Session Token")
+                }
+            }
+        }
+        region <- get_region(region, default_region)
+
+
+
     } else if (isTRUE(ec2)) {
         # lacking that, check for EC2 metadata
         if (isTRUE(verbose)) {
@@ -184,32 +219,7 @@ function(key = NULL,
                 }
             }
         }
-        # now find region, with fail safes
-        if (!is.null(region) && region != "") {
-            region <- region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
-            }
-        } else if (!is.null(env$region) && env$region != "") {
-            region <- env$region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
-            }
-        } else {
-            # check instance metadata for region
-            reg <- try(aws.ec2metadata::instance_document()$region, silent = TRUE)
-            if (!inherits(reg, "try-error") && !is.null(reg) && reg != "") {
-                region <- reg
-                if (isTRUE(verbose)) {
-                    message(sprintf("Using EC2 Instance Metadata for AWS Region ('%s')", region))
-                }
-            } else {
-                region <- default_region
-                if (isTRUE(verbose)) {
-                    message(sprintf("Using default value for AWS Region ('%s')", region))
-                }
-            }
-        }
+        region <- get_region(region, default_region)
     } else {
         # lastly, check for credentials file
         if (isTRUE(verbose)) {
@@ -340,4 +350,35 @@ get_ec2_role <- function(role, verbose = getOption("verbose", FALSE)) {
         out <- NULL
     }
     out
+}
+
+get_region <- function(region, default_region) {
+
+    # now find region, with fail safes
+    if (!is.null(region) && region != "") {
+        region <- region
+        if (isTRUE(verbose)) {
+            message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+        }
+    } else if (!is.null(env$region) && env$region != "") {
+        region <- env$region
+        if (isTRUE(verbose)) {
+            message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
+        }
+    } else {
+        # check instance metadata for region
+        reg <- try(aws.ec2metadata::instance_document()$region, silent = TRUE)
+        if (!inherits(reg, "try-error") && !is.null(reg) && reg != "") {
+            region <- reg
+            if (isTRUE(verbose)) {
+                message(sprintf("Using EC2 Instance Metadata for AWS Region ('%s')", region))
+            }
+        } else {
+            region <- default_region
+            if (isTRUE(verbose)) {
+                message(sprintf("Using default value for AWS Region ('%s')", region))
+            }
+        }
+    }
+    region
 }
