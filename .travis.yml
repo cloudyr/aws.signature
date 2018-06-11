@@ -18,6 +18,7 @@ r_packages:
 - drat
 r_github_packages:
 - cloudyr/travisci
+- cloudyr/aws.ec2metadata
 after_success:
 - R -q -e 'library("covr");codecov()'
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test
