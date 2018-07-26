@@ -11,7 +11,7 @@
 #' 
 #' A lower-level function that may be of use to end users is \code{\link{use_credentials}}, which sets the environment variables used by this package based upon values specified in a \samp{.aws/credentials} file. That function is called by default during package load, if no environment variables are set.
 #' 
-#' To use this (and any cloudyr package) on AWS EC2 instances, users will also need to install the \href{https://cran.r-project.org/package=aws.ec2metadata}{aws.ec2metadata} package, which allows \code{\link{locate_credentials}} to know it is running in an instance and check for relevant values.
+#' To use this (and any cloudyr package) on AWS EC2 instances or ECS tasks, users will also need to install the \href{https://cran.r-project.org/package=aws.ec2metadata}{aws.ec2metadata} package, which allows \code{\link{locate_credentials}} to know it is running in an instance and check for relevant values.
 #' 
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @keywords package

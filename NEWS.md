@@ -1,3 +1,7 @@
+# aws.signature 0.4.4
+
+* Allow use of ECS metadata where available. (h/t @jon-mago #23, #30)
+
 # aws.signature 0.4.3
 
 * Incorporated standard environment variables `AWS_SHARED_CREDENTIALS_FILE` and `AWS_PROFILE` into code as appropriate and tweaked `locate_credentials()` accordingly.

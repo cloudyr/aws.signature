@@ -17,9 +17,10 @@ Regardless of this initial configuration, all **awspack** packages allow the use
                "AWS_DEFAULT_REGION" = "us-east-1",
                "AWS_SESSION_TOKEN" = "mytoken")
     ```
- 3. If R is running on an EC2 instance, the role profile credentials provided by [**aws.ec2metadata**](https://cran.r-project.org/package=aws.ec2metadata), if the **aws.ec2metadata** package is installed.
- 4. Profiles saved in a `/.aws/credentials` "dot file" in the current working directory. The profile used can be regulated by the `AWS_PROFILE` environment variable, otherwise the `"default" profile is assumed if none is specified or the specified profile is missing.
- 5. [A centralized credentials file](https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs), containing credentials for multiple accounts. The location of this file is given by the `AWS_SHARED_CREDENTIALS_FILE` environment variable or, if that is missing, by `~/.aws/credentials` (or an OS-specific equivalent). The profile used from that file can be regulated by the `AWS_PROFILE` environment variable, otherwise the `"default" profile is assumed if none is specified or the specified profile is missing.
+ 3. If R is running on an EC2 instance, the role profile credentials provided by [**aws.ec2metadata**](https://cran.r-project.org/package=aws.ec2metadata), *if the **aws.ec2metadata** package is installed*.
+ 4. If R is running on an ECS task, the role profile credentials provided by [**aws.ec2metadata**](https://cran.r-project.org/package=aws.ec2metadata), *if the **aws.ec2metadata** package is installed*.
+ 5. Profiles saved in a `/.aws/credentials` "dot file" in the current working directory. The profile used can be regulated by the `AWS_PROFILE` environment variable, otherwise the `"default" profile is assumed if none is specified or the specified profile is missing.
+ 6. [A centralized credentials file](https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs), containing credentials for multiple accounts. The location of this file is given by the `AWS_SHARED_CREDENTIALS_FILE` environment variable or, if that is missing, by `~/.aws/credentials` (or an OS-specific equivalent). The profile used from that file can be regulated by the `AWS_PROFILE` environment variable, otherwise the `"default" profile is assumed if none is specified or the specified profile is missing.
 
 Because all functions requesting a signature walk this entire list of potential credentials sources, it typically makes sense to set environment variables otherwise a potentially large performance penalty can be paid. For this reason, it is usually better to explicitly invoke a profiles stored in a local or centralized (e.g., `~/.aws/credentials`) credentials file using:
 
@@ -33,7 +34,7 @@ use_credentials(profile = "bob")
 
 For purposes of debugging, it can be useful to set the `verbose = TRUE` argument (or globally set `options(verbose = TRUE)`) in order to see what values are being used for signing requests.
 
-Temporary session tokens are stored in environment variable `AWS_SESSION_TOKEN` (and will be stored there by the `use_credentials()` function). The [aws.iam package](https://github.com/cloudyr/aws.iam/) provides an R interface to IAM roles and the generation of temporary session tokens via the security token service (STS). On EC2 instances, the [**aws.ec2metadata**](https://cran.r-project.org/package=aws.ec2metadata) package should be installed so that signatures are signed with appropriate, dynamically updated credentials.
+Temporary session tokens are stored in environment variable `AWS_SESSION_TOKEN` (and will be stored there by the `use_credentials()` function). The [aws.iam package](https://github.com/cloudyr/aws.iam/) provides an R interface to IAM roles and the generation of temporary session tokens via the security token service (STS). On EC2 instances or ECS tasks, the [**aws.ec2metadata**](https://cran.r-project.org/package=aws.ec2metadata) package should be installed so that signatures are signed with appropriate, dynamically updated credentials.
 
 As a fail safe the `us-east-1` region is used whenever a region is not found.
 

@@ -14,6 +14,7 @@
 #'   \item user-supplied values passed to the function
 #'   \item environment variables (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_DEFAULT_REGION}, and \env{AWS_SESSION_TOKEN})
 #'   \item an IAM instance role (on the running EC2 instance from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}, if the aws.ec2metadtaa package is installed
+#'   \item an instance role (on the running ECS task from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}, if the aws.ec2metadtaa package is installed
 #'   \item a profile in a local credentials dot file in the current working directory, using the profile specified by \env{AWS_PROFILE}
 #'   \item the default profile in that local credentials file
 #'   \item a profile in a global credentials dot file in a location set by \env{AWS_SHARED_CREDENTIALS_FILE} or defaulting typically to \file{~/.aws/credentials} (or another OS-specific location), using the profile specified by \env{AWS_PROFILE}
@@ -53,10 +54,15 @@ function(key = NULL,
                 session_token = Sys.getenv("AWS_SESSION_TOKEN"),
                 region = Sys.getenv("AWS_DEFAULT_REGION"))
     
+    # check whether we are running in EC2 or ECS
     ec2 <- FALSE
+    ecs <- FALSE
     if (requireNamespace("aws.ec2metadata", quietly = TRUE)) {
         if (aws.ec2metadata::is_ec2()) {
             ec2 <- TRUE
+        }
+        if (aws.ec2metadata::is_ecs()) {
+            ecs <- TRUE
         }
     }
     
@@ -208,6 +214,49 @@ function(key = NULL,
                 if (isTRUE(verbose)) {
                     message(sprintf("Using default value for AWS Region ('%s')", region))
                 }
+            }
+        }
+    } else if (isTRUE(ecs)) {
+        # lacking that, check for ECS metadata
+        if (isTRUE(verbose)) {
+            message("Checking for credentials in ECS Instance Metadata")
+        }
+        ecs_meta <- try(aws.ec2metadata::ecs_metadata(), silent = TRUE)
+        if (!inherits(ecs_meta, "try-error")) {
+            if (!is.null(ecs_meta[["AccessKeyId"]])) {
+                key <- ecs_meta[["AccessKeyId"]]
+                if (isTRUE(verbose)) {
+                    message("Using ECS Instance Metadata for AWS Access Key ID")
+                }
+            }
+            if (!is.null(ecs_meta[["SecretAccessKey"]])) {
+                secret <- ecs_meta[["SecretAccessKey"]]
+                if (isTRUE(verbose)) {
+                    message("Using ECS Instance Metadata for AWS Secret Access Key")
+                }
+            }
+            if (!is.null(ecs_meta[["Token"]])) {
+                session_token <- ecs_meta[["Token"]]
+                if (isTRUE(verbose)) {
+                    message("Using ECS Instance Metadata for AWS Session Token")
+                }
+            }
+        }
+        # now find region, with fail safes
+        if (!is.null(region) && region != "") {
+            region <- region
+            if (isTRUE(verbose)) {
+                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+            }
+        } else if (!is.null(env$region) && env$region != "") {
+            region <- env$region
+            if (isTRUE(verbose)) {
+                message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
+            }
+        } else  {
+            region <- default_region
+            if (isTRUE(verbose)) {
+                message(sprintf("Using default value for AWS Region ('%s')", region))
             }
         }
     } else {
