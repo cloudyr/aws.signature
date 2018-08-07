@@ -1,8 +1,8 @@
 Package: aws.signature
 Type: Package
 Title: Amazon Web Services Request Signatures
-Version: 0.4.4
-Date: 2018-07-26
+Version: 0.4.5
+Date: 2018-08-07
 Authors@R: c(person("Thomas J.", "Leeper",
                     role = c("aut", "cre"), 
                     email = "thosjleeper@gmail.com",

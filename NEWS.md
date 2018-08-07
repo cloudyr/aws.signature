@@ -1,3 +1,8 @@
+# aws.signature 0.4.5
+
+* Removed `locate_credentials()` call from internal `signature_v4()` function. (#33)
+* 
+
 # aws.signature 0.4.4
 
 * Allow use of ECS metadata where available. (h/t @jon-mago #23, #30)
