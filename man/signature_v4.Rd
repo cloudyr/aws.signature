@@ -5,14 +5,15 @@
 \title{Signature Version 4}
 \usage{
 signature_v4(secret = NULL, date = format(Sys.time(), "\%Y\%m\%d"),
-  region = NULL, service, string_to_sign, verbose = FALSE)
+  region = NULL, service, string_to_sign, verbose = getOption("verbose",
+  FALSE))
 }
 \arguments{
 \item{secret}{An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
 \item{date}{A character string containing a date in the form of \dQuote{YYMMDD}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
 
-\item{region}{A character string containing the AWS region for the request. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}} or \dQuote{us-east-1} is used.}
+\item{region}{A character string containing the AWS region for the request. If missing, \dQuote{us-east-1} is assumed.}
 
 \item{service}{A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).}
 

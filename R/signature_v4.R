@@ -1,11 +1,11 @@
 #' @title Signature Version 4
 #' @description Generates AWS Signature Version 4
-#' @param secret An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
+#' @template secret
 #' @param date A character string containing a date in the form of \dQuote{YYMMDD}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.
-#' @param region A character string containing the AWS region for the request. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}} or \dQuote{us-east-1} is used.
+#' @template region
 #' @param service A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).
 #' @param string_to_sign A character string containing the \dQuote{String To Sign}, possibly returned by \code{\link{string_to_sign}}.
-#' @param verbose A logical indicating whether to be verbose.
+#' @template verbose
 #' @details This function generates an AWS Signature Version 4 for authorizing API requests from its pre-formatted components. Users probably only need to use the \code{\link{signature_v4_auth}} function to generate signatures.
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references
@@ -49,12 +49,14 @@
 #' @importFrom digest digest hmac
 #' @export
 signature_v4 <- 
-function(secret = NULL,
-         date = format(Sys.time(), "%Y%m%d"),
-         region = NULL,
-         service,
-         string_to_sign,
-         verbose = FALSE) {
+function(
+  secret = NULL,
+  date = format(Sys.time(), "%Y%m%d"),
+  region = NULL,
+  service,
+  string_to_sign,
+  verbose = getOption("verbose", FALSE)
+) {
     kDate <- digest::hmac(paste0("AWS4", secret), date, "sha256", raw = TRUE)
     kRegion <- digest::hmac(kDate, region, "sha256", raw = TRUE)
     kService <- digest::hmac(kRegion, service, "sha256", raw = TRUE)

@@ -5,9 +5,11 @@
 #' @param service A character string containing the full hostname of an AWS service (e.g., \dQuote{iam.amazonaws.com}, etc.)
 #' @param path A character string specify the path to the API endpoint.
 #' @param query_args A list containing named query arguments.
-#' @param key An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
-#' @param secret An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.
-#' @param verbose A logical indicating whether to be verbose.
+#' @template key
+#' @template secret
+#' @template region
+#' @template force_credentials
+#' @template verbose
 #' @details This function generates an AWS Signature Version 2 for authorizing API requests. The function returns both an updated set of query string parameters, containing the required signature-related entries, as well as a \code{Signature} field containing the Signature string itself. Version 2 is mostly deprecated and in most cases users should rely on \code{\link{signature_v4_auth}} for Version 4 signatures instead.
 #' @return A list.
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
@@ -68,12 +70,34 @@
 #' @importFrom base64enc base64encode
 #' @export
 signature_v2_auth <- 
-function(datetime = format(Sys.time(),"%Y-%m-%dT%H:%M:%S", tz = "UTC"),
-         verb, service, path, query_args = list(),
-         key = NULL,
-         secret = NULL,
-         verbose = FALSE) {
-    credentials <- locate_credentials(key = key, secret = secret, region = "us-east-1", verbose = verbose)
+function(
+  datetime = format(Sys.time(),"%Y-%m-%dT%H:%M:%S", tz = "UTC"),
+  verb,
+  service,
+  path,
+  query_args = list(),
+  key = NULL,
+  secret = NULL,
+  region = NULL,
+  force_credentials = FALSE,
+  verbose = getOption("verbose", FALSE)
+) {
+    if (isTRUE(force_credentials)) {
+        credentials <- list(key = key, secret = secret, region = region)
+        if (isTRUE(verbose)) {
+            if (!is.null(key)) {
+                message("Using user-supplied value for AWS Access Key ID")
+            }
+            if (!is.null(secret)) {
+                message("Using user-supplied value for AWS Secret Access Key")
+            }
+            if (!is.null(region)) {
+                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+            }
+        }
+    } else {
+        credentials <- locate_credentials(key = key, secret = secret, region = region, verbose = verbose)
+    }
     
     # set sort locale
     lc <- Sys.getlocale(category = "LC_COLLATE")
@@ -117,5 +141,6 @@ function(datetime = format(Sys.time(),"%Y-%m-%dT%H:%M:%S", tz = "UTC"),
                    AccessKeyId = credentials[["key"]],
                    SecretAccessKey = credentials[["secret"]],
                    SessionToken = credentials[["session_token"]],
-                   Region = credentials[["region"]]), class = "aws_signature_v2")
+                   Region = credentials[["region"]]),
+              class = "aws_signature_v2")
 }

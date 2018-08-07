@@ -6,7 +6,8 @@
 \usage{
 signature_v2_auth(datetime = format(Sys.time(), "\%Y-\%m-\%dT\%H:\%M:\%S", tz
   = "UTC"), verb, service, path, query_args = list(), key = NULL,
-  secret = NULL, verbose = FALSE)
+  secret = NULL, region = NULL, force_credentials = FALSE,
+  verbose = getOption("verbose", FALSE))
 }
 \arguments{
 \item{datetime}{A character string containing a date in the form of \dQuote{YYYY-MM-DDTH:M:S}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
@@ -22,6 +23,10 @@ signature_v2_auth(datetime = format(Sys.time(), "\%Y-\%m-\%dT\%H:\%M:\%S", tz
 \item{key}{An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
 \item{secret}{An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
+
+\item{region}{A character string containing the AWS region for the request. If missing, \dQuote{us-east-1} is assumed.}
+
+\item{force_credentials}{A logical indicating whether to force use of user-supplied credentials. If \code{FALSE} (the default), \code{\link{locate_credentials}} is used to find credentials. If \code{TRUE}, user-supplied values are used regardless of their validity.}
 
 \item{verbose}{A logical indicating whether to be verbose.}
 }

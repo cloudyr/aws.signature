@@ -1,7 +1,7 @@
 # aws.signature 0.4.5
 
 * Removed `locate_credentials()` call from internal `signature_v4()` function. (#33)
-* 
+* `signature_v4_auth()` and `signature_v2_auth()` gain a `force_credentials` argument. If `force_credentials = TRUE`, user-supplied values are used and no call to `locate_credentials()` is made. (#33)
 
 # aws.signature 0.4.4
 

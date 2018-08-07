@@ -1,0 +1,1 @@
+#' @param force_credentials A logical indicating whether to force use of user-supplied credentials. If \code{FALSE} (the default), \code{\link{locate_credentials}} is used to find credentials. If \code{TRUE}, user-supplied values are used regardless of their validity.

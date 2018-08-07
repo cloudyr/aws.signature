@@ -1,19 +1,20 @@
 #' @title Signature Version 4
 #' @description AWS Signature Version 4 for use in query or header authorization
 #' @param datetime A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.
-#' @param region A character string containing the AWS region for the request. See \code{\link{locate_credentials}}.
+#' @template region
 #' @param service A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).
 #' @param verb A character string containing the HTTP verb being used in the request.
 #' @param action A character string containing the API endpoint used in the request.
 #' @param query_args A named list of character strings containing the query string values (if any) used in the API request, passed to \code{\link{canonical_request}}.
 #' @param canonical_headers A named list of character strings containing the headers used in the request.
 #' @param request_body The body of the HTTP request.
-#' @param key An AWS Access Key ID. See \code{\link{locate_credentials}}.
-#' @param secret An AWS Secret Access Key. See \code{\link{locate_credentials}}.
+#' @template key
+#' @template secret
 #' @param session_token Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}. See \code{\link{locate_credentials}}.
 #' @param query A logical. Currently ignored.
 #' @param algorithm A character string containing the hashing algorithm used in the request. Should only be \dQuote{SHA256}.
-#' @param verbose A logical indicating whether to be verbose.
+#' @template force_credentials
+#' @template verbose
 #' @details This function generates an AWS Signature Version 4 for authorizing API requests.
 #' @return A list of class \dQuote{aws_signature_v4}, containing the information needed to sign an AWS API request using either query string authentication or request header authentication. Specifically, the list contains:
 #' 
@@ -62,25 +63,45 @@
 #' @seealso \code{\link{signature_v2_auth}}, \code{\link{locate_credentials}}
 #' @export
 signature_v4_auth <- 
-function(datetime = format(Sys.time(),"%Y%m%dT%H%M%SZ", tz = "UTC"),
-         region = NULL,
-         service,
-         verb,
-         action,
-         query_args = list(),
-         canonical_headers, # named list
-         request_body,
-         key = NULL,
-         secret = NULL,
-         session_token = NULL,
-         query = FALSE,
-         algorithm = "AWS4-HMAC-SHA256",
-         verbose = FALSE){
-    credentials <- locate_credentials(key = key, secret = secret, session_token = session_token, region = region, verbose = verbose)
-    key <- credentials[["key"]]
-    secret <- credentials[["secret"]]
-    session_token <- credentials[["session_token"]]
-    region <- credentials[["region"]]
+function(
+  datetime = format(Sys.time(),"%Y%m%dT%H%M%SZ", tz = "UTC"),
+  region = NULL,
+  service,
+  verb,
+  action,
+  query_args = list(),
+  canonical_headers, # named list
+  request_body,
+  key = NULL,
+  secret = NULL,
+  session_token = NULL,
+  query = FALSE,
+  algorithm = "AWS4-HMAC-SHA256",
+  force_credentials = FALSE,
+  verbose = getOption("verbose", FALSE)
+){
+    if (isTRUE(force_credentials)) {
+        if (isTRUE(verbose)) {
+            if (!is.null(key)) {
+                message("Using user-supplied value for AWS Access Key ID")
+            }
+            if (!is.null(secret)) {
+                message("Using user-supplied value for AWS Secret Access Key")
+            }
+            if (!is.null(session_token)) {
+                message("Using user-supplied value for AWS Secret Access Key")
+            }
+            if (!is.null(region)) {
+                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+            }
+        }
+    } else {
+        credentials <- locate_credentials(key = key, secret = secret, session_token = session_token, region = region, verbose = verbose)
+        key <- credentials[["key"]]
+        secret <- credentials[["secret"]]
+        session_token <- credentials[["session_token"]]
+        region <- credentials[["region"]]
+    }
     
     date <- substring(datetime,1,8)
     

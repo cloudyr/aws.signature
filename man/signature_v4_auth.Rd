@@ -8,12 +8,12 @@ signature_v4_auth(datetime = format(Sys.time(), "\%Y\%m\%dT\%H\%M\%SZ", tz =
   "UTC"), region = NULL, service, verb, action, query_args = list(),
   canonical_headers, request_body, key = NULL, secret = NULL,
   session_token = NULL, query = FALSE, algorithm = "AWS4-HMAC-SHA256",
-  verbose = FALSE)
+  force_credentials = FALSE, verbose = getOption("verbose", FALSE))
 }
 \arguments{
 \item{datetime}{A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
 
-\item{region}{A character string containing the AWS region for the request. See \code{\link{locate_credentials}}.}
+\item{region}{A character string containing the AWS region for the request. If missing, \dQuote{us-east-1} is assumed.}
 
 \item{service}{A character string containing the AWS service (e.g., \dQuote{iam}, \dQuote{host}, \dQuote{ec2}).}
 
@@ -27,15 +27,17 @@ signature_v4_auth(datetime = format(Sys.time(), "\%Y\%m\%dT\%H\%M\%SZ", tz =
 
 \item{request_body}{The body of the HTTP request.}
 
-\item{key}{An AWS Access Key ID. See \code{\link{locate_credentials}}.}
+\item{key}{An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
-\item{secret}{An AWS Secret Access Key. See \code{\link{locate_credentials}}.}
+\item{secret}{An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
 \item{session_token}{Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}. See \code{\link{locate_credentials}}.}
 
 \item{query}{A logical. Currently ignored.}
 
 \item{algorithm}{A character string containing the hashing algorithm used in the request. Should only be \dQuote{SHA256}.}
+
+\item{force_credentials}{A logical indicating whether to force use of user-supplied credentials. If \code{FALSE} (the default), \code{\link{locate_credentials}} is used to find credentials. If \code{TRUE}, user-supplied values are used regardless of their validity.}
 
 \item{verbose}{A logical indicating whether to be verbose.}
 }
