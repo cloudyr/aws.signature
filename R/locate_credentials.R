@@ -50,6 +50,10 @@ function(
   verbose = getOption("verbose", FALSE)
 ) {
     
+    if (isTRUE(verbose)) {
+        message("Locating credentials")
+    }
+    
     # check for user-supplied values
     if (isTRUE(verbose)) {
         message("Checking for credentials in user-supplied values")
