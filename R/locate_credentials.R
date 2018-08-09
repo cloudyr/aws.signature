@@ -139,6 +139,55 @@ function(
         return(list(key = key, secret = secret, session_token = session_token, region = region))
     }
     
+    
+    # lacking that, check for ECS metadata
+    if (isTRUE(check_ecs())) {
+        if (isTRUE(verbose)) {
+            message("Checking for credentials in ECS Instance Metadata")
+        }
+        ecs_meta <- try(aws.ec2metadata::ecs_metadata(), silent = TRUE)
+        if (!inherits(ecs_meta, "try-error")) {
+            if (!is.null(ecs_meta[["AccessKeyId"]])) {
+                key <- ecs_meta[["AccessKeyId"]]
+                if (isTRUE(verbose)) {
+                    message("Using ECS Instance Metadata for AWS Access Key ID")
+                }
+            }
+            if (!is.null(ecs_meta[["SecretAccessKey"]])) {
+                secret <- ecs_meta[["SecretAccessKey"]]
+                if (isTRUE(verbose)) {
+                    message("Using ECS Instance Metadata for AWS Secret Access Key")
+                }
+            }
+            if (!is.null(ecs_meta[["Token"]])) {
+                session_token <- ecs_meta[["Token"]]
+                if (isTRUE(verbose)) {
+                    message("Using ECS Instance Metadata for AWS Session Token")
+                }
+            }
+        }
+        # now find region, with fail safes
+        if (!is.null(region) && region != "") {
+            region <- region
+            if (isTRUE(verbose)) {
+                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+            }
+        } else if (!is.null(env$region) && env$region != "") {
+            region <- env$region
+            if (isTRUE(verbose)) {
+                message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
+            }
+        } else  {
+            region <- default_region
+            if (isTRUE(verbose)) {
+                message(sprintf("Using default value for AWS Region ('%s')", region))
+            }
+        }
+        
+        # early return
+        return(list(key = key, secret = secret, session_token = session_token, region = region))
+    }
+
     # lacking that, check for EC2 metadata
     if (isTRUE(check_ec2())) {
         if (isTRUE(verbose)) {
@@ -189,54 +238,6 @@ function(
                 if (isTRUE(verbose)) {
                     message(sprintf("Using default value for AWS Region ('%s')", region))
                 }
-            }
-        }
-        
-        # early return
-        return(list(key = key, secret = secret, session_token = session_token, region = region))
-    }
-    
-    # lacking that, check for ECS metadata
-    if (isTRUE(check_ecs())) {
-        if (isTRUE(verbose)) {
-            message("Checking for credentials in ECS Instance Metadata")
-        }
-        ecs_meta <- try(aws.ec2metadata::ecs_metadata(), silent = TRUE)
-        if (!inherits(ecs_meta, "try-error")) {
-            if (!is.null(ecs_meta[["AccessKeyId"]])) {
-                key <- ecs_meta[["AccessKeyId"]]
-                if (isTRUE(verbose)) {
-                    message("Using ECS Instance Metadata for AWS Access Key ID")
-                }
-            }
-            if (!is.null(ecs_meta[["SecretAccessKey"]])) {
-                secret <- ecs_meta[["SecretAccessKey"]]
-                if (isTRUE(verbose)) {
-                    message("Using ECS Instance Metadata for AWS Secret Access Key")
-                }
-            }
-            if (!is.null(ecs_meta[["Token"]])) {
-                session_token <- ecs_meta[["Token"]]
-                if (isTRUE(verbose)) {
-                    message("Using ECS Instance Metadata for AWS Session Token")
-                }
-            }
-        }
-        # now find region, with fail safes
-        if (!is.null(region) && region != "") {
-            region <- region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
-            }
-        } else if (!is.null(env$region) && env$region != "") {
-            region <- env$region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
-            }
-        } else  {
-            region <- default_region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using default value for AWS Region ('%s')", region))
             }
         }
         
