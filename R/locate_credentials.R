@@ -1,4 +1,4 @@
-#' @rdname credentials
+#' @rdname locate_credentials
 #' @title Locate AWS Credentials
 #' @description Locate AWS credentials from likely sources
 #' @param key An AWS Access Key ID
