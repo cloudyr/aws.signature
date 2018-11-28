@@ -4,11 +4,12 @@
 \alias{signature_v4_auth}
 \title{Signature Version 4}
 \usage{
-signature_v4_auth(datetime = format(Sys.time(), "\%Y\%m\%dT\%H\%M\%SZ", tz =
-  "UTC"), region = NULL, service, verb, action, query_args = list(),
-  canonical_headers, request_body, key = NULL, secret = NULL,
-  session_token = NULL, query = FALSE, algorithm = "AWS4-HMAC-SHA256",
-  force_credentials = FALSE, verbose = getOption("verbose", FALSE))
+signature_v4_auth(datetime = format(Sys.time(), "\%Y\%m\%dT\%H\%M\%SZ",
+  tz = "UTC"), region = NULL, service, verb, action,
+  query_args = list(), canonical_headers, request_body, key = NULL,
+  secret = NULL, session_token = NULL, query = FALSE,
+  algorithm = "AWS4-HMAC-SHA256", force_credentials = FALSE,
+  verbose = getOption("verbose", FALSE))
 }
 \arguments{
 \item{datetime}{A character string containing a datetime in the form of \dQuote{YYYYMMDDTHHMMSSZ}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}

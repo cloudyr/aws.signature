@@ -4,10 +4,10 @@
 \alias{signature_v2_auth}
 \title{Signature Version 2}
 \usage{
-signature_v2_auth(datetime = format(Sys.time(), "\%Y-\%m-\%dT\%H:\%M:\%S", tz
-  = "UTC"), verb, service, path, query_args = list(), key = NULL,
-  secret = NULL, region = NULL, force_credentials = FALSE,
-  verbose = getOption("verbose", FALSE))
+signature_v2_auth(datetime = format(Sys.time(),
+  "\%Y-\%m-\%dT\%H:\%M:\%S", tz = "UTC"), verb, service, path,
+  query_args = list(), key = NULL, secret = NULL, region = NULL,
+  force_credentials = FALSE, verbose = getOption("verbose", FALSE))
 }
 \arguments{
 \item{datetime}{A character string containing a date in the form of \dQuote{YYYY-MM-DDTH:M:S}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
