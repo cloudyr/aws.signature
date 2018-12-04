@@ -12,8 +12,8 @@ Description: Generates version 2 and version 4 request signatures for Amazon Web
 License: GPL (>= 2)
 Imports:
     digest,
-    dplyr,
-    base64enc
+    base64enc,
+    magrittr
 Suggests:
     testthat,
     aws.ec2metadata (>= 0.1.5)

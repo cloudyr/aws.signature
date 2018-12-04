@@ -47,7 +47,7 @@
 #' identical(sig, "ced6826de92d2bdeed8f846f0bf508e8559e98e4b0199114b84c54174deb456c")
 #' }
 #' @importFrom digest hmac
-#' @importFrom dplyr %>% 
+#' @importFrom magrittr %>% 
 #' @export
 signature_v4 <- function(secret = NULL,
                          date = format(Sys.time(), "%Y%m%d"),
