@@ -36,19 +36,23 @@
 #' identical(fromDocs, r$canonical)
 #' @seealso \code{link{signature_v4_aut}}, \code{\link{string_to_sign}}
 #' @export
-canonical_request <- 
-function(verb,
-         canonical_uri = "",
-         query_args = list(),
-         canonical_headers,
-         request_body = ""
-         ) {
+canonical_request <- function(verb,
+                              canonical_uri = "",
+                              query_args = list(),
+                              canonical_headers,
+                              request_body = ""){
+
     if (is.character(request_body) && file.exists(request_body)) {
-        body_hash <- tolower(digest::digest(request_body, file = TRUE, algo = "sha256", serialize = FALSE))
+        body_hash <- tolower(digest::digest(request_body,
+                                            file = TRUE,
+                                            algo = "sha256",
+                                            serialize = FALSE))
     } else {
-        body_hash <- tolower(digest::digest(request_body, algo = "sha256", serialize = FALSE))
+        body_hash <- tolower(digest::digest(request_body,
+                                            algo = "sha256",
+                                            serialize = FALSE))
     }
-    
+
     # set sort locale
     lc <- Sys.getlocale(category = "LC_COLLATE")
     Sys.setlocale(category = "LC_COLLATE", locale = "C")
@@ -58,8 +62,11 @@ function(verb,
     canonical_headers <- canonical_headers[order(names(canonical_headers))]
     # trim leading, trailing, and all non-quoted duplicated spaces
     trimmed_headers <- gsub("[[:space:]]{2,}", " ", trimws(canonical_headers))
-    header_string <- paste0(names(canonical_headers), ":", trimmed_headers, "\n", collapse = "")
+    header_string <- paste0(names(canonical_headers), ":", 
+                            trimmed_headers, "\n",
+                            collapse = "")
     signed_headers <- paste(names(canonical_headers), sep = "", collapse = ";")
+    
     if(length(query_args)) {
         query_args <- unlist(query_args[order(names(query_args))])
         a <- paste0(sapply(names(query_args), URLencode, reserved = TRUE), "=", 
@@ -68,6 +75,7 @@ function(verb,
     } else {
         query_string <- ""
     }
+    
     out <- paste(verb, 
                  canonical_uri,
                  query_string,
@@ -75,8 +83,9 @@ function(verb,
                  signed_headers,
                  body_hash,
                  sep = "\n")
-    return(list(headers = signed_headers, 
-                body = body_hash,
-                canonical = out,
-                hash = digest::digest(out, algo = "sha256", serialize = FALSE)))
+    
+  list(headers = signed_headers, 
+       body = body_hash,
+       canonical = out,
+       hash = digest::digest(out, algo = "sha256", serialize = FALSE))
 }

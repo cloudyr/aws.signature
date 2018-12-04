@@ -96,7 +96,11 @@ function(
             }
         }
     } else {
-        credentials <- locate_credentials(key = key, secret = secret, session_token = session_token, region = region, verbose = verbose)
+        credentials <- locate_credentials(key = key,
+                                          secret = secret,
+                                          session_token = session_token,
+                                          region = region,
+                                          verbose = verbose)
         key <- credentials[["key"]]
         secret <- credentials[["secret"]]
         session_token <- credentials[["session_token"]]
@@ -108,28 +112,30 @@ function(
     if (isTRUE(query)) {
         # handle query-based authorizations, by including relevant parameters
     } 
-    
+
     # Canonical Request
     if (!is.null(session_token) && session_token != "") {
         if (!missing(canonical_headers)) {
-            canonical_headers <- c(canonical_headers, list("X-Amz-Security-Token" = session_token))
+            canonical_headers <- c(canonical_headers,
+                                   list("X-Amz-Security-Token" = session_token))
         } else {
             canonical_headers <- list("X-Amz-Security-Token" = session_token)
         }
     }
+    
     R <- canonical_request(verb = verb,
                            canonical_uri = action,
                            query_args = query_args,
                            canonical_headers = canonical_headers,
                            request_body = request_body)
-    
+
     # String To Sign
     S <- string_to_sign(algorithm = algorithm,
                         datetime = datetime,
                         region = region,
                         service = service,
                         request_hash = R$hash)
-    
+
     # Signature
     V4 <- signature_v4(secret = secret,
                        date = date,
@@ -145,6 +151,7 @@ function(
                              paste0("SignedHeaders=", R$headers),
                              paste0("Signature=", V4),
                              sep = ", "))
+    
     structure(list(Algorithm = algorithm,
                    Credential = credential,
                    Date = date,
@@ -164,4 +171,3 @@ function(
                    SessionToken = session_token,
                    Region = region), class = "aws_signature_v4")
 }
-
