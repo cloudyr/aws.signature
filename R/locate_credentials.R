@@ -38,17 +38,15 @@
 #' 
 #' @seealso \code{\link{signature_v4}}, \code{\link{signature_v2_auth}}, \code{\link{use_credentials}}
 #' @export
-locate_credentials <- 
-function(
-  key = NULL,
-  secret = NULL,
-  session_token = NULL,
-  region = NULL,
-  file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file()),
-  profile = Sys.getenv("AWS_PROFILE", "default"),
-  default_region = "us-east-1",
-  verbose = getOption("verbose", FALSE)
-) {
+locate_credentials <- function(key = NULL,
+                               secret = NULL,
+                               session_token = NULL,
+                               region = NULL,
+                               file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE",
+                                                 default_credentials_file()),
+                               profile = Sys.getenv("AWS_PROFILE", "default"),
+                               default_region = "us-east-1",
+                               verbose = getOption("verbose", FALSE)){
     
     if (isTRUE(verbose)) {
         message("Locating credentials")
@@ -75,10 +73,15 @@ function(
             }
         }
         # now find region, with fail safes
-        region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
+        region <- find_region_with_failsafe(region = region,
+                                            default_region = default_region,
+                                            verbose = verbose)
         
         # early return
-        return(list(key = key, secret = secret, session_token = session_token, region = region))
+        return(list(key = key,
+                    secret = secret,
+                    session_token = session_token,
+                    region = region))
     }
     
     # otherwise try to use environment variables if no user-supplied values
@@ -193,7 +196,10 @@ function(
         }
         
         # early return
-        return(list(key = key, secret = secret, session_token = session_token, region = region))
+        return(list(key = key,
+                    secret = secret,
+                    session_token = session_token,
+                    region = region))
     }
     
     # lacking that, check for ECS metadata
@@ -226,7 +232,8 @@ function(
         if (!is.null(region) && region != "") {
             region <- region
             if (isTRUE(verbose)) {
-                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+                message(sprintf("Using user-supplied value for AWS Region ('%s')",
+                                region))
             }
         } else if (!is.null(env$region) && env$region != "") {
             region <- env$region
@@ -241,7 +248,10 @@ function(
         }
         
         # early return
-        return(list(key = key, secret = secret, session_token = session_token, region = region))
+        return(list(key = key,
+                    secret = secret,
+                    session_token = session_token,
+                    region = region))
     }
 
     # lastly, check for credentials file
@@ -264,7 +274,10 @@ function(
         }
         
         # early return
-        return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
+        return(credentials_to_list(cred,
+                                   region = region,
+                                   default_region = default_region,
+                                   verbose = verbose))
     } else if (file.exists(file) || file.exists(default_credentials_file())) {
         ## in specified location
         if (file.exists(file)) {
@@ -294,10 +307,15 @@ function(
         message("No user-supplied credentials, environment variables, instance metadata, or credentials file found!")
     }
     # find region, with fail safes
-    region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
+    region <- find_region_with_failsafe(region = region,
+                                        default_region = default_region,
+                                        verbose = verbose)
     
     # return identified values
-    list(key = key, secret = secret, session_token = session_token, region = region)
+    list(key = key,
+         secret = secret,
+         session_token = session_token,
+         region = region)
 }
 
 check_ec2 <- function() {
@@ -344,13 +362,11 @@ get_ec2_role <- function(role, verbose = getOption("verbose", FALSE)) {
     out
 }
 
-credentials_to_list <-
-function(
-  cred,
-  region = NULL,
-  default_region = "us-east-1",
-  verbose = getOption("verbose", FALSE)
-) {
+credentials_to_list <- function(cred,
+                                region = NULL,
+                                default_region = "us-east-1",
+                                verbose = getOption("verbose", FALSE)){
+  
     if (!is.null(cred[["AWS_ACCESS_KEY_ID"]])) {
         key <- cred[["AWS_ACCESS_KEY_ID"]]
         if (isTRUE(verbose)) {
@@ -373,12 +389,14 @@ function(
     if (!is.null(region) && region != "") {
         region <- region
         if (isTRUE(verbose)) {
-            message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+            message(sprintf("Using user-supplied value for AWS Region ('%s')",
+                            region))
         }
     } else if (!is.null(cred[["AWS_DEFAULT_REGION"]]) && cred[["AWS_DEFAULT_REGION"]] != "") {
         region <- cred[["AWS_DEFAULT_REGION"]]
         if (isTRUE(verbose)) {
-            message(sprintf("Using value in credentials file for AWS Region ('%s')", region))
+            message(sprintf("Using value in credentials file for AWS Region ('%s')",
+                            region))
         }
     } else {
         region <- Sys.getenv("AWS_DEFAULT_REGION")
@@ -395,19 +413,21 @@ function(
     }
     
     # return values
-    return(list(key = key, secret = secret, session_token = session_token, region = region))
+    return(list(key = key,
+                secret = secret,
+                session_token = session_token,
+                region = region))
 }
 
-find_region_with_failsafe <-
-function(
-  region = NULL,
-  default_region = "us-east-1",
-  verbose = getOption("verbose", FALSE)
-) {
+find_region_with_failsafe <- function(region = NULL,
+                                      default_region = "us-east-1",
+                                      verbose = getOption("verbose", FALSE)){
+  
     if (!is.null(region) && region != "") {
         region <- region
         if (isTRUE(verbose)) {
-            message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
+            message(sprintf("Using user-supplied value for AWS Region ('%s')",
+                            region))
         }
     } else {
         region <- Sys.getenv("AWS_DEFAULT_REGION")
@@ -422,5 +442,6 @@ function(
             }
         }
     }
-    return(region)
+  
+    region
 }

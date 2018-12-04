@@ -24,15 +24,13 @@
 #'
 #' @seealso \code{\link{signature_v4}}, \code{\link{signature_v4_auth}}
 #' @export
-string_to_sign <- 
-function(algorithm = "AWS4-HMAC-SHA256",
-         datetime, # format(Sys.time(),"%Y%m%dT%H%M%SZ", tz = "UTC")
-         region,
-         service,
-         request_hash
-         ) {
+string_to_sign <- function(algorithm = "AWS4-HMAC-SHA256",
+                           datetime, 
+                           region,
+                           service,
+                           request_hash){
     paste(algorithm,
-          datetime,
+          datetime, # format(Sys.time(),"%Y%m%dT%H%M%SZ", tz = "UTC")
           paste(substring(datetime,1,8),
                 region,
                 service,

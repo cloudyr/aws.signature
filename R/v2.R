@@ -69,19 +69,17 @@
 #' @importFrom digest digest hmac
 #' @importFrom base64enc base64encode
 #' @export
-signature_v2_auth <- 
-function(
-  datetime = format(Sys.time(),"%Y-%m-%dT%H:%M:%S", tz = "UTC"),
-  verb,
-  service,
-  path,
-  query_args = list(),
-  key = NULL,
-  secret = NULL,
-  region = NULL,
-  force_credentials = FALSE,
-  verbose = getOption("verbose", FALSE)
-) {
+signature_v2_auth <- function(datetime = format(Sys.time(), "%Y-%m-%dT%H:%M:%S", tz = "UTC"),
+                              verb,
+                              service,
+                              path,
+                              query_args = list(),
+                              key = NULL,
+                              secret = NULL,
+                              region = NULL,
+                              force_credentials = FALSE,
+                              verbose = getOption("verbose", FALSE)){
+  
     if (isTRUE(force_credentials)) {
         credentials <- list(key = key, secret = secret, region = region)
         if (isTRUE(verbose)) {
@@ -96,7 +94,10 @@ function(
             }
         }
     } else {
-        credentials <- locate_credentials(key = key, secret = secret, region = region, verbose = verbose)
+        credentials <- locate_credentials(key = key,
+                                          secret = secret,
+                                          region = region,
+                                          verbose = verbose)
     }
     
     # set sort locale
@@ -125,8 +126,12 @@ function(
     query_string <- paste(a, sep = "", collapse = "&")
     
     canonical_request <- paste(verb, service, path, query_string, sep = "\n")
-    signature <- digest::hmac(key = credentials$secret, object = canonical_request, 
-                              algo = "sha256", serialize = FALSE, raw = TRUE)
+    signature <- digest::hmac(key = credentials$secret,
+                              object = canonical_request, 
+                              algo = "sha256",
+                              serialize = FALSE,
+                              raw = TRUE)
+    
     sig_encoded <- base64enc::base64encode(signature)
     query_args$Signature <- sig_encoded
     

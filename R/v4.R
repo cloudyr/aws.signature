@@ -169,5 +169,6 @@ function(
                    AccessKeyId = key,
                    SecretAccessKey = secret,
                    SessionToken = session_token,
-                   Region = region), class = "aws_signature_v4")
+                   Region = region), 
+              class = "aws_signature_v4")
 }
