@@ -46,21 +46,21 @@
 #'              string_to_sign = StringToSign)
 #' identical(sig, "ced6826de92d2bdeed8f846f0bf508e8559e98e4b0199114b84c54174deb456c")
 #' }
-#' @importFrom digest digest hmac
+#' @importFrom digest hmac
+#' @importFrom dplyr %>% 
 #' @export
-signature_v4 <- 
-function(
-  secret = NULL,
-  date = format(Sys.time(), "%Y%m%d"),
-  region = NULL,
-  service,
-  string_to_sign,
-  verbose = getOption("verbose", FALSE)
-) {
-    kDate <- digest::hmac(paste0("AWS4", secret), date, "sha256", raw = TRUE)
-    kRegion <- digest::hmac(kDate, region, "sha256", raw = TRUE)
-    kService <- digest::hmac(kRegion, service, "sha256", raw = TRUE)
-    kSigning <- digest::hmac(kService, "aws4_request", "sha256", raw = TRUE)
-    signature <- digest::hmac(kSigning, string_to_sign, "sha256")
-    return(signature)
+signature_v4 <- function(secret = NULL,
+                         date = format(Sys.time(), "%Y%m%d"),
+                         region = NULL,
+                         service,
+                         string_to_sign,
+                         verbose = getOption("verbose", FALSE)){
+
+  signature <- hmac(paste0("AWS4", secret), date, "sha256", raw = TRUE) %>% 
+               hmac(region, "sha256", raw = TRUE) %>% 
+               hmac(service, "sha256", raw = TRUE) %>% 
+               hmac("aws4_request", "sha256", raw = TRUE) %>% 
+               hmac(string_to_sign, "sha256")
+  
+  signature
 }
