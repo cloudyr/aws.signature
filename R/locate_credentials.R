@@ -368,6 +368,8 @@ function(
         if (isTRUE(verbose)) {
             message("Using value in credentials file for AWS Session Token")
         }
+    } else {
+        session_token <- NULL
     }
     # now find region, with fail safes (including credentials file)
     if (!is.null(region) && region != "") {
