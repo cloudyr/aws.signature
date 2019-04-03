@@ -250,7 +250,7 @@ function(
     }
     if (file.exists(file.path(".aws", "credentials"))) {
         ## in working directory
-        cred <- read_credentials(file.path(".aws", "credentials"))[[profile]]
+        cred <- read_credentials(file.path(".aws", "credentials"))
         if (profile %in% names(cred)) {
             cred <- cred[[profile]]
         } else {
