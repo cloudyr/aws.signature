@@ -98,8 +98,8 @@ AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=Hmac
                       query_args = q1,
                       key = q1$AWSAccessKeyId,
                       secret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
-    expect_true(identical(true_string, sig1$CanonicalRequest), label = "v2 CanonicalRequest correct")
-    expect_true(identical(true_sig, sig1$Signature), label = "v2 Signature correct")
+    expect_identical(true_string, sig1$CanonicalRequest, label = "v2 CanonicalRequest correct")
+    expect_identical(true_sig, sig1$Signature, label = "v2 Signature correct")
 
     q2 <- 
     list(Action = "DescribeJobFlows",
@@ -113,8 +113,8 @@ AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=Hmac
                       query_args = q2,
                       key = "AKIAIOSFODNN7EXAMPLE",
                       secret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
-    expect_true(identical(true_string, sig2$CanonicalRequest), label = "v2 CanonicalRequest correct, setting defaults")
-    expect_true(identical(true_sig, sig2$Signature), label = "v2 Signature correct, setting defaults")
+    expect_identical(true_string, sig2$CanonicalRequest, label = "v2 CanonicalRequest correct, setting defaults")
+    expect_identical(true_sig, sig2$Signature, label = "v2 Signature correct, setting defaults")
 })
 
 test_that("session_token returned in signature_v4()", {
@@ -132,7 +132,7 @@ test_that("session_token returned in signature_v4()", {
                            session_token = "foobar",
                            query = FALSE,
                            algorithm = "AWS4-HMAC-SHA256")
-    expect_true(grepl("x-amz-security-token", s$SignedHeaders))
+    expect_match(s$SignedHeaders, "x-amz-security-token")
 })
 
 
@@ -141,6 +141,6 @@ context("Miscellaneous Functionality")
 test_that("get_ec2_role() works", {
     skip_on_cran()
     if (!requireNamespace("aws.ec2metadata", quietly = TRUE)) {
-        expect_true(is.null(aws.signature:::get_ec2_role()), label = "get_ec2_role() returns NULL")
+        expect_null(aws.signature:::get_ec2_role(), label = "get_ec2_role() returns NULL")
     }
 })

@@ -17,10 +17,10 @@ if (file.exists(".aws/credentials")) {
         
         # tests
         cred <- locate_credentials()
-        expect_true(cred[["key"]] == "foo-key")
-        expect_true(cred[["secret"]] == "foo-secret")
-        expect_true(cred[["session_token"]] == "foo-token")
-        expect_true(cred[["region"]] == "foo-region")
+        expect_equal(cred[["key"]], "foo-key")
+        expect_equal(cred[["secret"]], "foo-secret")
+        expect_equal(cred[["session_token"]], "foo-token")
+        expect_equal(cred[["region"]], "foo-region")
         
         # restore environment variables
         do.call("Sys.setenv", as.list(e))
@@ -41,10 +41,10 @@ if (file.exists(".aws/credentials")) {
         
         # tests
         cred <- locate_credentials(key = "foo1", secret = "foo2", session_token = "foo3", region = "foo4")
-        expect_true(cred[["key"]] == "foo1", label = "locate_credentials(key = 'foo1')")
-        expect_true(cred[["secret"]] == "foo2", label = "locate_credentials(secret = 'foo2')")
-        expect_true(cred[["session_token"]] == "foo3", label = "locate_credentials(session_token = 'foo3')")
-        expect_true(cred[["region"]] == "foo4", label = "locate_credentials(region = 'foo4')")
+        expect_equal(cred[["key"]], "foo1", label = "locate_credentials(key = 'foo1')")
+        expect_equal(cred[["secret"]], "foo2", label = "locate_credentials(secret = 'foo2')")
+        expect_equal(cred[["session_token"]], "foo3", label = "locate_credentials(session_token = 'foo3')")
+        expect_equal(cred[["region"]], "foo4", label = "locate_credentials(region = 'foo4')")
         
         # restore environment variables
         do.call("Sys.setenv", as.list(e))
@@ -65,10 +65,10 @@ if (file.exists(".aws/credentials")) {
         
         # tests
         cred <- locate_credentials()
-        expect_true(cred[["key"]] == "ACCESS_KEY")
-        expect_true(cred[["secret"]] == "SECRET_KEY")
-        expect_true(cred[["session_token"]] == "TOKEN")
-        expect_true(cred[["region"]] == "us-east-1")
+        expect_equal(cred[["key"]], "ACCESS_KEY")
+        expect_equal(cred[["secret"]], "SECRET_KEY")
+        expect_equal(cred[["session_token"]], "TOKEN")
+        expect_equal(cred[["region"]], "us-east-1")
         
         # restore environment variables
         do.call("Sys.setenv", as.list(e))
@@ -93,10 +93,10 @@ if (file.exists(".aws/credentials")) {
         
         # tests
         cred <- locate_credentials(key = "foo1", secret = "foo2", session_token = "foo3", region = "foo4")
-        expect_true(cred[["key"]] == "foo1", label = "locate_credentials(key = 'foo1')")
-        expect_true(cred[["secret"]] == "foo2", label = "locate_credentials(secret = 'foo2')")
-        expect_true(cred[["session_token"]] == "foo3", label = "locate_credentials(session_token = 'foo3')")
-        expect_true(cred[["region"]] == "foo4", label = "locate_credentials(region = 'foo4')")
+        expect_equal(cred[["key"]], "foo1", label = "locate_credentials(key = 'foo1')")
+        expect_equal(cred[["secret"]], "foo2", label = "locate_credentials(secret = 'foo2')")
+        expect_equal(cred[["session_token"]], "foo3", label = "locate_credentials(session_token = 'foo3')")
+        expect_equal(cred[["region"]], "foo4", label = "locate_credentials(region = 'foo4')")
         
         # restore credentials file
         file.rename(tmp, ".aws/credentials")
@@ -124,10 +124,10 @@ if (file.exists(".aws/credentials")) {
         
         # tests
         cred <- locate_credentials()
-        expect_true(is.null(cred[["key"]]))
-        expect_true(is.null(cred[["secret"]]))
-        expect_true(is.null(cred[["session_token"]]))
-        expect_true(cred[["region"]] == "us-east-1")
+        expect_null(cred[["key"]])
+        expect_null(cred[["secret"]])
+        expect_null(cred[["session_token"]])
+        expect_equal(cred[["region"]], "us-east-1")
         
         # restore credentials file
         file.rename(tmp, ".aws/credentials")
