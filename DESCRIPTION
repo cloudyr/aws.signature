@@ -19,4 +19,4 @@ Suggests:
     aws.ec2metadata (>= 0.1.6)
 URL: https://github.com/cloudyr/aws.signature
 BugReports: https://github.com/cloudyr/aws.signature/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
