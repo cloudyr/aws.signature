@@ -250,7 +250,7 @@ function(
     }
     if (file.exists(file.path(".aws", "credentials"))) {
         ## in working directory
-        cred <- read_credentials(file.path(".aws", "credentials"))[[profile]]
+        cred <- read_credentials(file.path(".aws", "credentials"))
         if (profile %in% names(cred)) {
             cred <- cred[[profile]]
         } else {
@@ -268,10 +268,10 @@ function(
     } else if (file.exists(file) || file.exists(default_credentials_file())) {
         ## in specified location
         if (file.exists(file)) {
-            cred <- read_credentials(file = file)[[profile]]
+            cred <- read_credentials(file = file)
         } else {
             ## otherwise, default to default location
-            cred <- read_credentials(file = default_credentials_file())[[profile]]
+            cred <- read_credentials(file = default_credentials_file())
         }
         if (profile %in% names(cred)) {
             cred <- cred[[profile]]
@@ -368,6 +368,8 @@ function(
         if (isTRUE(verbose)) {
             message("Using value in credentials file for AWS Session Token")
         }
+    } else {
+        session_token <- NULL
     }
     # now find region, with fail safes (including credentials file)
     if (!is.null(region) && region != "") {
