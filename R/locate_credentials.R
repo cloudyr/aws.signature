@@ -151,7 +151,7 @@ function(
             message("Checking for credentials in EC2 Instance Metadata")
         }
         role <- try(get_ec2_role(verbose = verbose), silent = TRUE)
-        if (!is.null(role)) {
+        if (!is.null(role)&&!inherits(role, "try-error")) {
           if (isTRUE(verbose)) {
             message("Using EC2 Instance Metadata for credentials")
           }
@@ -258,7 +258,10 @@ get_ec2_role <- function(role, verbose = getOption("verbose", FALSE)) {
     if (missing(role)) {
         role <- try(aws.ec2metadata::metadata$iam_role_names(), silent = TRUE)
         if (!length(role)) {
-            stop("No IAM role profile available in instance metadata")
+          if (isTRUE(verbose)) {
+            warning("No IAM role profile available in instance metadata")
+          }
+          return(NULL)
         }
         if (isTRUE(verbose)) {
             message("Using EC2 Instance Metadata")
