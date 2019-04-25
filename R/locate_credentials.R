@@ -1,4 +1,4 @@
-#' @rdname credentials
+#' @rdname locate_credentials
 #' @title Locate AWS Credentials
 #' @description Locate AWS credentials from likely sources
 #' @param key An AWS Access Key ID
@@ -13,8 +13,8 @@
 #' \enumerate{
 #'   \item user-supplied values passed to the function
 #'   \item environment variables (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_DEFAULT_REGION}, and \env{AWS_SESSION_TOKEN})
-#'   \item an IAM instance role (on the running EC2 instance from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}, if the aws.ec2metadtaa package is installed
 #'   \item an instance role (on the running ECS task from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}, if the aws.ec2metadtaa package is installed
+#'   \item an IAM instance role (on the running EC2 instance from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}, if the aws.ec2metadtaa package is installed
 #'   \item a profile in a local credentials dot file in the current working directory, using the profile specified by \env{AWS_PROFILE}
 #'   \item the default profile in that local credentials file
 #'   \item a profile in a global credentials dot file in a location set by \env{AWS_SHARED_CREDENTIALS_FILE} or defaulting typically to \file{~/.aws/credentials} (or another OS-specific location), using the profile specified by \env{AWS_PROFILE}
@@ -58,18 +58,13 @@ function(
     if (isTRUE(verbose)) {
         message("Checking for credentials in user-supplied values")
     }
-    if ((!is.null(key) && key != "") || (!is.null(secret) && secret != "")) {
-        if (!is.null(key) && key != "") {
-            if (isTRUE(verbose)) {
-                message("Using user-supplied value for AWS Access Key ID")
-            }
+    if (!is_blank(key) && !is_blank(secret)) {
+        if (isTRUE(verbose)) {
+            message("Using user-supplied value for AWS Access Key ID")
+            message("Using user-supplied value for AWS Secret Access Key")
         }
-        if (!is.null(secret) && secret != "") {
-            if (isTRUE(verbose)) {
-                message("Using user-supplied value for AWS Secret Access Key")
-            }
-        }
-        if (!is.null(session_token) && session_token != "") {
+        
+        if (!is_blank(session_token)) {
             if (isTRUE(verbose)) {
                 message("Using user-supplied value for AWS Session Token")
             }
@@ -80,6 +75,11 @@ function(
         # early return
         return(list(key = key, secret = secret, session_token = session_token, region = region))
     }
+  
+    # otherwise use environment variables if no user-supplied values
+    if (isTRUE(verbose)) {
+      message("Checking for credentials in Environment Variables")
+    }
     
     # otherwise try to use environment variables if no user-supplied values
     # grab environment variables
@@ -88,44 +88,21 @@ function(
                 session_token = Sys.getenv("AWS_SESSION_TOKEN"),
                 region = Sys.getenv("AWS_DEFAULT_REGION"))
     
-    if ((!is.null(env$key) && env$key != "") || (!is.null(env$secret) && env$secret != "")) {
-        # otherwise use environment variables if no user-supplied values
+    if (!is_blank(env$key)&&!is_blank(env$secret)) {
         if (isTRUE(verbose)) {
-            message("Checking for credentials in Environment Variables")
+            message("Using Environment Variable 'AWS_ACCESS_KEY_ID' for AWS Access Key ID")
+            message("Using Environment Variable 'AWS_SECRET_ACCESS_KEY' for AWS Secret Access Key")
         }
-        if (!is.null(env$key) && env$key != "") {
-            key <- env$key
-            if (isTRUE(verbose)) {
-                message("Using Environment Variable 'AWS_ACCESS_KEY_ID' for AWS Access Key ID")
-            }
-        } else {
-            if (!is.null(key) && key != "") {
-                key <- key
-                if (isTRUE(verbose)) {
-                    message("Using user-supplied value for AWS Access Key ID")
-                }
-            }
-        }
-        if (!is.null(env$secret) && env$secret != "") {
-            secret <- env$secret
-            if (isTRUE(verbose)) {
-                message("Using Environment Variable 'AWS_SECRET_ACCESS_KEY' for AWS Secret Access Key")
-            }
-        } else {
-            if (!is.null(secret) && secret != "") {
-                secret <- secret
-                if (isTRUE(verbose)) {
-                    message("Using user-supplied value for AWS Secret Access Key")
-                }
-            }
-        }
-        if (!is.null(env$session_token) && env$session_token != "") {
+        key <- env$key
+        secret <- env$secret
+
+        if (!is_blank(env$session_token)) {
             session_token <- env$session_token
             if (isTRUE(verbose)) {
                 message("Using Environment Variable 'AWS_SESSION_TOKEN' for AWS Session Token")
             }
         } else {
-            if (!is.null(session_token) && session_token != "") {
+            if (!is_blank(session_token)) {
                 session_token <- session_token
                 if (isTRUE(verbose)) {
                     message("Using user-supplied value for AWS Session Token")
@@ -139,110 +116,61 @@ function(
         return(list(key = key, secret = secret, session_token = session_token, region = region))
     }
     
+    # lacking that, check for ECS metadata
+    if (isTRUE(check_ecs())) {
+      if (isTRUE(verbose)) {
+        message("Checking for credentials in ECS Instance Metadata")
+      }
+      ecs_meta <- aws.ec2metadata::metadata$ecs_task_role()
+      if (!is.null(ecs_meta)) {
+        if (isTRUE(verbose)) {
+          message(sprintf("Using ECS Instance Metadata for AWS Credentials (IAM Role: %s)", ecs_meta$RoleArn))
+        }
+        
+        key <- ecs_meta[["AccessKeyId"]]
+        secret <- ecs_meta[["SecretAccessKey"]]
+        session_token <- ecs_meta[["Token"]]
+        
+        # now find region, with fail safes
+        region <- find_region_with_failsafe(region = region,
+                                            default_region = default_region,
+                                            verbose = verbose,
+                                            try_ec2 = TRUE)
+        # early return
+        return(list(key = key,
+                    secret = secret,
+                    session_token = session_token,
+                    region = region)
+               )
+      }
+    }
+    
     # lacking that, check for EC2 metadata
     if (isTRUE(check_ec2())) {
         if (isTRUE(verbose)) {
             message("Checking for credentials in EC2 Instance Metadata")
         }
         role <- try(get_ec2_role(verbose = verbose), silent = TRUE)
-        if (!inherits(role, "try-error")) {
-            if (!is.null(role[["AccessKeyId"]])) {
-                key <- role[["AccessKeyId"]]
-                if (isTRUE(verbose)) {
-                    message("Using EC2 Instance Metadata for AWS Access Key ID")
-                }
-            }
-            if (!is.null(role[["SecretAccessKey"]])) {
-                secret <- role[["SecretAccessKey"]]
-                if (isTRUE(verbose)) {
-                    message("Using EC2 Instance Metadata for AWS Secret Access Key")
-                }
-            }
-            if (!is.null(role[["Token"]])) {
-                session_token <- role[["Token"]]
-                if (isTRUE(verbose)) {
-                    message("Using EC2 Instance Metadata for AWS Session Token")
-                }
-            }
-        }
-        # now find region, with fail safes
-        if (!is.null(region) && region != "") {
-            region <- region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
-            }
-        } else if (!is.null(env$region) && env$region != "") {
-            region <- env$region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
-            }
-        } else {
-            # check instance metadata for region
-            reg <- try(aws.ec2metadata::instance_document()$region, silent = TRUE)
-            if (!inherits(reg, "try-error") && !is.null(reg) && reg != "") {
-                region <- reg
-                if (isTRUE(verbose)) {
-                    message(sprintf("Using EC2 Instance Metadata for AWS Region ('%s')", region))
-                }
-            } else {
-                region <- default_region
-                if (isTRUE(verbose)) {
-                    message(sprintf("Using default value for AWS Region ('%s')", region))
-                }
-            }
+        if (!is.null(role)) {
+          if (isTRUE(verbose)) {
+            message("Using EC2 Instance Metadata for credentials")
+          }
+          key <- role[["AccessKeyId"]]
+          secret <- role[["SecretAccessKey"]]
+          session_token <- role[["Token"]]
+          
+          # now find region, with fail safes
+          region <- find_region_with_failsafe(region = region,
+                                              default_region = default_region,
+                                              verbose = verbose,
+                                              try_ec2 = TRUE)
         }
         
         # early return
         return(list(key = key, secret = secret, session_token = session_token, region = region))
     }
     
-    # lacking that, check for ECS metadata
-    if (isTRUE(check_ecs())) {
-        if (isTRUE(verbose)) {
-            message("Checking for credentials in ECS Instance Metadata")
-        }
-        ecs_meta <- try(aws.ec2metadata::ecs_metadata(), silent = TRUE)
-        if (!inherits(ecs_meta, "try-error")) {
-            if (!is.null(ecs_meta[["AccessKeyId"]])) {
-                key <- ecs_meta[["AccessKeyId"]]
-                if (isTRUE(verbose)) {
-                    message("Using ECS Instance Metadata for AWS Access Key ID")
-                }
-            }
-            if (!is.null(ecs_meta[["SecretAccessKey"]])) {
-                secret <- ecs_meta[["SecretAccessKey"]]
-                if (isTRUE(verbose)) {
-                    message("Using ECS Instance Metadata for AWS Secret Access Key")
-                }
-            }
-            if (!is.null(ecs_meta[["Token"]])) {
-                session_token <- ecs_meta[["Token"]]
-                if (isTRUE(verbose)) {
-                    message("Using ECS Instance Metadata for AWS Session Token")
-                }
-            }
-        }
-        # now find region, with fail safes
-        if (!is.null(region) && region != "") {
-            region <- region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
-            }
-        } else if (!is.null(env$region) && env$region != "") {
-            region <- env$region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
-            }
-        } else  {
-            region <- default_region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using default value for AWS Region ('%s')", region))
-            }
-        }
-        
-        # early return
-        return(list(key = key, secret = secret, session_token = session_token, region = region))
-    }
+
 
     # lastly, check for credentials file
     if (isTRUE(verbose)) {
@@ -338,7 +266,7 @@ get_ec2_role <- function(role, verbose = getOption("verbose", FALSE)) {
     }
     # return role credentials as list
     out <- try(aws.ec2metadata::metadata$iam_role(role[1L]), silent = TRUE)
-    if (inherits(out, "try-errror")) {
+    if (inherits(out, "try-error")) {
         out <- NULL
     }
     out
@@ -404,25 +332,44 @@ find_region_with_failsafe <-
 function(
   region = NULL,
   default_region = "us-east-1",
-  verbose = getOption("verbose", FALSE)
+  verbose = getOption("verbose", FALSE),
+  try_ec2 = FALSE
 ) {
-    if (!is.null(region) && region != "") {
-        region <- region
-        if (isTRUE(verbose)) {
-            message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
-        }
-    } else {
-        region <- Sys.getenv("AWS_DEFAULT_REGION")
-        if (!is.null(region) && region != "") {
-            if (isTRUE(verbose)) {
-                message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
-            }
-        } else {
-            region <- default_region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using default value for AWS Region ('%s')", region))
-            }
-        }
+  # if we have a valid argument, just return it
+  if (!is_blank(region)) {
+    if (isTRUE(verbose)) {
+      message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
     }
     return(region)
+  }
+  
+  # look in the environment
+  region <- Sys.getenv("AWS_DEFAULT_REGION")
+  if (!is_blank(region)) {
+    if (isTRUE(verbose)) {
+      message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
+    }
+    return(region)
+  }
+  
+  # if we've been asked to, try the ec2 instance metadata
+  # this isn't done by default as its expensive if not on EC2
+  if (isTRUE(try_ec2)) {
+    reg <- try(aws.ec2metadata::instance_document()$region, silent = TRUE)
+    if (!inherits(reg, "try-error")&&!is_blank(reg)) {
+      region <- reg
+      if (isTRUE(verbose)) {
+        message(sprintf("Using EC2 Instance Metadata for AWS Region ('%s')", region))
+      }
+      return(region)
+    }
+    
+  }
+
+  # otherwise, use the default region
+  region <- default_region
+  if (isTRUE(verbose)) {
+    message(sprintf("Using default value for AWS Region ('%s')", region))
+  }
+  return(region)
 }
