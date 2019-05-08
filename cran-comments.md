@@ -7,7 +7,9 @@
 
 ## R CMD check results
 
-There were no ERRORs or WARNINGs or NOTEs. 
+There were no ERRORs or WARNINGs or NOTEs.
+
+I, Jonathan Stott (jonathan.stott@magairports.com), am the new maintainer.
 
 
 ## Downstream dependencies
