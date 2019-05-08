@@ -12,3 +12,5 @@
 ^\.github.?
 ^tests/testthat/\.aws$
 ^tests/testthat/\.aws/.+$
+^CRAN-RELEASE$
+^cran-comments.md$
