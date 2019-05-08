@@ -18,7 +18,7 @@ default_credentials_file()
 \arguments{
 \item{file}{A character string containing a path to a \samp{.aws/credentials} file. By default, the standard/centralized file given by \env{AWS_SHARED_CREDENTIALS_FILE} is used, otherwise an assumed default location is assumed. For \code{use_credentials}, this can also be an object of class \dQuote{aws_credentials} (as returned by \code{use_credentials}).}
 
-\item{profile}{A character string specifing which profile to use from the file. By default, the \dQuote{default} profile is used.}
+\item{profile}{A character string specifying which profile to use from the file. By default, the \dQuote{default} profile is used.}
 }
 \description{
 Use a profile from a \samp{.aws/credentials} file
