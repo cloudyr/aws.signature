@@ -14,3 +14,4 @@
 ^tests/testthat/\.aws/.+$
 ^CRAN-RELEASE$
 ^cran-comments.md$
+^aws\.Rproj$
