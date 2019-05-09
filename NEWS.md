@@ -1,3 +1,7 @@
+# aws.signature 0.5.1
+
+* Fix additional output when multiple profiles exist (@muschellij2, #42).
+
 # aws.signature 0.5.0
 
 * New Maintainer: @jon-mago
