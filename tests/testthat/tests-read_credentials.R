@@ -14,6 +14,8 @@ test_that("read_credentials() works", {
     bob <- read_credentials(file = "credentials")[["Bob"]]
     expect_equal(bob[["AWS_SECRET_ACCESS_KEY"]], "Bob_secret_access_key", label = "final line value read correctly")
     expect_false(identical(alice, bob), label = "Read distinct profiles correctly")
+    expect_false("[" %in% names(alice))
+    expect_false("[" %in% names(bob))
 })
 
 test_that("read_credentials() works even absent EOL character", {
