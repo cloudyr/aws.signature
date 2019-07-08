@@ -4,9 +4,9 @@
 #' @param profile A character string specifying which profile to use from the file. By default, the \dQuote{default} profile is used.
 #' @param file A character string containing a path to a \samp{.aws/credentials} file. By default, the standard/centralized file given by \env{AWS_SHARED_CREDENTIALS_FILE} is used, otherwise an assumed default location is assumed. For \code{use_credentials}, this can also be an object of class \dQuote{aws_credentials} (as returned by \code{use_credentials}).
 #' @details \code{read_credentials} reads and parses a \samp{.aws/credentials} file into an object of class \dQuote{aws_credentials}.
-#' 
+#'
 #' \code{use_credentials} uses credentials from a profile stored in a credentials file to set the environment variables used by this package. It is called by default during package load if the \env{AWS_ACCESS_KEY_ID} and \env{AWS_SECRET_ACCESS_KEY} environment variables are not set.
-#' 
+#'
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references
 #'   \href{https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs}{Amazon blog post describing the format}
@@ -15,7 +15,7 @@
 #' \dontrun{
 #' # read and parse a credentials file
 #' read_credentials()
-#' 
+#'
 #' # set environment variables from a profile
 #' use_credentials()
 #' }
@@ -72,7 +72,7 @@ function() {
 }
 
 parse_credentials <- function(char) {
-    s <- c(gregexpr("\\[", char)[[1]], nchar(char))
+    s <- c(gregexpr("\\[", char)[[1]], nchar(char)+1)
 
     make_named_vec <- function(x) {
         elem <- strsplit(x, "[ ]?=[ ]?")
@@ -83,7 +83,7 @@ parse_credentials <- function(char) {
 
     creds <- list()
     for (i in seq_along(s)[-1]) {
-        tmp <- strsplit(substr(char, s[i-1], s[i]), "[\n\r]+")[[1]]
+        tmp <- strsplit(substr(char, s[i-1], s[i]-1), "[\n\r]+")[[1]]
         creds[[i-1]] <- make_named_vec(tmp[-1])
         names(creds)[[i-1]] <- gsub("\\[", "", gsub("\\]", "", tmp[1]))
     }
