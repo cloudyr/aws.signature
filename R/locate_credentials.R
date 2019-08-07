@@ -282,6 +282,10 @@ function(
   default_region = "us-east-1",
   verbose = getOption("verbose", FALSE)
 ) {
+    key <- NULL
+    secret <- NULL
+    session_token <- NULL
+
     if (!is.null(cred[["AWS_ACCESS_KEY_ID"]])) {
         key <- cred[["AWS_ACCESS_KEY_ID"]]
         if (isTRUE(verbose)) {
