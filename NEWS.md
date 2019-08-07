@@ -1,3 +1,7 @@
+# aws.signature [in progress]
+
+* Fix failure to install package with partial credentials file (h/t @stelsemeyer, #39)
+
 # aws.signature 0.5.1
 
 * Fix additional output when multiple profiles exist (@muschellij2, #42).
