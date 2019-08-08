@@ -73,19 +73,50 @@ function() {
 
 parse_credentials <- function(char) {
     s <- c(gregexpr("\\[", char)[[1]], nchar(char)+1)
+    # This regex finds the header lines which look like: [name]<any old junk>EOL
+    sections <- gregexpr("(?m)^(?<header_line>\\[(?<header_contents>[^]]+)\\].*)$", char, perl=TRUE)[[1]]
+    
+    # the section starts from the start of the match, and the start of the line
+    section_starts <- sections + attr(sections, "capture.length")[,"header_line"]
+    # the section ends at the start of the next section, or the end
+    section_ends   <- c(sections-1, nchar(char)+1)[-1]
+    
+    # header name bounds
+    header_starts <- attr(sections, "capture.start")[,"header_contents"]
+    header_ends   <- header_starts + attr(sections, "capture.length")[,"header_contents"] - 1
+    
+    # extract out our headers and sections
+    headers <- substring(char, header_starts, header_ends)
+    section_bodies <- substring(char, section_starts, section_ends)
+    names(section_bodies) <- headers
+    
+    # now with the section bodies, parse our variables
+    # variables MUST start at the start of a line
+    variable_matches <- gregexpr("(?m)^(?<name>\\w+)[ \t]*=[ \t]*", section_bodies, perl=TRUE)
+    
+    creds <- mapply(process_variable, section_bodies, variable_matches, SIMPLIFY = FALSE)
 
-    make_named_vec <- function(x) {
-        elem <- strsplit(x, "[ ]?=[ ]?")
-        out <- lapply(elem, `[`, 2)
-        names(out) <- trimws(toupper(sapply(elem, `[`, 1)))
-        out
-    }
-
-    creds <- list()
-    for (i in seq_along(s)[-1]) {
-        tmp <- strsplit(substr(char, s[i-1], s[i]-1), "[\n\r]+")[[1]]
-        creds[[i-1]] <- make_named_vec(tmp[-1])
-        names(creds)[[i-1]] <- gsub("\\[", "", gsub("\\]", "", tmp[1]))
-    }
     structure(creds, class = "aws_credentials")
+}
+
+process_variable <- function(text, var_match) {
+  # parse out names based on the start/end of the capture
+  name_starts <- attr(var_match, "capture.start")[,"name"]
+  name_ends   <- name_starts + attr(var_match, "capture.length")[,"name"]
+  var_names <- substring(text, name_starts, name_ends  - 1)
+  
+  # var values start at the end of the match (i.e after = and whitespace)
+  value_starts <- var_match + attr(var_match, "match.length")
+  # values end just before the next name starts
+  value_ends   <- c(name_starts[-1]-1, nchar(text) + 1)
+  
+  var_values <- substring(text, value_starts, value_ends)
+  # trim all whitespace around values.
+  # This makes parsing nested sections impossible, but we're parsing and ignoring them for now
+  var_values <- trimws(var_values)
+  
+  var_values <- as.list(var_values)
+  names(var_values) <- toupper(var_names)
+  
+  var_values
 }
