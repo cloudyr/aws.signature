@@ -59,7 +59,7 @@
 #' 
 #' \href{http://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html}{Amazon S3 API Reference: Authenticating Requests (AWS Signature Version 4)}
 #' 
-#' \href{Add the Signing Information to the Request}{http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html}
+#' \href{http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html}{Add the Signing Information to the Request}
 #' @seealso \code{\link{signature_v2_auth}}, \code{\link{locate_credentials}}
 #' @export
 signature_v4_auth <- 
