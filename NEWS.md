@@ -1,6 +1,7 @@
-# aws.signature [in progress]
+# aws.signature 0.5.2
 
 * Fix failure to install package with partial credentials file (h/t @stelsemeyer, #39)
+* Improve parsing of config files
 
 # aws.signature 0.5.1
 
