@@ -1,16 +1,13 @@
 ## Test environments
 
-* local Win 10 install, R 3.5.3
-* ubuntu 12.04 (on travis-ci), R 3.6.0
-* OSX (on travis-ci), R 3.6.0
+* local Win 10 install, R 3.6.0
+* ubuntu 16.04 (on travis-ci), R 3.6.1
+* OSX (on travis-ci), R 3.6.1
 * win-builder (release)
 
 ## R CMD check results
 
 There were no ERRORs or WARNINGs or NOTEs.
-
-I, Jonathan Stott (jonathan.stott@magairports.com), am the new maintainer.
-
 
 ## Downstream dependencies
 
