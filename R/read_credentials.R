@@ -25,11 +25,19 @@ function(
   file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file())
 ) {
     file <- path.expand(file)
-    if (!file.exists(file)) {
+    if (!credentials_exists(file)) {
         stop(paste0("File ", shQuote(file), " does not exist."))
     }
     char <- rawToChar(readBin(file, "raw", n = 1e5L))
     parse_credentials(char)
+}
+
+#' @rdname read_credentials
+#' @export
+credentials_exists <- function(
+  file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file())
+) {
+  file.exists(file)
 }
 
 #' @rdname read_credentials

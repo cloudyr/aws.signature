@@ -5,7 +5,7 @@
         return(invisible(NULL))
     }
     # Load default AWS credentials allowing the package to behave like the AWS CLI
-    if (file.exists(default_credentials_file())) {
+    if (credentials_exists(default_credentials_file())) {
         use_credentials()
     }
     return(invisible(NULL))

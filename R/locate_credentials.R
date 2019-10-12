@@ -176,7 +176,7 @@ function(
     if (isTRUE(verbose)) {
         message("Searching for credentials file(s)")
     }
-    if (file.exists(file.path(".aws", "credentials"))) {
+    if (credentials_exists(file.path(".aws", "credentials"))) {
         ## in working directory
         cred <- read_credentials(file.path(".aws", "credentials"))
         if (profile %in% names(cred)) {
@@ -193,9 +193,9 @@ function(
         
         # early return
         return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
-    } else if (file.exists(file) || file.exists(default_credentials_file())) {
+    } else if (credentials_exists(file) || credentials_exists(default_credentials_file())) {
         ## in specified location
-        if (file.exists(file)) {
+        if (credentials_exists(file)) {
             cred <- read_credentials(file = file)
         } else {
             ## otherwise, default to default location

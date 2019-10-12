@@ -1,11 +1,12 @@
 context("Tests locate_credentials()")
 
-fake_creds_file <- "
-[default]
-aws_access_key_id = ACCESS_KEY
-aws_secret_access_key = SECRET_KEY
-aws_session_token = TOKEN
-"
+fake_creds <- list(
+    "default" = list(
+        "AWS_ACCESS_KEY_ID" = "ACCESS_KEY",
+        "AWS_SECRET_ACCESS_KEY" = "SECRET_KEY",
+        "AWS_SESSION_TOKEN" = "TOKEN"
+    )
+)
 
 aws_creds_exists <- function(path) { path == ".aws/credentials" }
 aws_creds_do_not_exist <- function(path) { 
@@ -19,7 +20,7 @@ aws_creds_do_not_exist <- function(path) {
 read_fake_creds <-
     function(path, what, n) {
         if (path == ".aws/credentials") {
-            return(charToRaw(fake_creds_file))
+            return(fake_creds)
         }
     }
 
@@ -72,8 +73,8 @@ read_fake_creds <-
     
     test_that("locate_credentials() returns credentials file values when environment variables missing and credentials file present", {
         with_mock(
-            file.exists = aws_creds_exists,
-            readBin = read_fake_creds,
+            credentials_exists = aws_creds_exists,
+            read_credentials = read_fake_creds,
             {
         
         # save environment variables
@@ -100,8 +101,8 @@ read_fake_creds <-
     
     test_that("locate_credentials() returns non-default values if requested, when environment variables missing and credentials file absent", {
         with_mock(
-            file.exists = aws_creds_do_not_exist,
-            readBin = read_fake_creds,
+            credentials_exists = aws_creds_do_not_exist,
+            read_credentials = read_fake_creds,
             {
 
         
@@ -130,8 +131,8 @@ read_fake_creds <-
     
     test_that("locate_credentials() returns NULLs when environment variables missing and credentials file absent", {
         with_mock(
-            file.exists = aws_creds_do_not_exist,
-            readBin = read_fake_creds,
+            credentials_exists = aws_creds_do_not_exist,
+            read_credentials = read_fake_creds,
             {
         
         # save environment variables
