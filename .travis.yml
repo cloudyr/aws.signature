@@ -16,6 +16,7 @@ matrix:
 r_packages:
 - covr
 - drat
+- testthat
 r_github_packages:
 - cloudyr/travisci
 - cloudyr/aws.ec2metadata
