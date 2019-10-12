@@ -27,9 +27,6 @@ read_fake_creds <-
 
     
     test_that("locate_credentials() returns envvar values when environment variables and credentials file present", {
-        
-        skip_on_cran()
-        
         # save environment variables
         e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION"))
         
@@ -48,12 +45,11 @@ read_fake_creds <-
         
         # restore environment variables
         do.call("Sys.setenv", as.list(e))
+        
+       
     })
     
     test_that("locate_credentials() returns non-default values if requested when environment variables and credentials file present", {
-        
-        skip_on_cran()
-        
         # save environment variables
         e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION"))
         
@@ -75,8 +71,6 @@ read_fake_creds <-
     })
     
     test_that("locate_credentials() returns credentials file values when environment variables missing and credentials file present", {
-        
-        skip_on_cran()
         with_mock(
             file.exists = aws_creds_exists,
             readBin = read_fake_creds,
@@ -105,9 +99,6 @@ read_fake_creds <-
     })
     
     test_that("locate_credentials() returns non-default values if requested, when environment variables missing and credentials file absent", {
-        
-        skip_on_cran()
-        
         with_mock(
             file.exists = aws_creds_do_not_exist,
             readBin = read_fake_creds,
@@ -138,9 +129,6 @@ read_fake_creds <-
     })
     
     test_that("locate_credentials() returns NULLs when environment variables missing and credentials file absent", {
-        
-        skip_on_cran()
-        
         with_mock(
             file.exists = aws_creds_do_not_exist,
             readBin = read_fake_creds,
