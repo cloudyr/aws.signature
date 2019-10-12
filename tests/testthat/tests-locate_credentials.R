@@ -73,8 +73,8 @@ read_fake_creds <-
     
     test_that("locate_credentials() returns credentials file values when environment variables missing and credentials file present", {
         with_mock(
-            credentials_exists = aws_creds_exists,
-            read_credentials = read_fake_creds,
+            `aws.signature::credentials_exists` = aws_creds_exists,
+            `aws.signature::read_credentials` = read_fake_creds,
             {
         
         # save environment variables
@@ -101,8 +101,8 @@ read_fake_creds <-
     
     test_that("locate_credentials() returns non-default values if requested, when environment variables missing and credentials file absent", {
         with_mock(
-            credentials_exists = aws_creds_do_not_exist,
-            read_credentials = read_fake_creds,
+            `aws.signature::credentials_exists` = aws_creds_do_not_exist,
+            `aws.signature::read_credentials` = read_fake_creds,
             {
 
         
@@ -131,8 +131,8 @@ read_fake_creds <-
     
     test_that("locate_credentials() returns NULLs when environment variables missing and credentials file absent", {
         with_mock(
-            credentials_exists = aws_creds_do_not_exist,
-            read_credentials = read_fake_creds,
+            `aws.signature::credentials_exists` = aws_creds_do_not_exist,
+            `aws.signature::read_credentials` = read_fake_creds,
             {
         
         # save environment variables
