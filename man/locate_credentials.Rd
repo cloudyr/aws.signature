@@ -7,8 +7,8 @@
 locate_credentials(key = NULL, secret = NULL, session_token = NULL,
   region = NULL, file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE",
   default_credentials_file()), profile = Sys.getenv("AWS_PROFILE",
-  "default"), default_region = "us-east-1",
-  verbose = getOption("verbose", FALSE))
+  "default"), default_region = getOption("cloudyr.aws.default_region",
+  "us-east-1"), verbose = getOption("verbose", FALSE))
 }
 \arguments{
 \item{key}{An AWS Access Key ID}
@@ -53,7 +53,7 @@ Because region is often handled slightly differently from credentials and is req
   \item the \env{AWS_DEFAULT_REGION} environment variable
   \item (only on EC2 instances) a region declared in the instance metadata
   \item (if a credentials file is being used) the value specified therein
-  \item the default value specified in \code{default_region} (i.e., \dQuote{us-east-1})
+  \item the default value specified in \code{default_region} (i.e., \dQuote{us-east-1} - this can be overriden with the option \dQuote{cloudyr.aws.default_region})
 }
 
 As such, user-supplied values of \code{region} always trump any other value.
