@@ -79,7 +79,7 @@ if (file.exists(".aws/credentials")) {
         skip_on_cran()
         
         # move credentials file
-        tmp <- tempfile()
+        tmp <- tempfile(tmpdir = ".aws")
         file.rename(".aws/credentials", tmp)
         
         # save environment variables
@@ -110,7 +110,7 @@ if (file.exists(".aws/credentials")) {
         skip_on_cran()
         
         # move credentials file
-        tmp <- tempfile()
+        tmp <- tempfile(tmpdir = ".aws")
         file.rename(".aws/credentials", tmp)
         
         # save environment variables
