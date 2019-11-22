@@ -31,7 +31,7 @@
 #'   \item the \env{AWS_DEFAULT_REGION} environment variable
 #'   \item (only on EC2 instances) a region declared in the instance metadata
 #'   \item (if a credentials file is being used) the value specified therein
-#'   \item the default value specified in \code{default_region} (i.e., \dQuote{us-east-1})
+#'   \item the default value specified in \code{default_region} (i.e., \dQuote{us-east-1} - this can be overriden with the option \dQuote{cloudyr.aws.default_region})
 #' }
 #' 
 #' As such, user-supplied values of \code{region} always trump any other value.
@@ -46,7 +46,7 @@ function(
   region = NULL,
   file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file()),
   profile = Sys.getenv("AWS_PROFILE", "default"),
-  default_region = "us-east-1",
+  default_region = getOption("cloudyr.aws.default_region", "us-east-1"),
   verbose = getOption("verbose", FALSE)
 ) {
     
@@ -279,7 +279,7 @@ credentials_to_list <-
 function(
   cred,
   region = NULL,
-  default_region = "us-east-1",
+  default_region = getOption("cloudyr.aws.default_region", "us-east-1"),
   verbose = getOption("verbose", FALSE)
 ) {
     key <- NULL
@@ -307,7 +307,7 @@ function(
         session_token <- NULL
     }
     # now find region, with fail safes (including credentials file)
-    if (!is.null(region) && region != "") {
+    if (!is_blank(region)||((region=="")&&getOption("cloudyr.aws.allow_empty_region", FALSE))) {
         region <- region
         if (isTRUE(verbose)) {
             message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
@@ -338,12 +338,12 @@ function(
 find_region_with_failsafe <-
 function(
   region = NULL,
-  default_region = "us-east-1",
+  default_region = getOption("cloudyr.aws.default_region", "us-east-1"),
   verbose = getOption("verbose", FALSE),
   try_ec2 = FALSE
 ) {
   # if we have a valid argument, just return it
-  if (!is_blank(region)) {
+  if (!is_blank(region)||((region=="")&&getOption("cloudyr.aws.allow_empty_region", FALSE))) {
     if (isTRUE(verbose)) {
       message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
     }
