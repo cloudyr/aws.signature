@@ -307,7 +307,7 @@ function(
         session_token <- NULL
     }
     # now find region, with fail safes (including credentials file)
-    if (!is_blank(region)||((region=="")&&getOption("cloudyr.aws.allow_empty_region", FALSE))) {
+    if (!is_blank(region)||(identical(region, "")&&getOption("cloudyr.aws.allow_empty_region", FALSE))) {
         region <- region
         if (isTRUE(verbose)) {
             message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
@@ -343,7 +343,7 @@ function(
   try_ec2 = FALSE
 ) {
   # if we have a valid argument, just return it
-  if (!is_blank(region)||((region=="")&&getOption("cloudyr.aws.allow_empty_region", FALSE))) {
+  if (!is_blank(region)||(identical(region,"")&&getOption("cloudyr.aws.allow_empty_region", FALSE))) {
     if (isTRUE(verbose)) {
       message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
     }

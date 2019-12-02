@@ -189,5 +189,32 @@ if (file.exists(".aws/credentials")) {
         do.call("Sys.setenv", as.list(e))
         options(cloudyr.aws.allow_empty_region = cloudyr_region)
     })
+    
+    test_that("locate_credentials() works with allow_empty_set", {
+        
+        skip_on_cran()
+        
+        # save environment variables
+        e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION"))
+        
+        # unset environment variables
+        Sys.unsetenv("AWS_ACCESS_KEY_ID")
+        Sys.unsetenv("AWS_SECRET_ACCESS_KEY")
+        Sys.unsetenv("AWS_SESSION_TOKEN")
+        Sys.unsetenv("AWS_DEFAULT_REGION")
+        cloudyr_region <- getOption("cloudyr.aws.allow_empty_region")
+        options(cloudyr.aws.allow_empty_region = TRUE)
+        
+        # tests
+        cred <- locate_credentials(region=NULL)
+        expect_equal(cred[["key"]], "ACCESS_KEY")
+        expect_equal(cred[["secret"]], "SECRET_KEY")
+        expect_equal(cred[["session_token"]], "TOKEN")
+        expect_equal(cred[["region"]], "us-east-1")
+        
+        # restore environment variables
+        do.call("Sys.setenv", as.list(e))
+        options(cloudyr.aws.allow_empty_region = cloudyr_region)
+    })
 
 }
