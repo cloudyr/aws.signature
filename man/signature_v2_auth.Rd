@@ -4,10 +4,18 @@
 \alias{signature_v2_auth}
 \title{Signature Version 2}
 \usage{
-signature_v2_auth(datetime = format(Sys.time(),
-  "\%Y-\%m-\%dT\%H:\%M:\%S", tz = "UTC"), verb, service, path,
-  query_args = list(), key = NULL, secret = NULL, region = NULL,
-  force_credentials = FALSE, verbose = getOption("verbose", FALSE))
+signature_v2_auth(
+  datetime = format(Sys.time(), "\%Y-\%m-\%dT\%H:\%M:\%S", tz = "UTC"),
+  verb,
+  service,
+  path,
+  query_args = list(),
+  key = NULL,
+  secret = NULL,
+  region = NULL,
+  force_credentials = FALSE,
+  verbose = getOption("verbose", FALSE)
+)
 }
 \arguments{
 \item{datetime}{A character string containing a date in the form of \dQuote{YYYY-MM-DDTH:M:S}. If missing, it is generated automatically using \code{\link[base]{Sys.time}}.}
@@ -44,14 +52,14 @@ This function generates an AWS Signature Version 2 for authorizing API requests.
 # examples from:
 # http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html
 
-true_string <- paste0("GET\\n",
-"elasticmapreduce.amazonaws.com\\n",
-"/\\n",
+true_string <- paste0("GET\n",
+"elasticmapreduce.amazonaws.com\n",
+"/\n",
 "AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE",
 "&Action=DescribeJobFlows",
 "&SignatureMethod=HmacSHA256",
 "&SignatureVersion=2",
-"&Timestamp=2011-10-03T15\\\%3A19\\\%3A30",
+"&Timestamp=2011-10-03T15\\%3A19\\%3A30",
 "&Version=2009-03-31", collapse = "")
 true_sig <- "i91nKc4PWAt0JJIdXwz9HxZCJDdiy6cf/Mj6vPxyYIs="
 

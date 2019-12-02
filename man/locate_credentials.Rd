@@ -4,11 +4,16 @@
 \alias{locate_credentials}
 \title{Locate AWS Credentials}
 \usage{
-locate_credentials(key = NULL, secret = NULL, session_token = NULL,
-  region = NULL, file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE",
-  default_credentials_file()), profile = Sys.getenv("AWS_PROFILE",
-  "default"), default_region = getOption("cloudyr.aws.default_region",
-  "us-east-1"), verbose = getOption("verbose", FALSE))
+locate_credentials(
+  key = NULL,
+  secret = NULL,
+  session_token = NULL,
+  region = NULL,
+  file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file()),
+  profile = Sys.getenv("AWS_PROFILE", "default"),
+  default_region = getOption("cloudyr.aws.default_region", "us-east-1"),
+  verbose = getOption("verbose", FALSE)
+)
 }
 \arguments{
 \item{key}{An AWS Access Key ID}

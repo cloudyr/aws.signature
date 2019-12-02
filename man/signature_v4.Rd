@@ -4,9 +4,14 @@
 \alias{signature_v4}
 \title{Signature Version 4}
 \usage{
-signature_v4(secret = NULL, date = format(Sys.time(), "\%Y\%m\%d"),
-  region = NULL, service, string_to_sign,
-  verbose = getOption("verbose", FALSE))
+signature_v4(
+  secret = NULL,
+  date = format(Sys.time(), "\%Y\%m\%d"),
+  region = NULL,
+  service,
+  string_to_sign,
+  verbose = getOption("verbose", FALSE)
+)
 }
 \arguments{
 \item{secret}{An AWS Secret Access Key. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
