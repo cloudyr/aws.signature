@@ -1,5 +1,7 @@
 # aws.signature (development version)
 
+* Allow connection to empty regions (h/t @namelessjon, @lawremi)
+
 # aws.signature 0.5.2
 
 * Fix failure to install package with partial credentials file (h/t @stelsemeyer, #39)
