@@ -1,3 +1,5 @@
+# aws.signature (development version)
+
 # aws.signature 0.5.2
 
 * Fix failure to install package with partial credentials file (h/t @stelsemeyer, #39)
