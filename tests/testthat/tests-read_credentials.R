@@ -70,6 +70,17 @@ test_that("parse_credentials() handles some pathological cases", {
     )
     
     expect_equal(
+        parse_credentials("[spaces]\naws=foo\nthing=bar\n# baz = quux"),
+        structure(list("spaces" = list(AWS = "foo", THING = "bar")), class = 'aws_credentials')
+    )
+    
+    expect_equal(
+        parse_credentials("[spaces]\naws=foo\nthing=bar\n# baz = quux\ndo = dad"),
+        structure(list("spaces" = list(AWS = "foo", THING = "bar", DO = "dad")), class = 'aws_credentials')
+    )
+    
+    
+    expect_equal(
         parse_credentials("[spaces]\naws=foo\ns3 =\n   thing=bar\n[nspaces]\naws= foo\nthing   =   bar\n\n"),
         structure(list("spaces" = list(AWS = "foo", S3 = "thing=bar"),
                        "nspaces" = list(AWS="foo", THING="bar")), class = 'aws_credentials')

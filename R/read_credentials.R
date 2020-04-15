@@ -72,6 +72,8 @@ function() {
 }
 
 parse_credentials <- function(char) {
+    char <- gsub("(?m)#.*?$", "", char, perl=TRUE)
+  
     s <- c(gregexpr("\\[", char)[[1]], nchar(char)+1)
     # This regex finds the header lines which look like: [name]<any old junk>EOL
     sections <- gregexpr("(?m)^(?<header_line>\\[(?<header_contents>[^]]+)\\].*)$", char, perl=TRUE)[[1]]
