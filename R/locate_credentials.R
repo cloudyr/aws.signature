@@ -45,10 +45,17 @@ function(
   session_token = NULL,
   region = NULL,
   file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file()),
-  profile = Sys.getenv("AWS_PROFILE", "default"),
+  profile = NULL,
   default_region = getOption("cloudyr.aws.default_region", "us-east-1"),
   verbose = getOption("verbose", FALSE)
 ) {
+
+    profile_set <- TRUE
+    if (is.null(profile)){
+      profile_set <- FALSE
+      profile <- Sys.getenv("AWS_PROFILE", "default")
+    }
+    credentials_feature_flag_on <- as.logical(Sys.getenv("CREDENTIALS_FEATURE_FLAG_ON", TRUE))
     
     if (isTRUE(verbose)) {
         message("Locating credentials")
@@ -75,12 +82,47 @@ function(
         # early return
         return(list(key = key, secret = secret, session_token = session_token, region = region))
     }
-  
+
+    # Check for user-supplied profile
+    if (isTRUE(verbose)) {
+      message("Checking for credentials from user-defined profile")
+    }
+    
+    if (profile_set && credentials_feature_flag_on) {
+        if (file.exists(file.path(".aws", "credentials"))) {
+            cred <- read_credentials(file.path(".aws", "credentials"))
+            if (profile %in% names(cred)) {
+                cred <- cred[[profile]]
+            }
+            if (isTRUE(verbose)) {
+                message(sprintf("Using profile '%s' from local credentials files from '%s'", profile, file.path(".aws", "credentials")))
+            }
+            # early return
+            return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
+        } else if (file.exists(file) || file.exists(default_credentials_file())) {
+            if (file.exists(file)) {
+                cred <- read_credentials(file = file)
+            } else {
+                ## otherwise, default to default location
+                cred <- read_credentials(file = default_credentials_file())
+            }
+        if (profile %in% names(cred)) {
+            cred <- cred[[profile]]
+                cred <- cred[[profile]]
+            }
+            if (isTRUE(verbose)) {
+                message(sprintf("Using profile '%s' from global credentials files from '%s'", profile, default_credentials_file()))
+            }
+            # early return
+            return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
+        }
+    }
+
     # otherwise use environment variables if no user-supplied values
     if (isTRUE(verbose)) {
       message("Checking for credentials in Environment Variables")
     }
-    
+
     # otherwise try to use environment variables if no user-supplied values
     # grab environment variables
     env <- list(key = Sys.getenv("AWS_ACCESS_KEY_ID"),
@@ -179,14 +221,14 @@ function(
     if (file.exists(file.path(".aws", "credentials"))) {
         ## in working directory
         cred <- read_credentials(file.path(".aws", "credentials"))
-        if (profile %in% names(cred)) {
-            cred <- cred[[profile]]
-        } else {
-            cred <- cred[["default"]]
-            if (isTRUE(verbose)) {
-                warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
-            }
-        }
+         if (profile %in% names(cred)) {
+             cred <- cred[[profile]]
+         } else {
+             cred <- cred[["default"]]
+             if (isTRUE(verbose)) {
+                 warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
+             }
+         }
         if (isTRUE(verbose)) {
             message(sprintf("Using profile '%s' from local credentials files from '%s'", profile, file.path(".aws", "credentials")))
         }
