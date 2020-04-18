@@ -10,7 +10,7 @@ locate_credentials(
   session_token = NULL,
   region = NULL,
   file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file()),
-  profile = Sys.getenv("AWS_PROFILE", "default"),
+  profile = NULL,
   default_region = getOption("cloudyr.aws.default_region", "us-east-1"),
   verbose = getOption("verbose", FALSE)
 )
