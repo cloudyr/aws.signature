@@ -225,12 +225,10 @@ if (file.exists(".aws/credentials")) {
         e <- Sys.getenv(c("AWS_ACCESS_KEY_ID",
                           "AWS_SECRET_ACCESS_KEY",
                           "AWS_SESSION_TOKEN",
-                          "AWS_DEFAULT_REGION",
-                          "CREDENTIALS_FEATURE_FLAG_ON"
+                          "AWS_DEFAULT_REGION"
                           ))
         
         # set environment variables
-        Sys.setenv("CREDENTIALS_FEATURE_FLAG_ON" = "")
         Sys.setenv("AWS_ACCESS_KEY_ID" = "foo-key")
         Sys.setenv("AWS_SECRET_ACCESS_KEY" = "foo-secret")
         Sys.setenv("AWS_SESSION_TOKEN" = "foo-token")

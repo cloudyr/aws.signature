@@ -50,9 +50,9 @@ function(
   verbose = getOption("verbose", FALSE)
 ) {
 
-    profile_set <- TRUE
+    profile_is_passed <- TRUE
     if (is.null(profile)){
-      profile_set <- FALSE
+      profile_is_passed <- FALSE
       profile <- Sys.getenv("AWS_PROFILE", "default")
     }
     credentials_feature_flag_on <- getOption("cloudyr.aws.prioritise_passed_profile", TRUE)
@@ -88,7 +88,7 @@ function(
       message("Checking for credentials from user-defined profile")
     }
     
-    if (profile_set && credentials_feature_flag_on) {
+    if (profile_is_passed && credentials_feature_flag_on) {
         if (file.exists(file.path(".aws", "credentials"))) {
             cred <- read_credentials(file.path(".aws", "credentials"))
             if (profile %in% names(cred)) {
@@ -108,7 +108,6 @@ function(
             }
         if (profile %in% names(cred)) {
             cred <- cred[[profile]]
-                cred <- cred[[profile]]
             }
             if (isTRUE(verbose)) {
                 message(sprintf("Using profile '%s' from global credentials files from '%s'", profile, default_credentials_file()))
@@ -212,8 +211,6 @@ function(
         return(list(key = key, secret = secret, session_token = session_token, region = region))
     }
     
-
-
     # lastly, check for credentials file
     if (isTRUE(verbose)) {
         message("Searching for credentials file(s)")
@@ -221,14 +218,14 @@ function(
     if (file.exists(file.path(".aws", "credentials"))) {
         ## in working directory
         cred <- read_credentials(file.path(".aws", "credentials"))
-         if (profile %in% names(cred)) {
-             cred <- cred[[profile]]
-         } else {
-             cred <- cred[["default"]]
-             if (isTRUE(verbose)) {
-                 warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
-             }
-         }
+        if (profile %in% names(cred)) {
+            cred <- cred[[profile]]
+        } else {
+            cred <- cred[["default"]]
+            if (isTRUE(verbose)) {
+                warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
+            }
+        }
         if (isTRUE(verbose)) {
             message(sprintf("Using profile '%s' from local credentials files from '%s'", profile, file.path(".aws", "credentials")))
         }
