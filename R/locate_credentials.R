@@ -55,7 +55,7 @@ function(
       profile_set <- FALSE
       profile <- Sys.getenv("AWS_PROFILE", "default")
     }
-    credentials_feature_flag_on <- as.logical(Sys.getenv("CREDENTIALS_FEATURE_FLAG_ON", TRUE))
+    credentials_feature_flag_on <- getOption("cloudyr.aws.prioritise_passed_profile", TRUE)
     
     if (isTRUE(verbose)) {
         message("Locating credentials")
