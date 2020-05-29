@@ -41,7 +41,8 @@ function(verb,
          canonical_uri = "",
          query_args = list(),
          canonical_headers,
-         request_body = ""
+         request_body = "",
+         signed_body = FALSE
          ) {
     if (is.character(request_body) && file.exists(request_body)) {
         body_hash <- tolower(digest::digest(request_body, file = TRUE, algo = "sha256", serialize = FALSE))
@@ -53,6 +54,10 @@ function(verb,
     lc <- Sys.getlocale(category = "LC_COLLATE")
     Sys.setlocale(category = "LC_COLLATE", locale = "C")
     on.exit(Sys.setlocale(category = "LC_COLLATE", locale = lc))
+    
+    if (isTRUE(signed_body)) {
+        canonical_headers[['x-amz-content-sha256']] = body_hash
+    }
     
     names(canonical_headers) <- tolower(names(canonical_headers))
     canonical_headers <- canonical_headers[order(names(canonical_headers))]
