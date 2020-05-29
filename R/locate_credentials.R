@@ -38,183 +38,66 @@
 #' 
 #' @seealso \code{\link{signature_v4}}, \code{\link{signature_v2_auth}}, \code{\link{use_credentials}}
 #' @export
-locate_credentials <- 
+locate_credentials <-
 function(
   key = NULL,
   secret = NULL,
   session_token = NULL,
   region = NULL,
   file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file()),
-  profile = Sys.getenv("AWS_PROFILE", "default"),
+  profile = NULL,
   default_region = getOption("cloudyr.aws.default_region", "us-east-1"),
   verbose = getOption("verbose", FALSE)
 ) {
+
+    credentials_feature_flag_on <- getOption("cloudyr.aws.prioritise_passed_profile", TRUE)
     
     if (isTRUE(verbose)) {
         message("Locating credentials")
     }
     
     # check for user-supplied values
-    if (isTRUE(verbose)) {
-        message("Checking for credentials in user-supplied values")
+    user_supplied_values <- check_for_user_supplied_values(key, secret, region, session_token, default_region, verbose)
+    if (!is.null(user_supplied_values)){
+      # early return
+      return(user_supplied_values)
     }
-    if (!is_blank(key) && !is_blank(secret)) {
-        if (isTRUE(verbose)) {
-            message("Using user-supplied value for AWS Access Key ID")
-            message("Using user-supplied value for AWS Secret Access Key")
-        }
-        
-        if (!is_blank(session_token)) {
-            if (isTRUE(verbose)) {
-                message("Using user-supplied value for AWS Session Token")
-            }
-        }
-        # now find region, with fail safes
-        region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
-        
+
+    # Check for user-supplied profile
+    if (credentials_feature_flag_on) {
+      user_supplied_profile <- check_for_user_supplied_profile(profile, file, region, session_token, default_region, verbose)
+      if (!is.null(user_supplied_profile)){
         # early return
-        return(list(key = key, secret = secret, session_token = session_token, region = region))
+        return(user_supplied_profile)
+      }
     }
-  
+
     # otherwise use environment variables if no user-supplied values
-    if (isTRUE(verbose)) {
-      message("Checking for credentials in Environment Variables")
+    env_vars <- check_for_env_vars(region, file, default_region, session_token, verbose)
+    if (!is.null(env_vars)){
+      # early return
+      return(env_vars)
     }
-    
-    # otherwise try to use environment variables if no user-supplied values
-    # grab environment variables
-    env <- list(key = Sys.getenv("AWS_ACCESS_KEY_ID"),
-                secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
-                session_token = Sys.getenv("AWS_SESSION_TOKEN"),
-                region = Sys.getenv("AWS_DEFAULT_REGION"))
-    
-    if (!is_blank(env$key)&&!is_blank(env$secret)) {
-        if (isTRUE(verbose)) {
-            message("Using Environment Variable 'AWS_ACCESS_KEY_ID' for AWS Access Key ID")
-            message("Using Environment Variable 'AWS_SECRET_ACCESS_KEY' for AWS Secret Access Key")
-        }
-        key <- env$key
-        secret <- env$secret
 
-        if (!is_blank(env$session_token)) {
-            session_token <- env$session_token
-            if (isTRUE(verbose)) {
-                message("Using Environment Variable 'AWS_SESSION_TOKEN' for AWS Session Token")
-            }
-        } else {
-            if (!is_blank(session_token)) {
-                session_token <- session_token
-                if (isTRUE(verbose)) {
-                    message("Using user-supplied value for AWS Session Token")
-                }
-            }
-        }
-        # now find region, with fail safes
-        region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
-        
-        # early return
-        return(list(key = key, secret = secret, session_token = session_token, region = region))
-    }
-    
     # lacking that, check for ECS metadata
-    if (isTRUE(check_ecs())) {
-      if (isTRUE(verbose)) {
-        message("Checking for credentials in ECS Instance Metadata")
-      }
-      ecs_meta <- aws.ec2metadata::metadata$ecs_task_role()
-      if (!is.null(ecs_meta)) {
-        if (isTRUE(verbose)) {
-          message(sprintf("Using ECS Instance Metadata for AWS Credentials (IAM Role: %s)", ecs_meta$RoleArn))
-        }
-        
-        key <- ecs_meta[["AccessKeyId"]]
-        secret <- ecs_meta[["SecretAccessKey"]]
-        session_token <- ecs_meta[["Token"]]
-        
-        # now find region, with fail safes
-        region <- find_region_with_failsafe(region = region,
-                                            default_region = default_region,
-                                            verbose = verbose,
-                                            try_ec2 = TRUE)
-        # early return
-        return(list(key = key,
-                    secret = secret,
-                    session_token = session_token,
-                    region = region)
-               )
-      }
+    ecs_metadata <- check_ecs_metadata(region, default_region, verbose)
+    if (!is.null(ecs_metadata)){
+      # early return
+      return(ecs_metadata)
     }
-    
-    # lacking that, check for EC2 metadata
-    if (isTRUE(check_ec2())) {
-        if (isTRUE(verbose)) {
-            message("Checking for credentials in EC2 Instance Metadata")
-        }
-        role <- try(get_ec2_role(verbose = verbose), silent = TRUE)
-        if (!is.null(role)&&!inherits(role, "try-error")) {
-          if (isTRUE(verbose)) {
-            message("Using EC2 Instance Metadata for credentials")
-          }
-          key <- role[["AccessKeyId"]]
-          secret <- role[["SecretAccessKey"]]
-          session_token <- role[["Token"]]
-          
-          # now find region, with fail safes
-          region <- find_region_with_failsafe(region = region,
-                                              default_region = default_region,
-                                              verbose = verbose,
-                                              try_ec2 = TRUE)
-        }
-        
-        # early return
-        return(list(key = key, secret = secret, session_token = session_token, region = region))
-    }
-    
 
+    # lacking that, check for EC2 metadata
+    ec2_metadata <- check_ec2_metadata(region, default_region, verbose)
+    if (!is.null(ec2_metadata)){
+      # early return
+      return(ec2_metadata)
+    }
 
     # lastly, check for credentials file
-    if (isTRUE(verbose)) {
-        message("Searching for credentials file(s)")
-    }
-    if (file.exists(file.path(".aws", "credentials"))) {
-        ## in working directory
-        cred <- read_credentials(file.path(".aws", "credentials"))
-        if (profile %in% names(cred)) {
-            cred <- cred[[profile]]
-        } else {
-            cred <- cred[["default"]]
-            if (isTRUE(verbose)) {
-                warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
-            }
-        }
-        if (isTRUE(verbose)) {
-            message(sprintf("Using profile '%s' from local credentials files from '%s'", profile, file.path(".aws", "credentials")))
-        }
-        
-        # early return
-        return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
-    } else if (file.exists(file) || file.exists(default_credentials_file())) {
-        ## in specified location
-        if (file.exists(file)) {
-            cred <- read_credentials(file = file)
-        } else {
-            ## otherwise, default to default location
-            cred <- read_credentials(file = default_credentials_file())
-        }
-        if (profile %in% names(cred)) {
-            cred <- cred[[profile]]
-        } else {
-            cred <- cred[["default"]]
-            if (isTRUE(verbose)) {
-                warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
-            }
-        }
-        if (isTRUE(verbose)) {
-            message(sprintf("Using profile '%s' from global credentials files from '%s'", profile, default_credentials_file()))
-        }
-        
-        # early return
-        return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
+    creds_file <- check_credentials_file(profile, file, region, default_region, verbose)
+    if (!is.null(creds_file)){
+      # early return
+      return(creds_file)
     }
         
     # if that fails, no credentials can be found anywhere
@@ -225,7 +108,7 @@ function(
     region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
     
     # return identified values
-    list(key = key, secret = secret, session_token = session_token, region = region)
+    return(list(key = key, secret = secret, session_token = session_token, region = region))
 }
 
 check_ec2 <- function() {
@@ -379,4 +262,228 @@ function(
     message(sprintf("Using default value for AWS Region ('%s')", region))
   }
   return(region)
+}
+
+check_for_user_supplied_values <- function(key, secret, region, session_token, default_region, verbose) {
+  if (isTRUE(verbose)) {
+      message("Checking for credentials in user-supplied values")
+  }
+  if (!is_blank(key) && !is_blank(secret)) {
+      if (isTRUE(verbose)) {
+          message("Using user-supplied value for AWS Access Key ID")
+          message("Using user-supplied value for AWS Secret Access Key")
+      }
+      
+      if (!is_blank(session_token)) {
+          if (isTRUE(verbose)) {
+              message("Using user-supplied value for AWS Session Token")
+          }
+      }
+      # now find region, with fail safes
+      region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
+      
+      return(list(key = key, secret = secret, session_token = session_token, region = region))
+  } else{
+    return(NULL)
+  }
+}
+
+check_for_user_supplied_profile <- function(profile, file, region, session_token, default_region, verbose) {
+    if (is.null(profile)) {
+        return(NULL)
+    }
+    if (isTRUE(verbose)) {
+        message("Checking for credentials from user-defined profile")
+    }
+    profile_creds <- get_user_supplied_profile(profile, file, region, session_token, default_region, verbose)
+    if (!is.null(profile_creds)) {
+        return(profile_creds)
+    } 
+    # If we can't find the profile the user gave us, bail out
+    if (!is.null(profile)) {
+        stop(paste0("Could not find profile matching '", profile, "'. Check that the profile you passed in matches your credentials file."))
+    }
+    return(NULL)
+}
+
+check_for_env_vars <- function(region, file, default_region, session_token, verbose) {
+
+    if (isTRUE(verbose)) {
+      message("Checking for credentials in Environment Variables")
+    }
+
+    # try to use environment variables if no user-supplied values
+    # grab environment variables
+    env <- list(key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+                secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
+                profile = Sys.getenv("AWS_PROFILE"),
+                session_token = Sys.getenv("AWS_SESSION_TOKEN"),
+                region = Sys.getenv("AWS_DEFAULT_REGION"))
+
+    if (!is_blank(env$session_token)) {
+        session_token <- env$session_token
+        if (isTRUE(verbose)) {
+            message("Using Environment Variable 'AWS_SESSION_TOKEN' for AWS Session Token")
+        }
+    } else {
+        if (!is_blank(session_token)) {
+            session_token <- session_token
+            if (isTRUE(verbose)) {
+                message("Using user-supplied value for AWS Session Token")
+            }
+        }
+    }
+    
+    if (!is_blank(env$key)&&!is_blank(env$secret)) {
+        if (isTRUE(verbose)) {
+            message("Using Environment Variable 'AWS_ACCESS_KEY_ID' for AWS Access Key ID")
+            message("Using Environment Variable 'AWS_SECRET_ACCESS_KEY' for AWS Secret Access Key")
+        }
+        key <- env$key
+        secret <- env$secret
+
+        # now find region, with fail safes
+        region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
+        
+        # early return
+        return(list(key = key, secret = secret, session_token = session_token, region = region))
+    } else if (!is_blank(env$profile)) {
+        return(get_user_supplied_profile(env$profile, file, region, session_token, default_region, verbose))
+    }
+    return(NULL)
+}
+
+check_ecs_metadata <- function(region, default_region, verbose){
+    if (isTRUE(check_ecs())) {
+      if (isTRUE(verbose)) {
+        message("Checking for credentials in ECS Instance Metadata")
+      }
+      ecs_meta <- aws.ec2metadata::metadata$ecs_task_role()
+      if (!is.null(ecs_meta)) {
+        if (isTRUE(verbose)) {
+          message(sprintf("Using ECS Instance Metadata for AWS Credentials (IAM Role: %s)", ecs_meta$RoleArn))
+        }
+        
+        key <- ecs_meta[["AccessKeyId"]]
+        secret <- ecs_meta[["SecretAccessKey"]]
+        session_token <- ecs_meta[["Token"]]
+        
+        # now find region, with fail safes
+        region <- find_region_with_failsafe(region = region,
+                                            default_region = default_region,
+                                            verbose = verbose,
+                                            try_ec2 = TRUE)
+        # early return
+        return(list(key = key,
+                    secret = secret,
+                    session_token = session_token,
+                    region = region)
+               )
+      }
+    }
+    return(NULL)
+}
+
+check_ec2_metadata <- function(region, default_region, verbose){
+    if (isTRUE(check_ec2())) {
+        if (isTRUE(verbose)) {
+            message("Checking for credentials in EC2 Instance Metadata")
+        }
+        role <- try(get_ec2_role(verbose = verbose), silent = TRUE)
+        if (!is.null(role)&&!inherits(role, "try-error")) {
+          if (isTRUE(verbose)) {
+            message("Using EC2 Instance Metadata for credentials")
+          }
+          key <- role[["AccessKeyId"]]
+          secret <- role[["SecretAccessKey"]]
+          session_token <- role[["Token"]]
+          
+          # now find region, with fail safes
+          region <- find_region_with_failsafe(region = region,
+                                              default_region = default_region,
+                                              verbose = verbose,
+                                              try_ec2 = TRUE)
+        }
+        
+        # early return
+        return(list(key = key, secret = secret, session_token = session_token, region = region))
+    }
+    return(NULL)
+}
+
+check_credentials_file <- function(profile, file, region, default_region, verbose) {
+    if (isTRUE(verbose)) {
+        message("Searching for credentials file(s)")
+    }
+    if (file.exists(file.path(".aws", "credentials"))) {
+        ## in working directory
+        cred <- read_credentials(file.path(".aws", "credentials"))
+        if (!is.null(profile) && profile %in% names(cred)) {
+            cred <- cred[[profile]]
+        } else {
+            cred <- cred[["default"]]
+            if (isTRUE(verbose)) {
+                warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
+            }
+        }
+        if (isTRUE(verbose)) {
+            message(sprintf("Using profile '%s' from local credentials files from '%s'", profile, file.path(".aws", "credentials")))
+        }
+        
+        # early return
+        return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
+    } else if (file.exists(file) || file.exists(default_credentials_file())) {
+        ## in specified location
+        if (file.exists(file)) {
+            cred <- read_credentials(file = file)
+        } else {
+            ## otherwise, default to default location
+            cred <- read_credentials(file = default_credentials_file())
+        }
+        if (!is.null(profile) && profile %in% names(cred)) {
+            cred <- cred[[profile]]
+        } else {
+            cred <- cred[["default"]]
+            if (isTRUE(verbose)) {
+                warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
+            }
+        }
+        if (isTRUE(verbose)) {
+            message(sprintf("Using profile '%s' from global credentials files from '%s'", profile, default_credentials_file()))
+        }
+        
+        # early return
+        return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
+    }
+    return(NULL)
+}
+
+get_user_supplied_profile <- function(profile, file, region, session_token, default_region, verbose) {
+    if (file.exists(file.path(".aws", "credentials"))) {
+         cred <- read_credentials(file.path(".aws", "credentials"))
+         if (profile %in% names(cred)) {
+             cred <- cred[[profile]]
+             if (isTRUE(verbose)) {
+                 message(sprintf("Using profile '%s' from local credentials files from '%s'", profile, file.path(".aws", "credentials")))
+             }
+             # early return
+             return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
+         }
+    } else if (file.exists(file) || file.exists(default_credentials_file())) {
+         if (file.exists(file)) {
+             cred <- read_credentials(file = file)
+         } else {
+             ## otherwise, default to default location
+             cred <- read_credentials(file = default_credentials_file())
+         }
+         if (profile %in% names(cred)) {
+             cred <- cred[[profile]]
+             if (isTRUE(verbose)) {
+                 message(sprintf("Using profile '%s' from global credentials files from '%s'", profile, default_credentials_file()))
+             }
+             # early return
+             return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
+         }
+    }   
+    return(NULL)
 }

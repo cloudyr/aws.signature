@@ -7,13 +7,14 @@ if (file.exists(".aws/credentials")) {
         skip_on_cran()
         
         # save environment variables
-        e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION"))
+        e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION", "AWS_PROFILE"))
         
         # set environment variables
         Sys.setenv("AWS_ACCESS_KEY_ID" = "foo-key")
         Sys.setenv("AWS_SECRET_ACCESS_KEY" = "foo-secret")
         Sys.setenv("AWS_SESSION_TOKEN" = "foo-token")
         Sys.setenv("AWS_DEFAULT_REGION" = "foo-region")
+        Sys.unsetenv("AWS_PROFILE")
         
         # tests
         cred <- locate_credentials()
@@ -217,4 +218,65 @@ if (file.exists(".aws/credentials")) {
         options(cloudyr.aws.allow_empty_region = cloudyr_region)
     })
 
+    test_that("locate_credentials() prioritizes profile argument when conflicting env-vars are set", {
+
+        skip_on_cran()
+
+        # save environment variables
+        e <- Sys.getenv(c("AWS_ACCESS_KEY_ID",
+                          "AWS_SECRET_ACCESS_KEY",
+                          "AWS_SESSION_TOKEN",
+                          "AWS_DEFAULT_REGION"
+                          ))
+        
+        # set environment variables
+        Sys.setenv("AWS_ACCESS_KEY_ID" = "foo-key")
+        Sys.setenv("AWS_SECRET_ACCESS_KEY" = "foo-secret")
+        Sys.setenv("AWS_SESSION_TOKEN" = "foo-token")
+        Sys.setenv("AWS_DEFAULT_REGION" = "foo-region")
+
+        # tests
+        cred <- locate_credentials(profile = 'Alice')
+        expect_equal(cred[["key"]], "Alice_access_key_ID")
+        expect_equal(cred[["secret"]], "Alice_secret_access_key")
+        
+        # restore environment variables
+        do.call("Sys.setenv", as.list(e))
+    })
+
+    test_that("locate_credentials() prioritizes env var keys if there is a conflicting env profile var", {
+        skip_on_cran()
+        # save environment variables
+        e <- Sys.getenv(c("AWS_ACCESS_KEY_ID",
+                          "AWS_SECRET_ACCESS_KEY",
+                          "AWS_SESSION_TOKEN",
+                          "AWS_PROFILE",
+                          "AWS_DEFAULT_REGION"
+                          ))
+
+        # set environment variables
+        Sys.setenv("AWS_ACCESS_KEY_ID" = "foo-key")
+        Sys.setenv("AWS_SECRET_ACCESS_KEY" = "foo-secret")
+        Sys.setenv("AWS_PROFILE" = "Alice")
+        Sys.setenv("AWS_SESSION_TOKEN" = "foo-token")
+        Sys.setenv("AWS_DEFAULT_REGION" = "foo-region")
+
+        # tests
+        cred <- locate_credentials()
+        expect_equal(cred[["key"]], "foo-key")
+        expect_equal(cred[["secret"]], "foo-secret")
+
+        Sys.unsetenv("AWS_ACCESS_KEY_ID")
+        Sys.unsetenv("AWS_SECRET_ACCESS_KEY")
+        cred <- locate_credentials()
+        expect_equal(cred[["key"]], "Alice_access_key_ID")
+        expect_equal(cred[["secret"]], "Alice_secret_access_key")
+
+        do.call("Sys.setenv", as.list(e))
+    })
+
+    test_that("locate_credentials() errors on unknown profile", {
+        expect_error(locate_credentials(profile = "buzz"), 
+                     "Could not find profile matching" )
+    })
 }
