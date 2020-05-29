@@ -5,6 +5,7 @@
 #' @param query_args A named list of character strings containing the query string values (if any) used in the API request.
 #' @param canonical_headers A named list of character strings containing the headers used in the request.
 #' @param request_body The body of the HTTP request, or a filename. If a filename, hashing is performed on the file without reading it into memory.
+#' @param signed_body Sign the body request and add the correct header (x-amz-content-sha256) to the list of headers
 #' @details This function creates a \dQuote{Canonical Request}, which is part of the Signature Version 4. Users probably only need to use the \code{\link{signature_v4_auth}} function to generate signatures.
 #' @return A list containing
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
