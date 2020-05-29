@@ -227,18 +227,14 @@ function(
 ) {
   # if we have a valid argument, just return it
   if (!is_blank(region)||(identical(region,"")&&getOption("cloudyr.aws.allow_empty_region", FALSE))) {
-    if (isTRUE(verbose)) {
-      message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
-    }
+    vmsg(verbose, "Using user-supplied value for AWS Region ('%s')", region)
     return(region)
   }
   
   # look in the environment
   region <- Sys.getenv("AWS_DEFAULT_REGION")
   if (!is_blank(region)) {
-    if (isTRUE(verbose)) {
-      message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
-    }
+    vmsg(verbose, "Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region)
     return(region)
   }
   
@@ -248,9 +244,7 @@ function(
     reg <- try(aws.ec2metadata::instance_document()$region, silent = TRUE)
     if (!inherits(reg, "try-error")&&!is_blank(reg)) {
       region <- reg
-      if (isTRUE(verbose)) {
-        message(sprintf("Using EC2 Instance Metadata for AWS Region ('%s')", region))
-      }
+      vmsg(verbose, "Using EC2 Instance Metadata for AWS Region ('%s')", region)
       return(region)
     }
     
@@ -258,9 +252,8 @@ function(
 
   # otherwise, use the default region
   region <- default_region
-  if (isTRUE(verbose)) {
-    message(sprintf("Using default value for AWS Region ('%s')", region))
-  }
+  vmsg(verbose, "Using default value for AWS Region ('%s')", region)
+  
   return(region)
 }
 
@@ -295,7 +288,7 @@ check_for_user_supplied_profile <- function(profile, file, region, session_token
     if (isTRUE(verbose)) {
         message("Checking for credentials from user-defined profile")
     }
-    profile_creds <- get_user_supplied_profile(profile, file, region, session_token, default_region, verbose)
+    profile_creds <- check_credentials_file(profile, file, region, default_region, verbose, require_profile = TRUE)
     if (!is.null(profile_creds)) {
         return(profile_creds)
     } 
@@ -348,7 +341,7 @@ check_for_env_vars <- function(region, file, default_region, session_token, verb
         # early return
         return(list(key = key, secret = secret, session_token = session_token, region = region))
     } else if (!is_blank(env$profile)) {
-        return(get_user_supplied_profile(env$profile, file, region, session_token, default_region, verbose))
+        return(check_credentials_file(env$profile, file, region, default_region, verbose))
     }
     return(NULL)
 }
@@ -410,79 +403,51 @@ check_ec2_metadata <- function(region, default_region, verbose){
     return(NULL)
 }
 
-check_credentials_file <- function(profile, file, region, default_region, verbose) {
-    if (isTRUE(verbose)) {
-        message("Searching for credentials file(s)")
+check_credentials_file <- function(profile, file, region, default_region, verbose, require_profile=FALSE) {
+    vmsg(verbose, "Searching for credentials file(s)")
+
+    files_to_check <- c(
+      file.path(".aws", "credentials"),
+      file,
+      default_credentials_file()
+    )
+    files_to_check <- unique(files_to_check)
+    
+    for (f in files_to_check) {
+      vmsg(verbose, sprintf("Attempting to read credentials from '%s'", f))
+      
+      creds <- read_profile_from_credentials_file(profile, f, region, default_region, verbose, require_profile)
+      if (!is.null(creds)) {
+        break
+      }
     }
-    if (file.exists(file.path(".aws", "credentials"))) {
-        ## in working directory
-        cred <- read_credentials(file.path(".aws", "credentials"))
-        if (!is.null(profile) && profile %in% names(cred)) {
-            cred <- cred[[profile]]
-        } else {
-            cred <- cred[["default"]]
-            if (isTRUE(verbose)) {
-                warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
-            }
-        }
-        if (isTRUE(verbose)) {
-            message(sprintf("Using profile '%s' from local credentials files from '%s'", profile, file.path(".aws", "credentials")))
-        }
-        
-        # early return
-        return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
-    } else if (file.exists(file) || file.exists(default_credentials_file())) {
-        ## in specified location
-        if (file.exists(file)) {
-            cred <- read_credentials(file = file)
-        } else {
-            ## otherwise, default to default location
-            cred <- read_credentials(file = default_credentials_file())
-        }
-        if (!is.null(profile) && profile %in% names(cred)) {
-            cred <- cred[[profile]]
-        } else {
-            cred <- cred[["default"]]
-            if (isTRUE(verbose)) {
-                warning(sprintf("Requested profile '%s' not found in file. Using 'default' profile.", profile))
-            }
-        }
-        if (isTRUE(verbose)) {
-            message(sprintf("Using profile '%s' from global credentials files from '%s'", profile, default_credentials_file()))
-        }
-        
-        # early return
-        return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
-    }
-    return(NULL)
+    
+    return(creds)
 }
 
-get_user_supplied_profile <- function(profile, file, region, session_token, default_region, verbose) {
-    if (file.exists(file.path(".aws", "credentials"))) {
-         cred <- read_credentials(file.path(".aws", "credentials"))
-         if (profile %in% names(cred)) {
-             cred <- cred[[profile]]
-             if (isTRUE(verbose)) {
-                 message(sprintf("Using profile '%s' from local credentials files from '%s'", profile, file.path(".aws", "credentials")))
-             }
-             # early return
-             return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
-         }
-    } else if (file.exists(file) || file.exists(default_credentials_file())) {
-         if (file.exists(file)) {
-             cred <- read_credentials(file = file)
-         } else {
-             ## otherwise, default to default location
-             cred <- read_credentials(file = default_credentials_file())
-         }
-         if (profile %in% names(cred)) {
-             cred <- cred[[profile]]
-             if (isTRUE(verbose)) {
-                 message(sprintf("Using profile '%s' from global credentials files from '%s'", profile, default_credentials_file()))
-             }
-             # early return
-             return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
-         }
-    }   
-    return(NULL)
+read_profile_from_credentials_file <- function(profile, file, region, default_region, verbose, require_profile=FALSE) {
+  if (!file.exists(file)) return(NULL)
+  
+  cred <- read_credentials(file)
+  
+  if (missing(profile)||is.null(profile)) {
+    profile <- "default"
+  }
+  vmsg(verbose, sprintf("Attempting to find profile '%s'", profile))
+  
+  if (profile %in% names(cred)) {
+    cred <- cred[[profile]]
+    vmsg(verbose, sprintf("Using profile '%s' from credentials files from '%s'", profile, file))
+  } else {
+    if (isTRUE(require_profile)) {
+      return(NULL)
+    } else if ("default" %in% names(cred)) {
+      cred <- cred[["default"]]
+      vmsg(verbose, sprintf("Using profile '%s' from credentials files from '%s'", "default", file))
+    } else {
+      return(NULL)
+    }
+  }
+  
+  return(credentials_to_list(cred, region = region, default_region = default_region, verbose = verbose))
 }
