@@ -8,6 +8,7 @@
 #' @param query_args A named list of character strings containing the query string values (if any) used in the API request, passed to \code{\link{canonical_request}}.
 #' @param canonical_headers A named list of character strings containing the headers used in the request.
 #' @param request_body The body of the HTTP request.
+#' @param signed_body Should the body be signed
 #' @template key
 #' @template secret
 #' @param session_token Optionally, an AWS Security Token Service (STS) temporary Session Token. This is added automatically as a header to \code{canonical_headers}. See \code{\link{locate_credentials}}.
@@ -72,6 +73,7 @@ function(
   query_args = list(),
   canonical_headers, # named list
   request_body,
+  signed_body = FALSE,
   key = NULL,
   secret = NULL,
   session_token = NULL,
@@ -121,7 +123,8 @@ function(
                            canonical_uri = action,
                            query_args = query_args,
                            canonical_headers = canonical_headers,
-                           request_body = request_body)
+                           request_body = request_body,
+                           signed_body = signed_body)
     
     # String To Sign
     S <- string_to_sign(algorithm = algorithm,
@@ -144,7 +147,7 @@ function(
                        paste(paste0("Credential=", credential),
                              paste0("SignedHeaders=", R$headers),
                              paste0("Signature=", V4),
-                             sep = ", "))
+                             sep = ","))
     structure(list(Algorithm = algorithm,
                    Credential = credential,
                    Date = date,
