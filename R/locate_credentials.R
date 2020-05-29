@@ -403,10 +403,9 @@ check_ec2_metadata <- function(region, default_region, verbose){
                                               default_region = default_region,
                                               verbose = verbose,
                                               try_ec2 = TRUE)
+          # early return
+          return(list(key = key, secret = secret, session_token = session_token, region = region))
         }
-        
-        # early return
-        return(list(key = key, secret = secret, session_token = session_token, region = region))
     }
     return(NULL)
 }
