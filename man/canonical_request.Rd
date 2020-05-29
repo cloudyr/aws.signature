@@ -9,7 +9,8 @@ canonical_request(
   canonical_uri = "",
   query_args = list(),
   canonical_headers,
-  request_body = ""
+  request_body = "",
+  signed_body = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ canonical_request(
 \item{canonical_headers}{A named list of character strings containing the headers used in the request.}
 
 \item{request_body}{The body of the HTTP request, or a filename. If a filename, hashing is performed on the file without reading it into memory.}
+
+\item{signed_body}{Sign the body request and add the correct header (x-amz-content-sha256) to the list of headers}
 }
 \value{
 A list containing

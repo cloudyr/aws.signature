@@ -13,6 +13,7 @@ signature_v4_auth(
   query_args = list(),
   canonical_headers,
   request_body,
+  signed_body = FALSE,
   key = NULL,
   secret = NULL,
   session_token = NULL,
@@ -38,6 +39,8 @@ signature_v4_auth(
 \item{canonical_headers}{A named list of character strings containing the headers used in the request.}
 
 \item{request_body}{The body of the HTTP request.}
+
+\item{signed_body}{Should the body be signed}
 
 \item{key}{An AWS Access Key ID. If \code{NULL}, it is retrieved using \code{\link{locate_credentials}}.}
 
