@@ -280,3 +280,25 @@ if (file.exists(".aws/credentials")) {
                      "Could not find profile matching" )
     })
 }
+
+test_that("locate_credentials() is noisy with verbose = TRUE", {
+    
+    skip_on_cran()
+    
+    # save environment variables
+    e <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_DEFAULT_REGION", "AWS_PROFILE"))
+    
+    # set environment variables
+    Sys.setenv("AWS_ACCESS_KEY_ID" = "foo-key")
+    Sys.setenv("AWS_SECRET_ACCESS_KEY" = "foo-secret")
+    Sys.setenv("AWS_SESSION_TOKEN" = "foo-token")
+    Sys.setenv("AWS_DEFAULT_REGION" = "foo-region")
+    Sys.unsetenv("AWS_PROFILE")
+    
+    # tests
+    expect_message(locate_credentials(verbose = TRUE), "Locating credentials")
+    
+    # restore environment variables
+    do.call("Sys.setenv", as.list(e))
+})
+
