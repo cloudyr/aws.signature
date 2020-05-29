@@ -171,46 +171,33 @@ function(
 
     if (!is.null(cred[["AWS_ACCESS_KEY_ID"]])) {
         key <- cred[["AWS_ACCESS_KEY_ID"]]
-        if (isTRUE(verbose)) {
-            message("Using value in credentials file for AWS Access Key ID")
-        }
+        vmsg(verbose, "Using value in credentials file for AWS Access Key ID")
     }
     if (!is.null(cred[["AWS_SECRET_ACCESS_KEY"]])) {
         secret <- cred[["AWS_SECRET_ACCESS_KEY"]]
-        if (isTRUE(verbose)) {
-            message("Using value in credentials file for AWS Secret Access Key")
-        }
+        vmsg(verbose, "Using value in credentials file for AWS Secret Access Key")
     }
     if (!is.null(cred[["AWS_SESSION_TOKEN"]])) {
         session_token <- cred[["AWS_SESSION_TOKEN"]]
-        if (isTRUE(verbose)) {
-            message("Using value in credentials file for AWS Session Token")
-        }
+        vmsg(verbose, "Using value in credentials file for AWS Session Token")
     } else {
         session_token <- NULL
     }
     # now find region, with fail safes (including credentials file)
     if (!is_blank(region)||(identical(region, "")&&getOption("cloudyr.aws.allow_empty_region", FALSE))) {
         region <- region
-        if (isTRUE(verbose)) {
-            message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
-        }
+        vmsg(verbose, "Using user-supplied value for AWS Region ('%s')", region)
+
     } else if (!is.null(cred[["AWS_DEFAULT_REGION"]]) && cred[["AWS_DEFAULT_REGION"]] != "") {
         region <- cred[["AWS_DEFAULT_REGION"]]
-        if (isTRUE(verbose)) {
-            message(sprintf("Using value in credentials file for AWS Region ('%s')", region))
-        }
+        vmsg(verbose, "Using value in credentials file for AWS Region ('%s')", region)
     } else {
         region <- Sys.getenv("AWS_DEFAULT_REGION")
         if (!is.null(region) && region != "") {
-            if (isTRUE(verbose)) {
-                message(sprintf("Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region))
-            }
+          vmsg(verbose, "Using Environment Variable 'AWS_DEFAULT_REGION' for AWS Region ('%s')", region)
         } else {
             region <- default_region
-            if (isTRUE(verbose)) {
-                message(sprintf("Using default value for AWS Region ('%s')", region))
-            }
+            vmsg(verbose, "Using default value for AWS Region ('%s')", region )
         }
     }
     
