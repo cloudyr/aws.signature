@@ -1,4 +1,4 @@
-# aws.signature (development version)
+# aws.signature 0.6.0
 
 * Allow connection to empty regions (h/t @namelessjon, @lawremi)
 * Prioritize the `profile` argument over env vars in `locate_credentials()`
