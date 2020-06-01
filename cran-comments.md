@@ -1,8 +1,8 @@
 ## Test environments
 
-* local Win 10 install, R 3.6.0
-* ubuntu 16.04 (on travis-ci), R 3.6.1
-* OSX (on travis-ci), R 3.6.1
+* local Win 10 install, R 3.6.3
+* ubuntu 16.04 (on travis-ci), R 4.0.0
+* OSX (on travis-ci), R 4.0.0
 * win-builder (release)
 
 ## R CMD check results
