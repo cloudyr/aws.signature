@@ -2,6 +2,7 @@
 
 * Allow connection to empty regions (h/t @namelessjon, @lawremi)
 * Prioritize the `profile` argument over env vars in `locate_credentials()`
+* Add argument for computing signed body as part of the signature (#59)
 
 # aws.signature 0.5.2
 
