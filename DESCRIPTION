@@ -1,7 +1,7 @@
 Package: aws.signature
 Type: Package
 Title: Amazon Web Services Request Signatures
-Version: 0.6.0
+Version: 0.6.1
 Date: 2020-06-01
 Authors@R: c(person("Thomas J.", "Leeper",
                     role = c("aut"),
