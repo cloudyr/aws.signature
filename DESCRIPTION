@@ -14,9 +14,10 @@ Description: Generates version 2 and version 4 request signatures for Amazon Web
 License: GPL (>= 2)
 Imports:
     digest,
-    base64enc
+    base64enc,
     httr
 Suggests:
+    devtools,
     testthat (>= 2.1.0),
     aws.ec2metadata (>= 0.1.6)
 URL: https://github.com/cloudyr/aws.signature
