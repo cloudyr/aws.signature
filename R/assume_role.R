@@ -29,6 +29,7 @@ assume_role_with_web_identity <- function(
     message("Successfully fetched token.")
     return(content(response))
   } else {
+    print(content(response))
     stop("Failed to assume role.")
   }
 }
