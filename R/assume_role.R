@@ -1,4 +1,5 @@
-
+#' @rdname assume_role_with_web_identity
+#' @export
 assume_role_with_web_identity <- function(
   role_arn, 
   token_file, 
@@ -22,11 +23,11 @@ assume_role_with_web_identity <- function(
     Version=version
   )
 
-  response <- httr::GET(base_url, query=query)
+  response <- GET(base_url, query=query)
   
-  if (httr::status_code(response) == 200) {
+  if (status_code(response) == 200) {
     message("Successfully fetched token.")
-    return(httr::content(response))
+    return(content(response))
   } else {
     stop("Failed to assume role.")
   }
