@@ -296,7 +296,7 @@ check_for_user_supplied_profile <- function(profile, file, region, session_token
 
 check_for_web_identity <- function(verbose){
   # try to use environment variable specifying web identity
-  identity <- list(arn=Sys.getenv("AWS_ROLE_ARN")
+  identity <- list(arn=Sys.getenv("AWS_ROLE_ARN"),
                    token_file=Sys.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
   
   if (!is_blank(env$arn) && !is_blank(env$token_file)){
