@@ -23,7 +23,7 @@ assume_role_with_web_identity <- function(
     Version=version
   )
 
-  response <- GET(base_url, query=query)
+  response <- httr::GET(base_url, query=query)
   
   if (status_code(response) == 200) {
     message("Successfully fetched token.")
