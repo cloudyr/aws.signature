@@ -25,11 +25,11 @@ assume_role_with_web_identity <- function(
 
   response <- httr::GET(base_url, query=query)
   
-  if (status_code(response) == 200) {
+  if (httr::status_code(response) == 200) {
     message("Successfully fetched token.")
-    return(content(response))
+    return(httr::content(response))
   } else {
-    print(content(response))
+    print(httr::content(response))
     stop("Failed to assume role.")
   }
 }
