@@ -9,7 +9,7 @@ assume_role_with_web_identity <- function(
   version="2011-06-15"
 ){
   if (is.null(session_name)) {
-    session_name <- Sys.getenv("TENANT")
+    session_name <- Sys.getenv("TENANT", "DataScienceAssumeRoleWithWebIdentity")
   }
   
   token <- paste0(readLines(token_file),collapse="")
