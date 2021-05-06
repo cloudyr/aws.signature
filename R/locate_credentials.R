@@ -299,8 +299,8 @@ check_for_web_identity <- function(verbose){
   identity <- list(arn=Sys.getenv("AWS_ROLE_ARN"),
                    token_file=Sys.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
   
-  if (!is_blank(env$arn) && !is_blank(env$token_file)){
-    return(assume_role_with_web_identity(env$arn, env$token_file))
+  if (!is_blank(identity$arn) && !is_blank(identity$token_file)){
+    return(assume_role_with_web_identity(identity$arn, identity$token_file))
   } else {
     return(NULL)
   }
