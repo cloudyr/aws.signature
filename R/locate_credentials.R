@@ -72,6 +72,13 @@ function(
       }
     }
 
+    # check for env vars needed to get credentials from web identity
+    web_identity <- check_for_web_identity(verbose)
+    if (!is.null(web_identity)) {
+      # early return
+      return(web_identity)
+    }
+
     # otherwise use environment variables if no user-supplied values
     env_vars <- check_for_env_vars(region, file, default_region, session_token, verbose)
     if (!is.null(env_vars)){
@@ -155,7 +162,7 @@ get_ec2_role <- function(role, verbose = getOption("verbose", FALSE)) {
     if (inherits(out, "try-error")) {
         out <- NULL
     }
-    out
+    return(out)
 }
 
 credentials_to_list <-
@@ -285,6 +292,21 @@ check_for_user_supplied_profile <- function(profile, file, region, session_token
     }
     return(NULL)
 }
+
+
+check_for_web_identity <- function(verbose){
+  # try to use environment variable specifying web identity
+  identity <- list(arn=Sys.getenv("AWS_ROLE_ARN")
+                   token_file=Sys.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
+  
+  if (!is_blank(env$arn) && !is_blank(env$token_file)){
+    return(assume_role_with_web_identity(env$arn, env$token_file))
+  } else {
+    return(NULL)
+  }
+
+}
+
 
 check_for_env_vars <- function(region, file, default_region, session_token, verbose) {
 
