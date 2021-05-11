@@ -12,7 +12,7 @@ assume_role_with_web_identity <- function(
     session_name <- Sys.getenv("TENANT", "DataScienceAssumeRoleWithWebIdentity")
   }
   
-  token <- as.character(readLines(token_file))
+  token <- readChar(token_file, file.info(token_file)$size)
   
   query <- list(
     Action="AssumeRoleWithWebIdentity",
