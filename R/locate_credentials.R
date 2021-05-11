@@ -73,7 +73,7 @@ function(
     }
 
     # check for env vars needed to get credentials from web identity
-    web_identity <- check_for_web_identity(verbose)
+    web_identity <- check_for_web_identity(region, default_region, verbose)
     if (!is.null(web_identity)) {
       # early return
       return(web_identity)
@@ -294,13 +294,20 @@ check_for_user_supplied_profile <- function(profile, file, region, session_token
 }
 
 
-check_for_web_identity <- function(verbose){
+check_for_web_identity <- function(region, default_region, verbose){
   # try to use environment variable specifying web identity
   identity <- list(arn=Sys.getenv("AWS_ROLE_ARN"),
                    token_file=Sys.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
   
   if (!is_blank(identity$arn) && !is_blank(identity$token_file)){
-    return(assume_role_with_web_identity(identity$arn, identity$token_file))
+    creds <- assume_role_with_web_identity(identity$arn, identity$token_file)
+    
+    key <- creds$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials$AccessKeyId
+    secret <- creds$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials$SecretAccessKey
+    session_token <- creds$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials$SessionToken
+    region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
+    
+    return(list(key = key, secret = secret, session_token = session_token, region = region))
   } else {
     return(NULL)
   }
