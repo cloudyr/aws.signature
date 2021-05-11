@@ -1,4 +1,12 @@
 #' @rdname assume_role_with_web_identity
+#' @title Assume Role with AWS Web Identity
+#' @description Assume a role from a provided Web Identity Token and ARN using AWS Secure Token Service (STS).
+#' @param role_arn A character string containing the AWS Role Amazon Resource Name (ARN). This specifies the permissions you have to access other AWS services.
+#' @param token_file A character string containing a path to a Web Identity Token file.
+#' @param base_url The AWS STS endpoint to use to retrieve your credentials from.
+#' @param session_name A character string optionally specifying the name.
+#' @param duration The expiry time on the retrieved credentials. 
+#' @param version The AWS STS specification version to use.
 #' @export
 assume_role_with_web_identity <- function(
   role_arn, 
@@ -9,6 +17,7 @@ assume_role_with_web_identity <- function(
   version="2011-06-15"
 ){
   if (is.null(session_name)) {
+    # todo: add random uuid string to the end? (MD)
     session_name <- Sys.getenv("TENANT", "DataScienceAssumeRoleWithWebIdentity")
   }
   
@@ -30,7 +39,6 @@ assume_role_with_web_identity <- function(
     message("Successfully fetched token.")
     return(content)
   } else {
-    # print(content)
     stop("Failed to assume role.")
   }
 }
