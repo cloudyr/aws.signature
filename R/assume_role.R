@@ -33,7 +33,7 @@ assume_role_with_web_identity <- function(
     Version=version
   )
 
-  response <- httr::GET(base_url, query=query, timeout=httr::timeout(30))
+  response <- httr::GET(base_url, query=query)
   content <- httr::content(response)
 
   if (httr::status_code(response) == 200) {
