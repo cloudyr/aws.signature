@@ -19,6 +19,7 @@ assume_role_with_web_identity <- function(
   if (is.null(session_name)) {
     # strip resource ID from arn and use as default session name
     # https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+    print("Setting default session name")
     session_name <- tail(strsplit(role_arn, ":")[[1]], 1)
   }
   
