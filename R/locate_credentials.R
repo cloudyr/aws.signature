@@ -297,12 +297,12 @@ check_for_env_vars <- function(region, file, default_region, session_token, verb
                      token_file=Sys.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
     
     if (!is_blank(identity$arn) && !is_blank(identity$token_file)){
-      creds <- assume_role_with_web_identity(identity$arn, identity$token_file)
+      response <- assume_role_with_web_identity(identity$arn, identity$token_file)
       
-      web_identity_creds <- creds$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials
-      key <- web_identity_creds$AccessKeyId
-      secret <- web_identity_creds$SecretAccessKey
-      session_token <- web_identity_creds$SessionToken
+      creds <- response$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials
+      key <- creds$AccessKeyId
+      secret <- creds$SecretAccessKey
+      session_token <- creds$SessionToken
 
       region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
 
