@@ -17,8 +17,9 @@ assume_role_with_web_identity <- function(
   version="2011-06-15"
 ){
   if (is.null(session_name)) {
-    # todo: add random uuid string to the end? (MD)
-    session_name <- Sys.getenv("TENANT", "DataScienceAssumeRoleWithWebIdentity")
+    # strip resource ID from arn and use as default session name
+    # https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+    session_name <- tail(strsplit(role_arn, ":")[[1]], 1)
   }
   
   token <- readChar(token_file, file.info(token_file)$size)
@@ -32,7 +33,7 @@ assume_role_with_web_identity <- function(
     Version=version
   )
 
-  response <- httr::GET(base_url, query=query)
+  response <- httr::GET(base_url, query=query, timeout=httr::timeout(30))
   content <- httr::content(response)
 
   if (httr::status_code(response) == 200) {

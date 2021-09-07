@@ -299,10 +299,11 @@ check_for_env_vars <- function(region, file, default_region, session_token, verb
     if (!is_blank(identity$arn) && !is_blank(identity$token_file)){
       creds <- assume_role_with_web_identity(identity$arn, identity$token_file)
       
-      # this is a tad ugly... (MD)
-      key <- creds$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials$AccessKeyId
-      secret <- creds$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials$SecretAccessKey
-      session_token <- creds$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials$SessionToken
+      web_identity_creds <- creds$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials
+      key <- web_identity_creds$AccessKeyId
+      secret <- web_identity_creds$SecretAccessKey
+      session_token <- web_identity_creds$SessionToken
+
       region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
 
       return(list(key = key, secret = secret, session_token = session_token, region = region))
