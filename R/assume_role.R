@@ -19,7 +19,7 @@ assume_role_with_web_identity <- function(
   if (is.null(session_name)) {
     # strip resource ID from arn and use as default session name
     # https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
-    session_name <- tail(strsplit(role_arn, ":")[[1]], 1)
+    session_name <- gsub("/", "-", tail(strsplit(role_arn, ":")[[1]], 1))
   }
   
   token <- readChar(token_file, file.info(token_file)$size)
@@ -37,7 +37,7 @@ assume_role_with_web_identity <- function(
   content <- httr::content(response)
   
   print(content)
-  
+
   if (httr::status_code(response) == 200) {
     message("Successfully fetched token.")
     return(content)
