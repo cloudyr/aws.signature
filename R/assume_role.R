@@ -36,8 +36,6 @@ assume_role_with_web_identity <- function(
   response <- httr::GET(base_url, query=query)
   content <- httr::content(response)
   
-  print(content)
-
   if (httr::status_code(response) == 200) {
     message("Successfully fetched token.")
     return(content)
