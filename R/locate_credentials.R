@@ -12,7 +12,7 @@
 #' @details These functions locate values of AWS credentials (access key, secret access key, session token, and region) from likely sources. The order in which these are searched is as follows:
 #' \enumerate{
 #'   \item user-supplied values passed to the function
-#'   \item environment variables (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_DEFAULT_REGION}, and \env{AWS_SESSION_TOKEN})
+#'   \item environment variables, first checking for Web Identity credentials (\env{AWS_ROLE_ARN} and \env{AWS_WEB_IDENTITY_TOKEN_FILE}), then default credentials (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_DEFAULT_REGION}, and \env{AWS_SESSION_TOKEN})
 #'   \item an instance role (on the running ECS task from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}, if the aws.ec2metadata package is installed
 #'   \item an IAM instance role (on the running EC2 instance from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}, if the aws.ec2metadata package is installed
 #'   \item a profile in a local credentials dot file in the current working directory, using the profile specified by \env{AWS_PROFILE}
@@ -155,7 +155,7 @@ get_ec2_role <- function(role, verbose = getOption("verbose", FALSE)) {
     if (inherits(out, "try-error")) {
         out <- NULL
     }
-    out
+    return(out)
 }
 
 credentials_to_list <-
@@ -286,10 +286,27 @@ check_for_user_supplied_profile <- function(profile, file, region, session_token
     return(NULL)
 }
 
+
 check_for_env_vars <- function(region, file, default_region, session_token, verbose) {
 
     if (isTRUE(verbose)) {
       message("Checking for credentials in Environment Variables")
+    }
+  
+    identity <- list(arn=Sys.getenv("AWS_ROLE_ARN"),
+                     token_file=Sys.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
+    
+    if (!is_blank(identity$arn) && !is_blank(identity$token_file)){
+      response <- assume_role_with_web_identity(identity$arn, identity$token_file)
+      
+      creds <- response$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials
+      key <- creds$AccessKeyId
+      secret <- creds$SecretAccessKey
+      session_token <- creds$SessionToken
+
+      region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
+
+      return(list(key = key, secret = secret, session_token = session_token, region = region))
     }
 
     # try to use environment variables if no user-supplied values

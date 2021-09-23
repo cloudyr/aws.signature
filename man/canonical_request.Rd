@@ -4,14 +4,8 @@
 \alias{canonical_request}
 \title{Construct a Canonical Request}
 \usage{
-canonical_request(
-  verb,
-  canonical_uri = "",
-  query_args = list(),
-  canonical_headers,
-  request_body = "",
-  signed_body = FALSE
-)
+canonical_request(verb, canonical_uri = "", query_args = list(),
+  canonical_headers, request_body = "", signed_body = FALSE)
 }
 \arguments{
 \item{verb}{A character string containing the HTTP verb being used in the request.}
