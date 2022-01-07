@@ -7,6 +7,7 @@
 #' @param session_name A character string optionally specifying the name.
 #' @param duration The expiry time on the retrieved credentials. 
 #' @param version The AWS STS specification version to use.
+#' @param verbose A logical indicating whether to be verbose.
 #' @export
 assume_role_with_web_identity <- function(
   role_arn, 
@@ -14,7 +15,8 @@ assume_role_with_web_identity <- function(
   base_url=Sys.getenv("AWS_STS_ENDPOINT", "https://sts.amazonaws.com"), 
   session_name=NULL, 
   duration=3600,
-  version="2011-06-15"
+  version="2011-06-15",
+  verbose = getOption("verbose", FALSE)
 ){
   if (is.null(session_name)) {
     # strip resource ID from arn and use as default session name
@@ -37,7 +39,9 @@ assume_role_with_web_identity <- function(
   content <- httr::content(response)
   
   if (httr::status_code(response) == 200) {
-    message("Successfully fetched token.")
+    if (isTRUE(verbose)) {
+      message("Successfully fetched token.")
+    }
     return(content)
   } else {
     stop("Failed to assume role.")
