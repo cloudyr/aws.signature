@@ -35,10 +35,23 @@ assume_role_with_web_identity <- function(
     Version=version
   )
 
-  response <- httr::GET(base_url, query=query)
-  content <- httr::content(response)
+  ## ---- reverse engineered from httr ----
   
-  if (httr::status_code(response) == 200) {
+  ## construct URL
+  names  <- curl::curl_escape(names(query))
+  values <- lapply(query, curl::curl_escape)
+  query_str  <- paste0(names, "=", values, collapse = "&")
+  query_url <- paste0(base_url, "/?", query_str)
+  
+  ## set up header
+  handle <- curl::new_handle()
+  curl::handle_setheaders(handle, "accept" = "application/json")
+  
+  ## get response & content
+  response <- curl::curl_fetch_memory(query_url, handle = handle)
+  content <- jsonlite::fromJSON(rawToChar(r$content))
+  
+  if (response$status_code == 200) {
     if (isTRUE(verbose)) {
       message("Successfully fetched token.")
     }
