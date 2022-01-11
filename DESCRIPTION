@@ -17,7 +17,7 @@ License: GPL (>= 2)
 Imports:
     digest,
     base64enc,
-    jsonlite
+    jsonlite,
     curl
 Suggests:
     devtools,
