@@ -6,12 +6,14 @@
 \alias{default_credentials_file}
 \title{Use Credentials from .aws/credentials File}
 \usage{
-read_credentials(file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE",
-  default_credentials_file()))
+read_credentials(
+  file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file())
+)
 
-use_credentials(profile = Sys.getenv("AWS_PROFILE", "default"),
-  file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE",
-  default_credentials_file()))
+use_credentials(
+  profile = Sys.getenv("AWS_PROFILE", "default"),
+  file = Sys.getenv("AWS_SHARED_CREDENTIALS_FILE", default_credentials_file())
+)
 
 default_credentials_file()
 }
