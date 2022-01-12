@@ -293,8 +293,6 @@ check_for_env_vars <- function(region, file, default_region, session_token, verb
       message("Checking for credentials in Environment Variables")
     }
 
-
-
     # try to use environment variables if no user-supplied values
     # grab environment variables
     env <- list(key = Sys.getenv("AWS_ACCESS_KEY_ID"),
