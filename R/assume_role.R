@@ -47,7 +47,7 @@ assume_role_with_web_identity <- function(
   
   if (response$status_code == 200) {
     if (isTRUE(verbose)) {
-      message("Successfully fetched token.")
+      message("Successfully fetched token from web identiy provider.")
     }
     return(content)
   } else {
