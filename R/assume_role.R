@@ -26,7 +26,7 @@ assume_role_with_web_identity <- function(
   
   token <- readChar(token_file, file.info(token_file)$size)
 
-  query <- list(
+  query_params <- list(
     Action="AssumeRoleWithWebIdentity",
     DurationSeconds=duration,
     RoleArn=role_arn,
@@ -34,13 +34,9 @@ assume_role_with_web_identity <- function(
     WebIdentityToken=token,
     Version=version
   )
-
-  ## ---- reverse engineered from httr ----
-  
-  ## construct URL
-  names  <- curl::curl_escape(names(query))
-  values <- lapply(query, curl::curl_escape)
-  query_str  <- paste0(names, "=", values, collapse = "&")
+  query_params_names  <- curl::curl_escape(names(query_params))
+  query_params_values <- lapply(query_params, curl::curl_escape)
+  query_str  <- paste0(query_params_names, "=", query_params_values, collapse = "&")
   query_url <- paste0(base_url, "/?", query_str)
   
   ## set up header
