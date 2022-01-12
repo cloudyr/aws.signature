@@ -12,7 +12,7 @@
 #' @details These functions locate values of AWS credentials (access key, secret access key, session token, and region) from likely sources. The order in which these are searched is as follows:
 #' \enumerate{
 #'   \item user-supplied values passed to the function
-#'   \item environment variables, first checking for Web Identity credentials (\env{AWS_ROLE_ARN} and \env{AWS_WEB_IDENTITY_TOKEN_FILE}), then default credentials (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_DEFAULT_REGION}, and \env{AWS_SESSION_TOKEN})
+#'   \item environment variables, first checking for default credentials (\env{AWS_ACCESS_KEY_ID}, \env{AWS_SECRET_ACCESS_KEY}, \env{AWS_DEFAULT_REGION}, and \env{AWS_SESSION_TOKEN}); then for Web Identity Provider credentials (\env{AWS_ROLE_ARN} and \env{AWS_WEB_IDENTITY_TOKEN_FILE})
 #'   \item an instance role (on the running ECS task from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}, if the aws.ec2metadata package is installed
 #'   \item an IAM instance role (on the running EC2 instance from which this function is called) as identified by \code{\link[aws.ec2metadata]{metadata}}, if the aws.ec2metadata package is installed
 #'   \item a profile in a local credentials dot file in the current working directory, using the profile specified by \env{AWS_PROFILE}
@@ -292,22 +292,8 @@ check_for_env_vars <- function(region, file, default_region, session_token, verb
     if (isTRUE(verbose)) {
       message("Checking for credentials in Environment Variables")
     }
-  
-    identity <- list(arn=Sys.getenv("AWS_ROLE_ARN"),
-                     token_file=Sys.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
-    
-    if (!is_blank(identity$arn) && !is_blank(identity$token_file)){
-      response <- assume_role_with_web_identity(identity$arn, identity$token_file)
-      
-      creds <- response$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials
-      key <- creds$AccessKeyId
-      secret <- creds$SecretAccessKey
-      session_token <- creds$SessionToken
 
-      region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
 
-      return(list(key = key, secret = secret, session_token = session_token, region = region))
-    }
 
     # try to use environment variables if no user-supplied values
     # grab environment variables
@@ -315,7 +301,9 @@ check_for_env_vars <- function(region, file, default_region, session_token, verb
                 secret = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
                 profile = Sys.getenv("AWS_PROFILE"),
                 session_token = Sys.getenv("AWS_SESSION_TOKEN"),
-                region = Sys.getenv("AWS_DEFAULT_REGION"))
+                region = Sys.getenv("AWS_DEFAULT_REGION"),
+                arn=Sys.getenv("AWS_ROLE_ARN"),
+                token_file=Sys.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
 
     if (!is_blank(env$session_token)) {
         session_token <- env$session_token
@@ -344,6 +332,22 @@ check_for_env_vars <- function(region, file, default_region, session_token, verb
         
         # early return
         return(list(key = key, secret = secret, session_token = session_token, region = region))
+
+    } else if (!is_blank(env$arn) && !is_blank(env$token_file)){  # Web Identity Provider
+        if (isTRUE(verbose)) {
+            message("Using Environment Variables 'AWS_WEB_IDENTITY_TOKEN_FILE' and `AWS_ROLE_ARN`")
+            message("to assume role with Web Identity Provider")
+        }
+      response <- assume_role_with_web_identity(env$arn, env$token_file)
+
+      creds <- response$AssumeRoleWithWebIdentityResponse$AssumeRoleWithWebIdentityResult$Credentials
+      key <- creds$AccessKeyId
+      secret <- creds$SecretAccessKey
+      session_token <- creds$SessionToken
+
+      region <- find_region_with_failsafe(region = region, default_region = default_region, verbose = verbose)
+
+      return(list(key = key, secret = secret, session_token = session_token, region = region))
     } else if (!is_blank(env$profile)) {
         return(check_credentials_file(env$profile, file, region, default_region, verbose))
     }
