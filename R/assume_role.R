@@ -38,12 +38,10 @@ assume_role_with_web_identity <- function(
   query_params_values <- lapply(query_params, curl::curl_escape)
   query_str  <- paste0(query_params_names, "=", query_params_values, collapse = "&")
   query_url <- paste0(base_url, "/?", query_str)
-  
-  ## set up header
-  handle <- curl::new_handle()
+
+  handle <- curl::new_handle()  # need to accept json headers
   curl::handle_setheaders(handle, "accept" = "application/json")
-  
-  ## get response & content
+
   response <- curl::curl_fetch_memory(query_url, handle = handle)
   content <- jsonlite::fromJSON(rawToChar(r$content))
   
