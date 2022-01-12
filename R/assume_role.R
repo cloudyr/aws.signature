@@ -43,7 +43,7 @@ assume_role_with_web_identity <- function(
   curl::handle_setheaders(handle, "accept" = "application/json")
 
   response <- curl::curl_fetch_memory(query_url, handle = handle)
-  content <- jsonlite::fromJSON(rawToChar(r$content))
+  content <- jsonlite::fromJSON(rawToChar(response$content))
   
   if (response$status_code == 200) {
     if (isTRUE(verbose)) {
