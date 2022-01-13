@@ -21,12 +21,12 @@ assume_role_with_web_identity <- function(
   if (is.null(session_name)) {
     # strip resource ID from arn and use as default session name
     # https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
-    session_name <- gsub("/", "-", tail(strsplit(role_arn, ":")[[1]], 1))
+    session_name <- gsub("/", "-", utils::tail(strsplit(role_arn, ":")[[1]], 1))
   }
   
   token <- readChar(token_file, file.info(token_file)$size)
 
-  query <- list(
+  query_params <- list(
     Action="AssumeRoleWithWebIdentity",
     DurationSeconds=duration,
     RoleArn=role_arn,
@@ -34,26 +34,20 @@ assume_role_with_web_identity <- function(
     WebIdentityToken=token,
     Version=version
   )
-
-  ## ---- reverse engineered from httr ----
-  
-  ## construct URL
-  names  <- curl::curl_escape(names(query))
-  values <- lapply(query, curl::curl_escape)
-  query_str  <- paste0(names, "=", values, collapse = "&")
+  query_params_names  <- curl::curl_escape(names(query_params))
+  query_params_values <- lapply(query_params, curl::curl_escape)
+  query_str  <- paste0(query_params_names, "=", query_params_values, collapse = "&")
   query_url <- paste0(base_url, "/?", query_str)
-  
-  ## set up header
-  handle <- curl::new_handle()
+
+  handle <- curl::new_handle()  # need to accept json headers
   curl::handle_setheaders(handle, "accept" = "application/json")
-  
-  ## get response & content
+
   response <- curl::curl_fetch_memory(query_url, handle = handle)
-  content <- jsonlite::fromJSON(rawToChar(r$content))
+  content <- jsonlite::fromJSON(rawToChar(response$content))
   
   if (response$status_code == 200) {
     if (isTRUE(verbose)) {
-      message("Successfully fetched token.")
+      message("Successfully fetched token from web identiy provider.")
     }
     return(content)
   } else {

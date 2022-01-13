@@ -10,7 +10,8 @@ Authors@R: c(person("Thomas J.", "Leeper",
              person("Jonathan", "Stott", email = "jonathan.stott@magairports.com", role = c("cre", "aut")),
              person("Mike", "Kaminsky", email = "kaminsky.michael@gmail.com", role = "ctb"),
              person("Mark", "Douthwaite", email = "mark.douthwaite@peak.ai", role = "ctb"),
-             person("Jason", "Gofford", email = "jason.gofford@peak.ai", role = "ctb")
+             person("Jason", "Gofford", email = "jason.gofford@peak.ai", role = "ctb"),
+             person("Luke", "Dyer", email = "luke.dyer@peak.ai", role = "ctb")
             )
 Description: Generates version 2 and version 4 request signatures for Amazon Web Services ('AWS') <https://aws.amazon.com/> Application Programming Interfaces ('APIs') and provides a mechanism for retrieving credentials from environment variables, 'AWS' credentials files, and 'EC2' instance metadata. For use on 'EC2' instances, users will need to install the suggested package 'aws.ec2metadata' <https://cran.r-project.org/package=aws.ec2metadata>.
 License: GPL (>= 2)
