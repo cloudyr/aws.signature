@@ -1,23 +1,29 @@
 Package: aws.signature
 Type: Package
 Title: Amazon Web Services Request Signatures
-Version: 0.6.0
+Version: 0.6.1
 Date: 2020-06-01
 Authors@R: c(person("Thomas J.", "Leeper",
                     role = c("aut"),
                     email = "thosjleeper@gmail.com",
                     comment = c(ORCID = "0000-0003-4097-6326")),
              person("Jonathan", "Stott", email = "jonathan.stott@magairports.com", role = c("cre", "aut")),
-             person("Mike", "Kaminsky", email = "kaminsky.michael@gmail.com", role = "ctb")
+             person("Mike", "Kaminsky", email = "kaminsky.michael@gmail.com", role = "ctb"),
+             person("Mark", "Douthwaite", email = "mark.douthwaite@peak.ai", role = "ctb"),
+             person("Jason", "Gofford", email = "jason.gofford@peak.ai", role = "ctb"),
+             person("Luke", "Dyer", email = "luke.dyer@peak.ai", role = "ctb")
             )
 Description: Generates version 2 and version 4 request signatures for Amazon Web Services ('AWS') <https://aws.amazon.com/> Application Programming Interfaces ('APIs') and provides a mechanism for retrieving credentials from environment variables, 'AWS' credentials files, and 'EC2' instance metadata. For use on 'EC2' instances, users will need to install the suggested package 'aws.ec2metadata' <https://cran.r-project.org/package=aws.ec2metadata>.
 License: GPL (>= 2)
 Imports:
     digest,
-    base64enc
+    base64enc,
+    jsonlite,
+    curl
 Suggests:
+    devtools,
     testthat (>= 2.1.0),
     aws.ec2metadata (>= 0.1.6)
 URL: https://github.com/cloudyr/aws.signature
 BugReports: https://github.com/cloudyr/aws.signature/issues
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2

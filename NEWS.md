@@ -1,3 +1,7 @@
+# aws.signature 0.6.1
+
+* Add support for [assuming roles from web identities](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html) ([#62](https://github.com/cloudyr/aws.signature/issues/62)).
+
 # aws.signature 0.6.0
 
 * Allow connection to empty regions (h/t @namelessjon, @lawremi)
