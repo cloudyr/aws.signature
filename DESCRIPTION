@@ -8,8 +8,8 @@ Authors@R: c(person("Thomas J.", "Leeper",
                     email = "thosjleeper@gmail.com",
                     comment = c(ORCID = "0000-0003-4097-6326")),
              person("Jonathan", "Stott", email = "jonathan.stott@magairports.com", role = "aut"),
-             person("Gonzalo", "Diaz", "gonzalomartindiaz22@gmail.com", role = c("cre", "aut"),
-                    comment = c(ORCID = "0009-0003-9056-4896"))
+             person("Gonzalo", "Diaz", email = "gonzalomartindiaz22@gmail.com", role = c("cre", "aut"),
+                    comment = c(ORCID = "0009-0003-9056-4896")),
              person("Mike", "Kaminsky", email = "kaminsky.michael@gmail.com", role = "ctb"),
              person("Mark", "Douthwaite", email = "mark.douthwaite@peak.ai", role = "ctb"),
              person("Jason", "Gofford", email = "jason.gofford@peak.ai", role = "ctb"),
@@ -17,6 +17,7 @@ Authors@R: c(person("Thomas J.", "Leeper",
             )
 Description: Generates version 2 and version 4 request signatures for Amazon Web Services ('AWS') <https://aws.amazon.com/> Application Programming Interfaces ('APIs') and provides a mechanism for retrieving credentials from environment variables, 'AWS' credentials files, and 'EC2' instance metadata. For use on 'EC2' instances, users will need to install the suggested package 'aws.ec2metadata' <https://cran.r-project.org/package=aws.ec2metadata>.
 License: GPL (>= 2)
+Encoding: UTF-8
 Imports:
     digest,
     base64enc,
@@ -28,4 +29,4 @@ Suggests:
     aws.ec2metadata (>= 0.1.6)
 URL: https://github.com/cloudyr/aws.signature
 BugReports: https://github.com/cloudyr/aws.signature/issues
-RoxygenNote: 7.1.2
+Config/roxygen2/version: 8.0.0
