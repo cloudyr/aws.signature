@@ -1,15 +1,5 @@
-## Test environments
-
-* local Win 10 install, R 3.6.3
-* ubuntu 16.04 (on travis-ci), R 4.0.0
-* OSX (on travis-ci), R 4.0.0
-* win-builder (release)
-
 ## R CMD check results
 
-There were no ERRORs or WARNINGs or NOTEs.
+0 errors | 0 warnings | 1 note
 
-## Downstream dependencies
-
-I have also run R CMD check on downstream dependencies of aws.signature.
-All tests pass
+* This is a new release.
