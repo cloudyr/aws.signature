@@ -18,7 +18,7 @@
 #' @template verbose
 #' @details This function generates an AWS Signature Version 4 for authorizing API requests.
 #' @return A list of class \dQuote{aws_signature_v4}, containing the information needed to sign an AWS API request using either query string authentication or request header authentication. Specifically, the list contains:
-#' 
+#'
 #'     \item{Algorithm}{A character string containing the hashing algorithm used during the signing process (default is SHA256).}
 #'     \item{Credential}{A character string containing an identifying credential \dQuote{scoped} to the region, date, and service of the request.}
 #'     \item{Date}{A character string containing a YYYYMMDD-formatted date.}
@@ -37,134 +37,173 @@
 #'     \item{SecretAccessKey}{A character string containing the secret access key identified by \code{\link{locate_credentials}}.}
 #'     \item{SessionToken}{A character string containing the session token identified by \code{\link{locate_credentials}}.}
 #'     \item{Region}{A character string containing the region identified by \code{\link{locate_credentials}}.}
-#' 
+#'
 #' These values can either be used as query parameters in a REST-style API request, or as request headers. If authentication is supplied via query string parameters, the query string should include the following:
-#' 
+#'
 #' Action=\code{action}
 #' &X-Amz-Algorithm=\code{Algorithm}
 #' &X-Amz-Credential=\code{URLencode(Credentials)}
 #' &X-Amz-Date=\code{Date}
 #' &X-Amz-Expires=\code{timeout}
 #' &X-Amz-SignedHeaders=\code{SignedHeaders}
-#' 
+#'
 #' where \code{action} is the API endpoint being called and \code{timeout} is a numeric value indicating when the request should expire.
-#' 
+#'
 #' If signing a request using header-based authentication, the \dQuote{Authorization} header in the request should be included with the request that looks as follows:
-#' 
+#'
 #' Authorization: \code{Algorithm} Credential=\code{Credential}, SignedHeaders=\code{SignedHeaders}, Signature=\code{Signature}
-#' 
+#'
 #' This is the value printed by default for all objects of class \dQuote{aws_signature_v4}.
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references
-#' \href{http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
-#' 
-#' \href{http://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html}{Amazon S3 API Reference: Authenticating Requests (AWS Signature Version 4)}
-#' 
-#' \href{http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html}{Add the Signing Information to the Request}
+#' \href{https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
+#'
+#' \href{https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html}{Amazon S3 API Reference: Authenticating Requests (AWS Signature Version 4)}
+#'
+#' \href{https://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html}{Add the Signing Information to the Request}
 #' @seealso \code{\link{signature_v2_auth}}, \code{\link{locate_credentials}}
 #' @export
-signature_v4_auth <- 
-function(
-  datetime = format(Sys.time(),"%Y%m%dT%H%M%SZ", tz = "UTC"),
-  region = NULL,
-  service,
-  verb,
-  action,
-  query_args = list(),
-  canonical_headers, # named list
-  request_body,
-  signed_body = FALSE,
-  key = NULL,
-  secret = NULL,
-  session_token = NULL,
-  query = FALSE,
-  algorithm = "AWS4-HMAC-SHA256",
-  force_credentials = FALSE,
-  verbose = getOption("verbose", FALSE)
-){
-    if (isTRUE(force_credentials)) {
-        if (isTRUE(verbose)) {
-            if (!is.null(key)) {
-                message("Using user-supplied value for AWS Access Key ID")
+signature_v4_auth <-
+    function(
+        datetime = format(Sys.time(), "%Y%m%dT%H%M%SZ", tz = "UTC"),
+        region = NULL,
+        service,
+        verb,
+        action,
+        query_args = list(),
+        canonical_headers, # named list
+        request_body,
+        signed_body = FALSE,
+        key = NULL,
+        secret = NULL,
+        session_token = NULL,
+        query = FALSE,
+        algorithm = "AWS4-HMAC-SHA256",
+        force_credentials = FALSE,
+        verbose = getOption("verbose", FALSE)
+    ) {
+        if (isTRUE(force_credentials)) {
+            if (isTRUE(verbose)) {
+                if (!is.null(key)) {
+                    message("Using user-supplied value for AWS Access Key ID")
+                }
+                if (!is.null(secret)) {
+                    message(
+                        "Using user-supplied value for AWS Secret Access Key"
+                    )
+                }
+                if (!is.null(session_token)) {
+                    message(
+                        "Using user-supplied value for AWS Secret Access Key"
+                    )
+                }
+                if (!is.null(region)) {
+                    message(sprintf(
+                        "Using user-supplied value for AWS Region ('%s')",
+                        region
+                    ))
+                }
             }
-            if (!is.null(secret)) {
-                message("Using user-supplied value for AWS Secret Access Key")
-            }
-            if (!is.null(session_token)) {
-                message("Using user-supplied value for AWS Secret Access Key")
-            }
-            if (!is.null(region)) {
-                message(sprintf("Using user-supplied value for AWS Region ('%s')", region))
-            }
-        }
-    } else {
-        credentials <- locate_credentials(key = key, secret = secret, session_token = session_token, region = region, verbose = verbose)
-        key <- credentials[["key"]]
-        secret <- credentials[["secret"]]
-        session_token <- credentials[["session_token"]]
-        region <- credentials[["region"]]
-    }
-    
-    date <- substring(datetime,1,8)
-    
-    if (isTRUE(query)) {
-        # handle query-based authorizations, by including relevant parameters
-    } 
-    
-    # Canonical Request
-    if (!is.null(session_token) && session_token != "") {
-        if (!missing(canonical_headers)) {
-            canonical_headers <- c(canonical_headers, list("X-Amz-Security-Token" = session_token))
         } else {
-            canonical_headers <- list("X-Amz-Security-Token" = session_token)
+            credentials <- locate_credentials(
+                key = key,
+                secret = secret,
+                session_token = session_token,
+                region = region,
+                verbose = verbose
+            )
+            key <- credentials[["key"]]
+            secret <- credentials[["secret"]]
+            session_token <- credentials[["session_token"]]
+            region <- credentials[["region"]]
         }
-    }
-    R <- canonical_request(verb = verb,
-                           canonical_uri = action,
-                           query_args = query_args,
-                           canonical_headers = canonical_headers,
-                           request_body = request_body,
-                           signed_body = signed_body)
-    
-    # String To Sign
-    S <- string_to_sign(algorithm = algorithm,
-                        datetime = datetime,
-                        region = region,
-                        service = service,
-                        request_hash = R$hash)
-    
-    # Signature
-    V4 <- signature_v4(secret = secret,
-                       date = date,
-                       region = region,
-                       service = service,
-                       string_to_sign = S,
-                       verbose = verbose)
-    
-    # return list
-    credential <- paste(key, date, region, service, "aws4_request", sep="/")
-    sigheader <- paste(algorithm,
-                       paste(paste0("Credential=", credential),
-                             paste0("SignedHeaders=", R$headers),
-                             paste0("Signature=", V4),
-                             sep = ","))
-    structure(list(Algorithm = algorithm,
-                   Credential = credential,
-                   Date = date,
-                   SignedHeaders = R$headers,
-                   Body = request_body,
-                   BodyHash = R$body,
-                   Verb = verb,
-                   Query = query_args,
-                   Service = service,
-                   Action = action,
-                   CanonicalRequest = R$canonical,
-                   StringToSign = S,
-                   Signature = V4,
-                   SignatureHeader = sigheader,
-                   AccessKeyId = key,
-                   SecretAccessKey = secret,
-                   SessionToken = session_token,
-                   Region = region), class = "aws_signature_v4")
-}
 
+        date <- substring(datetime, 1, 8)
+
+        if (isTRUE(query)) {
+            # handle query-based authorizations, by including relevant parameters
+        }
+
+        # Canonical Request
+        if (!is.null(session_token) && session_token != "") {
+            if (!missing(canonical_headers)) {
+                canonical_headers <- c(
+                    canonical_headers,
+                    list("X-Amz-Security-Token" = session_token)
+                )
+            } else {
+                canonical_headers <- list(
+                    "X-Amz-Security-Token" = session_token
+                )
+            }
+        }
+        R <- canonical_request(
+            verb = verb,
+            canonical_uri = action,
+            query_args = query_args,
+            canonical_headers = canonical_headers,
+            request_body = request_body,
+            signed_body = signed_body
+        )
+
+        # String To Sign
+        S <- string_to_sign(
+            algorithm = algorithm,
+            datetime = datetime,
+            region = region,
+            service = service,
+            request_hash = R$hash
+        )
+
+        # Signature
+        V4 <- signature_v4(
+            secret = secret,
+            date = date,
+            region = region,
+            service = service,
+            string_to_sign = S,
+            verbose = verbose
+        )
+
+        # return list
+        credential <- paste(
+            key,
+            date,
+            region,
+            service,
+            "aws4_request",
+            sep = "/"
+        )
+        sigheader <- paste(
+            algorithm,
+            paste(
+                paste0("Credential=", credential),
+                paste0("SignedHeaders=", R$headers),
+                paste0("Signature=", V4),
+                sep = ","
+            )
+        )
+        structure(
+            list(
+                Algorithm = algorithm,
+                Credential = credential,
+                Date = date,
+                SignedHeaders = R$headers,
+                Body = request_body,
+                BodyHash = R$body,
+                Verb = verb,
+                Query = query_args,
+                Service = service,
+                Action = action,
+                CanonicalRequest = R$canonical,
+                StringToSign = S,
+                Signature = V4,
+                SignatureHeader = sigheader,
+                AccessKeyId = key,
+                SecretAccessKey = secret,
+                SessionToken = session_token,
+                Region = region
+            ),
+            class = "aws_signature_v4"
+        )
+    }
