@@ -32,7 +32,7 @@ This is a mostly internal function that creates a \dQuote{String To Sign}, which
 \examples{
 # From AWS documentation
 rh <- "3511de7e95d28ecd39e9513b642aee07e54f4941150d8df8bf94b328ef7e55e2"
-sts <- 
+sts <-
 string_to_sign(datetime = "20110909T233600Z",
                region = "us-east-1",
                service = "iam",
@@ -44,7 +44,7 @@ identical(sts, "AWS4-HMAC-SHA256
 
 }
 \references{
-\href{http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html}{Create a String to Sign for Signature Version 4}
+\href{https://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html}{Create a String to Sign for Signature Version 4}
 }
 \seealso{
 \code{\link{signature_v4}}, \code{\link{signature_v4_auth}}

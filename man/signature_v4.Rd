@@ -41,7 +41,7 @@ StringToSign <- "AWS4-HMAC-SHA256
 20110909/us-east-1/host/aws4_request
 e25f777ba161a0f1baf778a87faf057187cf5987f17953320e3ca399feb5f00d"
 
-sig <- 
+sig <-
 signature_v4(secret = 'wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY',
              date = '20110909',
              region = 'us-east-1',
@@ -55,7 +55,7 @@ StringToSign <- "AWS4-HMAC-SHA256
 20110909/us-east-1/iam/aws4_request
 3511de7e95d28ecd39e9513b642aee07e54f4941150d8df8bf94b328ef7e55e2"
 
-sig <- 
+sig <-
 signature_v4(secret = 'wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY',
              date = '20110909',
              region = 'us-east-1',
@@ -65,11 +65,11 @@ identical(sig, "ced6826de92d2bdeed8f846f0bf508e8559e98e4b0199114b84c54174deb456c
 }
 }
 \references{
-\href{http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
-  
-  \href{http://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html}{AWS General Reference: Examples of How to Derive a Version 4 Signing Key}
-  
-  \href{http://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html}{Amazon S3 API Reference: Authenticating Requests (AWS Signature Version 4)}
+\href{https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
+
+  \href{https://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html}{AWS General Reference: Examples of How to Derive a Version 4 Signing Key}
+
+  \href{https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html}{Amazon S3 API Reference: Authenticating Requests (AWS Signature Version 4)}
 }
 \seealso{
 \code{\link{signature_v4_auth}}, \code{\link{signature_v2_auth}}, \code{\link{use_credentials}}

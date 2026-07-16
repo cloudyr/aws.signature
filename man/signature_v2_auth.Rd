@@ -50,7 +50,7 @@ This function generates an AWS Signature Version 2 for authorizing API requests.
 \examples{
 \dontrun{
 # examples from:
-# http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html
+# https://docs.aws.amazon.com/general/latest/gr/signature-version-2.html
 
 true_string <- paste0("GET\n",
 "elasticmapreduce.amazonaws.com\n",
@@ -63,7 +63,7 @@ true_string <- paste0("GET\n",
 "&Version=2009-03-31", collapse = "")
 true_sig <- "i91nKc4PWAt0JJIdXwz9HxZCJDdiy6cf/Mj6vPxyYIs="
 
-q1 <- 
+q1 <-
 list(Action = "DescribeJobFlows",
      Version = "2009-03-31",
      AWSAccessKeyId = "AKIAIOSFODNN7EXAMPLE",
@@ -71,7 +71,7 @@ list(Action = "DescribeJobFlows",
      SignatureMethod = "HmacSHA256",
      Timestamp = "2011-10-03T15:19:30")
 
-sig1 <- 
+sig1 <-
 signature_v2_auth(datetime = "2011-10-03T15:19:30",
                   service = "elasticmapreduce.amazonaws.com",
                   verb = "GET",
@@ -83,11 +83,11 @@ identical(true_string, sig1$CanonicalRequest)
 identical(true_sig, sig1$Signature)
 
 # leaving out some defaults
-q2 <- 
+q2 <-
 list(Action = "DescribeJobFlows",
      Version = "2009-03-31",
      Timestamp = "2011-10-03T15:19:30")
-sig2 <- 
+sig2 <-
 signature_v2_auth(datetime = "2011-10-03T15:19:30",
                   service = "elasticmapreduce.amazonaws.com",
                   verb = "GET",
@@ -100,7 +100,7 @@ identical(true_sig, sig2$Signature)
 }
 }
 \references{
-\href{http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}
+\href{https://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}
 }
 \seealso{
 \code{\link{signature_v4_auth}}, \code{\link{use_credentials}}

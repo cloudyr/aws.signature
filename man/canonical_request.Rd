@@ -37,7 +37,7 @@ This function creates a \dQuote{Canonical Request}, which is part of the Signatu
 }
 \examples{
 # From AWS documentation
-# http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
+# https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
 fromDocs <- "POST
 /
 
@@ -60,7 +60,7 @@ r <- canonical_request(verb = "POST",
 identical(fromDocs, r$canonical)
 }
 \references{
-\href{http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html}{Create a Canonical Request For Signature Version 4}
+\href{https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html}{Create a Canonical Request For Signature Version 4}
 }
 \seealso{
 \code{\link{signature_v4}}, \code{\link{signature_v4_auth}}
