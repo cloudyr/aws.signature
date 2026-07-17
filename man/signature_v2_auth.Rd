@@ -50,7 +50,7 @@ This function generates an AWS Signature Version 2 for authorizing API requests.
 \examples{
 \dontrun{
 # examples from:
-# https://docs.aws.amazon.com/general/latest/gr/signature-version-2.html
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html
 
 true_string <- paste0("GET\n",
 "elasticmapreduce.amazonaws.com\n",
@@ -100,7 +100,7 @@ identical(true_sig, sig2$Signature)
 }
 }
 \references{
-\href{https://docs.aws.amazon.com/general/latest/gr/signature-version-2.html}{AWS General Reference: Signature Version 2 Signing Process}
+\href{https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html}{AWS General Reference: Signature Version 2 Signing Process}
 }
 \seealso{
 \code{\link{signature_v4_auth}}, \code{\link{use_credentials}}

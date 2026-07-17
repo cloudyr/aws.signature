@@ -1,6 +1,6 @@
 # Amazon Web Services Request Signatures
 
-**aws.signature** is a package for creating request signatures for Amazon Web Services (AWS) APIs. It supports both the current [Signature Version 4](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) and the legacy [Signature Version 2](https://docs.aws.amazon.com/general/latest/gr/signature-version-2.html). The former is used by most services. The high-level functions `signature_v4_auth()` and `signature_v2_auth()` translate request parameters into appropriate HTTP Authorization headers to pass to the APIs.
+**aws.signature** is a package for creating request signatures for Amazon Web Services (AWS) APIs. It supports both the current [Signature Version 4](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html) and the legacy [Signature Version 2](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html). The former is used by most services. The high-level functions `signature_v4_auth()` and `signature_v2_auth()` translate request parameters into appropriate HTTP Authorization headers to pass to the APIs.
 
 To use the package, you will need an AWS account and to enter your credentials into R. Your keypair can be generated on the [IAM Management Console](https://aws.amazon.com/) under the heading *Access Keys*. Note that you only have access to your secret key once. After it is generated, you need to save it in a secure location. New keypairs can be generated at any time if yours has been lost, stolen, or forgotten. The [**aws.iam** package](https://github.com/cloudyr/aws.iam) profiles tools for working with IAM, including creating roles, users, groups, and credentials programmatically; it is not needed to *use* IAM credentials.
 
@@ -42,8 +42,8 @@ As a fail safe the `us-east-1` region is used whenever a region is not found.
 
 [![CRAN](https://www.r-pkg.org/badges/version/aws.signature)](https://cran.r-project.org/package=aws.signature)
 ![Downloads](https://cranlogs.r-pkg.org/badges/aws.signature)
-[![Build Status](https://travis-ci.org/cloudyr/aws.signature.png?branch=master)](https://travis-ci.org/cloudyr/aws.signature) 
-[![codecov.io](https://codecov.io/github/cloudyr/aws.signature/coverage.svg?branch=master)](https://codecov.io/github/cloudyr/aws.signature?branch=master)
+[![Build Status](https://travis-ci.org/cloudyr/aws.signature.png?branch=master)](https://app.travis-ci.com/cloudyr/aws.signature) 
+[![codecov.io](https://codecov.io/github/cloudyr/aws.signature/coverage.svg?branch=master)](https://app.codecov.io/github/cloudyr/aws.signature?branch=master)
 
 To install the latest package version, it is recommended to install from the cloudyr drat repository:
 

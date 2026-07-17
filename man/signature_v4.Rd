@@ -67,7 +67,7 @@ identical(sig, "ced6826de92d2bdeed8f846f0bf508e8559e98e4b0199114b84c54174deb456c
 \references{
 \href{https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
 
-  \href{https://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html}{AWS General Reference: Examples of How to Derive a Version 4 Signing Key}
+  \href{https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html}{AWS General Reference: Examples of How to Derive a Version 4 Signing Key}
 
   \href{https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html}{Amazon S3 API Reference: Authenticating Requests (AWS Signature Version 4)}
 }

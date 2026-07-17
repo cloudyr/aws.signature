@@ -8,7 +8,7 @@
 #' @details This is a mostly internal function that creates a \dQuote{String To Sign}, which is part of the Signature Version 4. Users probably only need to use the \code{\link{signature_v4_auth}} function to generate signatures.
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references
-#'   \href{https://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html}{Create a String to Sign for Signature Version 4}
+#'   \href{https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html}{Create a String to Sign for Signature Version 4}
 #' @examples
 #' # From AWS documentation
 #' rh <- "3511de7e95d28ecd39e9513b642aee07e54f4941150d8df8bf94b328ef7e55e2"
