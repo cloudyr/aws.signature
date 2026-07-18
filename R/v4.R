@@ -56,11 +56,11 @@
 #' This is the value printed by default for all objects of class \dQuote{aws_signature_v4}.
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references
-#' \href{https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
+#' \href{https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html?refid=faq_card}{AWS General Reference: Signature Version 4 Signing Process}
 #'
 #' \href{https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html}{Amazon S3 API Reference: Authenticating Requests (AWS Signature Version 4)}
 #'
-#' \href{https://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html}{Add the Signing Information to the Request}
+#' \href{https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html}{Add the Signing Information to the Request}
 #' @seealso \code{\link{signature_v2_auth}}, \code{\link{locate_credentials}}
 #' @export
 signature_v4_auth <-

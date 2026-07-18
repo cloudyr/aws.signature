@@ -9,7 +9,7 @@
 #' @details This function generates an AWS Signature Version 4 for authorizing API requests from its pre-formatted components. Users probably only need to use the \code{\link{signature_v4_auth}} function to generate signatures.
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references
-#'   \href{https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html}{AWS General Reference: Signature Version 4 Signing Process}
+#'   \href{https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html?refid=faq_cardl}{AWS General Reference: Signature Version 4 Signing Process}
 #'
 #'   \href{https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html}{AWS General Reference: Examples of How to Derive a Version 4 Signing Key}
 #'

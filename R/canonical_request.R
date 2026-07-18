@@ -10,11 +10,11 @@
 #' @return A list containing
 #' @author Thomas J. Leeper <thosjleeper@gmail.com>
 #' @references
-#'   \href{https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html}{Create a Canonical Request For Signature Version 4}
+#'   \href{https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html}{Create a Canonical Request For Signature Version 4}
 #' @seealso \code{\link{signature_v4}}, \code{\link{signature_v4_auth}}
 #' @examples
 #' # From AWS documentation
-#' # https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
+#' # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html
 #' fromDocs <- "POST
 #' /
 #'
