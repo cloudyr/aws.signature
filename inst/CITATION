@@ -1,15 +1,24 @@
 citHeader("To cite package 'aws.signature' in publications use:")
-     
- year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date, perl = TRUE)
- vers <- paste("R package version", meta$Version)
- 
- citEntry(entry="Manual",
-          title = "aws.signature: Amazon Web Services Request Signatures",
-          author = personList(as.person("Thomas J. Leeper")),
-          year = year,
-          note = vers,
-          textVersion =
-          paste("Thomas J. Leeper (",
-                year,
-                "). aws.signature: Amazon Web Services Request Signatures. ",
-                vers, ".", sep=""))
+
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date, perl = TRUE)
+vers <- paste("R package version", meta$Version)
+
+bibentry(
+      bibtype = "Manual",
+      title = "aws.signature: Amazon Web Services Request Signatures",
+      author = c(
+            person("Thomas J.", "Leeper"),
+            person("Jonathan", "Stott"),
+            person("Gonzalo", "Diaz")
+      ),
+      year = year,
+      note = vers,
+      textVersion = paste(
+            "Thomas J. Leeper (",
+            year,
+            "). aws.signature: Amazon Web Services Request Signatures. ",
+            vers,
+            ".",
+            sep = ""
+      )
+)
